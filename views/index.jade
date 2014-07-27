@@ -1,0 +1,78 @@
+extends layout
+
+block menu
+  div(class='navbar navbar-default navbar-fixed-top')
+    div(class='container')
+      div(class='navbar-header')
+        a(class='navbar-brand') 3M  
+      div(class='navbar-header navbar-right')
+        a(class='info-msg') {{infoMsg}}  
+      div#main_menu(class='navbar-collapse collapse')
+        ul(class='nav navbar-nav')
+          li(class='dropdown') 
+            a(class='dropdown-toggle', href='#', data-toggle='dropdown') Projectes
+              span(class='caret')
+            ul(class='dropdown-menu')
+              for elem in data
+                li
+                  a(href='#',ng-click='loadProject("#{elem._id}")') #{elem.nom}
+block content
+  div(class='container-fluid')
+    div(class='row')
+      div#video_container(class='col-sm-5')
+        div(class='container-fluid')
+          div(class='row')
+            div(class='col-sm-12')
+              div(class='panel panel-warning')
+                div(class='panel-heading')
+                  h1(class='panel-title') Video
+                div(class='panel-body')
+                  div#main_video(class="video-js vjs-default-skin vjs-paused vjs-controls-enabled vjs-user-inactive", style="width: 100%; height: 500px;")
+                    video(data-setup="{&quot;example_option&quot;:true}",preload="auto",class="vjs-tech",id="main_video_html5_api",src="http://192.168.1.103/carlesti/videos/M1S1Tue.ogv")
+                      source(type="video/ogg", src="http://192.168.1.103/carlesti/videos/M1S1Tue.ogv")
+      div#trans1_container(class='col-sm-7')
+        div(class='container-fluid')
+          div(class='row')
+            div(class='col-sm-12')
+              div(class='panel panel-success')
+                div(class='panel-heading')
+                  h1(class='panel-title') Verbal
+                div(class='panel-body transcripcio')
+                    div(class='panel panel-default', ng-repeat='block in transcriptions.audio' )
+                      div(class='panel-heading')
+                        button(class='btn btn-xs') Play
+                        span(class='label label-success') C1
+                        span(class='label label-success') Info
+                        span(class='label label-success') Info
+                      div(class='panel-body') {{block.contingut2}}
+    div(class='row')
+      div#trans2_container(class='col-sm-5')
+        div(class='container-fluid')
+          div(class='row')
+            div(class='col-sm-12')
+              div(class='panel panel-info')
+                div(class='panel-heading')
+                  h1(class='panel-title') Interfície
+                div(class='panel-body transcripcio')
+                    div(class='panel panel-default' , ng-repeat='block in transcriptions.video')
+                      div(class='panel-heading')
+                        button(class='btn btn-xs') Play
+                        span(class='label label-success') C1
+                        span(class='label label-success') Info
+                        span(class='label label-success') Info
+                      div(class='panel-body') {{block.contingut2}}
+      div#trans3_container(class='col-sm-7')
+        div(class='container-fluid')
+          div(class='row')
+            div(class='col-sm-12')
+              div(class='panel panel-danger')
+                div(class='panel-heading')
+                  h1(class='panel-title') No verbal
+                div(class='panel-body transcripcio')
+                    div(class='panel panel-default' , ng-repeat='block in transcriptions.text')
+                      div(class='panel-heading')
+                        button(class='btn btn-xs') Play
+                        span(class='label label-success') C1
+                        span(class='label label-success') Info
+                        span(class='label label-success') Info
+                      div(class='panel-body') {{block.contingut2}}
