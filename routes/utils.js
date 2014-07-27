@@ -2,8 +2,8 @@ var express = require('express');
 var router = express.Router();
 
 
-/* GET home page. */
-router.get('/', function(req, res) {
+
+router.get('/import_codes', function(req, res) {
    //
 	var pg = require('pg');
 	var conString = "postgres://postgres:@localhost/carlesti";
@@ -12,7 +12,29 @@ router.get('/', function(req, res) {
 	  if(err) {
 	    return console.error('error fetching client from pool', err);
 	  }
-	  readProjects(client);
+	   console.log("Import codes from Postgres to MongoDB");
+	   importCodes(client,0, function(aCodes)
+	   	 {
+	   	 	  saveCodis(aCodes);
+	   	 });
+	 
+	   done();
+	});
+
+	res.send("FET");
+});
+/* import transcriptions. */
+router.get('/import_transcriptions', function(req, res) {
+   //
+	var pg = require('pg');
+	var conString = "postgres://postgres:@localhost/carlesti";
+
+	pg.connect(conString, function(err, client, done) {
+	  if(err) {
+	    return console.error('error fetching client from pool', err);
+	  }
+	  console.log("Import projects from Postgres to MongoDB");
+	  //readProjects(client);
 	   done();
 	});
 
@@ -20,7 +42,34 @@ router.get('/', function(req, res) {
 });
 
 module.exports = router;
-
+function importCodes(client,id_pare, callback)
+{
+	client.query('SELECT * from code WHERE id_pare=$1', [id_pare], function(err, result) {
+	    //call `done()` to release the client back to the pool
+	     if(err) {
+	      return console.error('error running query', err);
+	    }
+	    var aCodis = [];
+	    var iNum = result.rows.length;
+	    var iCurrent = 0;
+	    if(iNum>0)
+	    {
+		    result.rows.forEach(function(oCodi)
+		    {
+		    	importCodes(client, oCodi.id, function(aChilds)
+	    		{
+	    			oCodi.children = aChilds;
+	    			aCodis.push(oCodi);
+	    			iCurrent++;
+	    			if(iCurrent==iNum)  callback(aCodis);
+	    		});
+				
+		    })
+		}
+		else callback([]);
+	   
+	});
+}
 function readProjects(client)
 {
 	client.query('SELECT * from projecte WHERE id=id', function(err, result) {
@@ -92,6 +141,25 @@ function saveProject(oNom,oProjecte)
 
 	    var collection = db.collection('m3');
 	    collection.insert({nom:oNom,projecte:oProjecte}, function(err, docs) {
+	      console.log(docs);
+	      collection.count(function(err, count) {
+	        console.log(format("count = %s", count));
+	      });
+
+	     
+	    });
+	  })
+}
+
+function saveCodis(aCodis)
+{
+	var MongoClient = require('mongodb').MongoClient
+	var format = require('util').format;
+	MongoClient.connect('mongodb://127.0.0.1:27017/m3', function(err, db) {
+	    if(err) throw err;
+
+	    var collection = db.collection('m3_codes');
+	    collection.insert({codis:aCodis}, function(err, docs) {
 	      console.log(docs);
 	      collection.count(function(err, count) {
 	        console.log(format("count = %s", count));
