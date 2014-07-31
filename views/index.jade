@@ -40,10 +40,8 @@ block content
                 div(class='panel-body transcripcio')
                     div(class='panel panel-default', ng-repeat='block in transcriptions.audio' )
                       div(class='panel-heading')
-                        button(class='btn btn-xs') Play
-                        span(class='label label-success') C1
-                        span(class='label label-success') Info
-                        span(class='label label-success') Info
+                        button(class='btn btn-xs btn-warning') Play
+                        span(class='label label-success', ng-repeat='coding in block.codings') {{codes.codis[coding.id_code].name}}
                       div(class='panel-body') {{block.contingut2}}
     div(class='row')
       div#trans2_container(class='col-sm-5')
@@ -56,10 +54,8 @@ block content
                 div(class='panel-body transcripcio')
                     div(class='panel panel-default' , ng-repeat='block in transcriptions.video')
                       div(class='panel-heading')
-                        button(class='btn btn-xs') Play
-                        span(class='label label-success') C1
-                        span(class='label label-success') Info
-                        span(class='label label-success') Info
+                        button(class='btn btn-xs btn-warning') Play
+                        span(class='label label-success', ng-repeat='coding in block.codings') {{codes.codis[coding.id_code].name}}
                       div(class='panel-body') {{block.contingut2}}
       div#trans3_container(class='col-sm-7')
         div(class='container-fluid')
@@ -71,8 +67,6 @@ block content
                 div(class='panel-body transcripcio')
                     div(class='panel panel-default' , ng-repeat='block in transcriptions.text')
                       div(class='panel-heading')
-                        button(class='btn btn-xs') Play
-                        span(class='label label-success') C1
-                        span(class='label label-success') Info
-                        span(class='label label-success') Info
+                        button(class='btn btn-xs btn-warning') Play
+                        span(class='label label-success', ng-repeat='coding in block.codings') {{codes.codis[coding.id_code].name}}
                       div(class='panel-body') {{block.contingut2}}

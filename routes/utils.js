@@ -1,8 +1,8 @@
 var express = require('express');
 var router = express.Router();
+var mongo = require('mongodb');
 
-
-
+/* import code tree */
 router.get('/import_codes', function(req, res) {
    //
 	var pg = require('pg');
@@ -17,6 +17,27 @@ router.get('/import_codes', function(req, res) {
 	   	 {
 	   	 	  saveCodis(aCodes);
 	   	 });
+	 
+	   done();
+	});
+
+	res.send("FET");
+});
+/* import codificions */
+router.get('/import_codings', function(req, res) {
+   //
+	var pg = require('pg');
+	var conString = "postgres://postgres:@localhost/carlesti";
+
+	pg.connect(conString, function(err, client, done) {
+	  if(err) {
+	    return console.error('error fetching client from pool', err);
+	  }
+	   console.log("Import codings from Postgres to MongoDB");
+	   importCodings(client, function()
+	   	{
+	   		console.log("Codificacions Importades");
+	   	});
 	 
 	   done();
 	});
@@ -42,6 +63,104 @@ router.get('/import_transcriptions', function(req, res) {
 });
 
 module.exports = router;
+
+function importCodings(client, callback)
+{
+	var MongoClient = mongo.MongoClient;
+	MongoClient.connect('mongodb://127.0.0.1:27017/m3', function(err, db) {
+	    if(err) throw err;
+
+	    var collection = db.collection('m3');
+	    collection.find().toArray(function(err, docs) {
+	      	if (err) console.log(err);
+	    	var iNum = docs.length;
+	    	var iCurrent = 0;
+	      	docs.forEach(function(oDoc)
+		    {
+		    	getCodings(client, collection, oDoc, function()
+		    	{
+					iCurrent++;
+					if(iCurrent==iNum)  callback();
+		    	});
+		   	});
+	    });
+	  })
+}
+function getCodings(client,collection, aDoc, callback)
+{
+	
+	// Rebo un aDoc
+	// Processo els blocs de audio
+	var iBlock = 0;
+	//console.log(aDoc.projecte.aTrans.audio[0]);
+	aDoc.projecte.aTrans.audio.forEach(function(oBlock)
+		{
+			getCodesAndUpdate(client, oBlock, iBlock, function(iNewBlock,aCodings)
+				{
+ 					aDoc.projecte.aTrans.audio[iNewBlock].codings = aCodings;
+				    // fem update del document
+				    collection.findAndModify({nom:aDoc.nom},[],aDoc, function(err, doc)
+				    	{
+				    		console.log('updated');
+				    	});
+				});
+			
+			iBlock++;
+		});
+
+	var iBlock = 0;
+	//console.log(aDoc.projecte.aTrans.text[0]);
+	aDoc.projecte.aTrans.text.forEach(function(oBlock)
+		{
+			getCodesAndUpdate(client, oBlock, iBlock, function(iNewBlock,aCodings)
+				{
+ 					aDoc.projecte.aTrans.text[iNewBlock].codings = aCodings;
+				    // fem update del document
+				    collection.findAndModify({nom:aDoc.nom},[],aDoc, function(err, doc)
+				    	{
+				    		console.log('updated');
+				    	});
+				});
+			
+			iBlock++;
+		});
+
+	var iBlock = 0;
+	//console.log(aDoc.projecte.aTrans.video[0]);
+	aDoc.projecte.aTrans.video.forEach(function(oBlock)
+		{
+			getCodesAndUpdate(client, oBlock, iBlock, function(iNewBlock,aCodings)
+				{
+ 					aDoc.projecte.aTrans.video[iNewBlock].codings = aCodings;
+				    // fem update del document
+				    collection.findAndModify({nom:aDoc.nom},[],aDoc, function(err, doc)
+				    	{
+				    		console.log('updated');
+				    	});
+				});
+			
+			iBlock++;
+		});
+	
+}
+
+function getCodesAndUpdate(client, oBlock, iBlock, callback)
+{
+	id_start_bloc = oBlock['id'];
+	client.query('SELECT * from codificacio WHERE id_start_bloc=$1', [id_start_bloc], function(err, result) {
+			    //call `done()` to release the client back to the pool
+			     if(err) {
+			      return console.error('error running query', err);
+			    }
+			    if(result.rows.length>0) 
+		    	{
+		    		console.log("BLOCK "+iBlock);
+		    		console.log(result.rows.length);
+				    callback(iBlock, result.rows);
+				}
+			});
+}
+
 function importCodes(client,id_pare, callback)
 {
 	client.query('SELECT * from code WHERE id_pare=$1', [id_pare], function(err, result) {

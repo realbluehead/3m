@@ -3,6 +3,33 @@ var App3m = angular.module('App3m', []);
 App3m.controller('mainController',function($scope, $http){
 	$scope.transcriptions = {audio:[],video:[],text:[]};
 	$scope.infoMsg = '';
+	$scope.codes = '';
+
+	$scope.init = function()
+	{
+		$scope.loadCodes();
+	}
+
+	$scope.loadCodes = function()
+	{
+		$scope.infoMsg = 'Loading codes tree...';
+		 var request = $http({
+				method: "get",
+				cache:false,
+				url: "codes/load/",
+				params: {
+					//id: iId
+				}
+			});
+		request.success(function(data, status, headers, config) {
+	      // this callback will be called asynchronously
+	      // when the response is available
+	     //
+	     $scope.infoMsg = 'Codes tree loaded...';
+	     $scope.codes = data;
+	     console.log($scope.codes.codis);
+	 });
+	}
 	$scope.loadProject = function(iId)
 	{
 		$scope.infoMsg = 'Loading project...';

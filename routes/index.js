@@ -9,7 +9,7 @@ router.get('/', function(req, res, next) {
 	    if(err) throw err;
 
 	    var collection = db.collection('m3');
-	    collection.find().toArray(function(err, results) {
+	    collection.find({},{'sort':'nom'}).toArray(function(err, results) {
 	       	data = results;
 	        // Tanquem la db
 	        db.close();
