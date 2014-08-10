@@ -16,6 +16,7 @@ router.get('/load/', function(req, res, next) {
 	    collection.find().toArray(function(err, docs) {
 	      if (err) console.log(err);
 	      	// tenim l'arbre pero estaria be tenir un array indexat per id_codi
+	      	console.log(docs);
 	      	generaLlista(docs[0].codis, function()
 	      		{
 	      			console.log(aLlista);
