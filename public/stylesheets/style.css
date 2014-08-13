@@ -1,5 +1,5 @@
 body{
-	padding-top:40px;
+	padding-top:50px;
 	font-size: 11px;
 }
 
@@ -13,6 +13,11 @@ body{
 	margin: 1px;
 }
 
+.block_seleccionat
+{
+	background-color: yellow;
+	color:black;
+}
 .transcripcio
 {
 	max-height: 500px;

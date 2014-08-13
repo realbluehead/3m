@@ -17,6 +17,38 @@ block menu
                 li
                   a(href='#',ng-click='loadProject("#{elem._id}")') #{elem.nom}
 block content
+  div#editorGrups(class='modal fade', tabindex='-1', role='dialog', aria-hidden='true')
+    div(class='modal-dialog')
+      div(class='modal-content')
+        div(class='modal-header')
+          button(type='button', class='close', data-dismiss='modal')
+            span(aria-hidden='true') &times
+            span(class='sr-only') Close
+          h4(class='modal-title') Group editing ({{currentGrup.length}} turns selected)
+        div(class='modal-body' , style='max-height: 420px;overflow-y: auto;')
+          table(class='table table-striped table-bordered table-hover')
+            tr
+              td(colspan='2') 
+                h5 Current codes
+            tr(ng-repeat='block in codisSeleccionats')
+              td  {{block.name}}
+              td
+                button(type='button' class='btn btn-xs btn-primary', ng-click='treureCodiGrup(this)') Remove
+            tr
+              td(colspan='2') 
+                h5 Add codes
+            tr
+              td
+                span(style='margin-right:20px') Filter
+                input(type='text', ng-model='filtreCodis' ng-change='canviFiltreCodis()')
+            tr(ng-repeat='block in codisFiltrats')
+              td  {{block.name}}
+              td
+                button(type='button' class='btn btn-xs btn-primary', ng-click='afegirCodiGrup(this)') Add
+        div(class='modal-footer')
+          button(type='button', class='btn btn-default btn-sm' data-dismiss='modal') Close
+          button(type='button', class='btn btn-success btn-sm', ng-click='saveGroupCodes()') Save
+      
   div(class='container-fluid')
     div(class='row')
       div#video_container(class='col-sm-5')
@@ -38,11 +70,15 @@ block content
                 div(class='panel-heading')
                   h1(class='panel-title') Verbal
                 div(class='panel-body transcripcio')
-                    div(class='panel panel-default', ng-repeat='block in transcriptions.audio' )
+                    div(class='panel panel-default',  ng-repeat='block in transcriptions.audio' )
                       div(class='panel-heading')
+                        button(class='btn btn-xs btn-warning', ng-click='toggleCheck(this)') Select
                         button(class='btn btn-xs btn-warning') Play
+                        button(class='btn btn-xs btn-warning') Edit
+                        button(class='btn btn-xs btn-warning') Delete
                         span(class='label label-success', ng-repeat='coding in block.codings') {{codes.codis[coding.id_code].name}}
-                      div(class='panel-body') {{block.contingut2}}
+                        button(class='btn btn-xs btn-primary', ng-repeat='groupId in block.groups') {{groupId}}
+                      div(class='panel-body',ng-class="{'block_seleccionat': block.checked}") {{block.contingut2}}
     div(class='row')
       div#trans2_container(class='col-sm-5')
         div(class='container-fluid')
