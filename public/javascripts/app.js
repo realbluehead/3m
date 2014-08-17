@@ -41,7 +41,24 @@ App3m.controller('mainController',function($scope, $http){
 	     console.log($scope.codes.codis);
 	 });
 	}
+	$scope.editGroupCode = function(block)
+	{	
+		var idGrup = block.groupId;
+		console.log("Editant grup de codis "+idGrup);
+		// inicializem les variables de l'editor
+		var oGrup = '';
+		$scope.currentGrup = idGrup;
+		console.log($scope.grups);
+		for(var i=0;i<$scope.grups.length;i++)
+		{
+			if($scope.grups[i].id == idGrup) oGrup = $scope.grups[i];
+		}
+		console.log(oGrup);
+		$scope.codisSeleccionats = oGrup.codis;
+		// visualitzem l'editor
+		$scope.editCurrentGroup();
 
+	}
 	$scope.toggleCheck  = function(block)
 	{
 		console.log(block.block);
@@ -63,7 +80,10 @@ App3m.controller('mainController',function($scope, $http){
 	{
 		// si grup ja exiteix, canviem valors
 		// sino, lafegim a grups i afegim el grupId a cada membre del grup
-		oNouGrup = {id:$scope.currentGrupId,membres:$scope.currentGrup};
+		oNouGrup = {id:$scope.currentGrupId,
+					membres:$scope.currentGrup,
+					codis:$scope.codisSeleccionats};
+					console.log(oNouGrup);
 		for(var i=0;i<$scope.currentGrup.length;i++)
 		{
 			// de moment nomes mirem audio per sha de fer per cada mode
@@ -78,9 +98,29 @@ App3m.controller('mainController',function($scope, $http){
 				}
 			}
 		}
-		$scope.currentGrupId++;
+		
 		$scope.currentGrup = [];
-		$scope.grups.push(oNouGrup);
+		$scope.codisSeleccionats = [];
+	    $scope.filtreCodis='';
+	    $scope.canviFiltreCodis();
+	    // actualitzem el grup al array de grups del projecte ja sigui fent update o push d'un nou grup
+	    for(var i=0;i<$scope.grups.length;i++)
+		{
+			if(scope.grups[i].id == oNouGrup.id) 
+			{
+				scope.grups[i] = oNouGrup;
+				i=10000;
+			}
+		}
+		if(i==10000)
+		{
+			$scope.grups.push(oNouGrup);
+			$scope.currentGrupId++;
+			$scope.maxGroupId = $scope.currentGrupId;
+		}
+		else $scope.currentGrupId = $scope.maxGroupId;
+		// deixem el currentGrupId a un id nou per si fem grups nous.
+		
 		$('#editorGrups').modal('toggle');
 	}
 
@@ -88,7 +128,6 @@ App3m.controller('mainController',function($scope, $http){
 	{
 		console.log('Add '+block.block.id);
 		$scope.codisSeleccionats.push(block.block);
-		$scope.codes.codis[block.block.id].hide = true;
 		$scope.canviFiltreCodis();
 	}
 
@@ -100,9 +139,18 @@ App3m.controller('mainController',function($scope, $http){
 	     {
 	     	if($scope.codisSeleccionats[i].id == block.block.id) $scope.codisSeleccionats.splice(i,1);
 	     }
-		// delete the hide boolean of the list of codes
-		delete $scope.codes.codis[block.block.id]['hide'];
+		
 		$scope.canviFiltreCodis();
+	}
+	$scope.codiJaSeleccionat = function(iCodi)
+	{
+		console.log(iCodi);
+		console.log($scope.codisSeleccionats);
+		for(var i=0;i<$scope.codisSeleccionats.length;i++)
+	     {
+	     	if($scope.codisSeleccionats[i].id == iCodi) return true;
+	     }
+	     return false;
 	}
 	$scope.canviFiltreCodis = function()
 	{
@@ -112,7 +160,7 @@ App3m.controller('mainController',function($scope, $http){
 	     {
 	     	if($scope.codes.codis[i]!=null) 
 	     		{
-	     			if($scope.codes.codis[i].name.indexOf(sKeyword)!=-1 && !$scope.codes.codis[i].hide) $scope.codisFiltrats.push($scope.codes.codis[i]);
+	     			if($scope.codes.codis[i].name.indexOf(sKeyword)!=-1 && !$scope.codiJaSeleccionat($scope.codes.codis[i].id)) $scope.codisFiltrats.push($scope.codes.codis[i]);
 	     		}
 	     }
 		console.log("Yuhu"+i);
