@@ -47,7 +47,7 @@ App3m.controller('mainController',function($scope, $http){
 		console.log("Editant grup de codis "+idGrup);
 		// inicializem les variables de l'editor
 		var oGrup = '';
-		$scope.currentGrup = idGrup;
+		$scope.currentGrupId = idGrup;
 		console.log($scope.grups);
 		for(var i=0;i<$scope.grups.length;i++)
 		{
@@ -55,6 +55,9 @@ App3m.controller('mainController',function($scope, $http){
 		}
 		console.log(oGrup);
 		$scope.codisSeleccionats = oGrup.codis;
+		$scope.currentGrup = oGrup.membres;
+		console.log("Codis seleccionats");
+		console.log($scope.codisSeleccionats);
 		// visualitzem l'editor
 		$scope.editCurrentGroup();
 
@@ -83,6 +86,7 @@ App3m.controller('mainController',function($scope, $http){
 		oNouGrup = {id:$scope.currentGrupId,
 					membres:$scope.currentGrup,
 					codis:$scope.codisSeleccionats};
+					console.log('salvant un grup');
 					console.log(oNouGrup);
 		for(var i=0;i<$scope.currentGrup.length;i++)
 		{
@@ -92,7 +96,7 @@ App3m.controller('mainController',function($scope, $http){
 				if($scope.transcriptions.audio[j].id==$scope.currentGrup[i])
 				{
 					if($scope.transcriptions.audio[j].groups==undefined) $scope.transcriptions.audio[j].groups = [];
-					$scope.transcriptions.audio[j].groups.push(oNouGrup.id);
+					if($scope.transcriptions.audio[j].groups.indexOf(oNouGrup.id)==-1) $scope.transcriptions.audio[j].groups.push(oNouGrup.id);
 					$scope.transcriptions.audio[j].checked =false;
 					j=60000;
 				}
@@ -103,25 +107,36 @@ App3m.controller('mainController',function($scope, $http){
 		$scope.codisSeleccionats = [];
 	    $scope.filtreCodis='';
 	    $scope.canviFiltreCodis();
+	    var bUpdate=false;
 	    // actualitzem el grup al array de grups del projecte ja sigui fent update o push d'un nou grup
 	    for(var i=0;i<$scope.grups.length;i++)
 		{
-			if(scope.grups[i].id == oNouGrup.id) 
+			if($scope.grups[i].id == oNouGrup.id) 
 			{
-				scope.grups[i] = oNouGrup;
-				i=10000;
+				$scope.grups[i] = oNouGrup;
+				bUpdate = true;
 			}
 		}
-		if(i==10000)
+		if(!bUpdate)
 		{
 			$scope.grups.push(oNouGrup);
-			$scope.currentGrupId++;
-			$scope.maxGroupId = $scope.currentGrupId;
 		}
-		else $scope.currentGrupId = $scope.maxGroupId;
-		// deixem el currentGrupId a un id nou per si fem grups nous.
 		
+		$scope.currentGrupId = $scope.getMaxGroupId();
+		// deixem el currentGrupId a un id nou per si fem grups nous.
+		console.log('Aixi keden els grups');
+		console.log($scope.grups);
 		$('#editorGrups').modal('toggle');
+	}
+
+	$scope.getMaxGroupId = function()
+	{
+		var iCurrentMaxId = 0;
+		for(var i=0;i<$scope.grups.length;i++)
+		{
+			if($scope.grups[i].id>=iCurrentMaxId) iCurrentMaxId = $scope.grups[i].id;
+		}
+		return iCurrentMaxId+1;
 	}
 
 	$scope.afegirCodiGrup = function(block)
@@ -139,13 +154,12 @@ App3m.controller('mainController',function($scope, $http){
 	     {
 	     	if($scope.codisSeleccionats[i].id == block.block.id) $scope.codisSeleccionats.splice(i,1);
 	     }
-		
+		console.log($scope.codisSeleccionats);
 		$scope.canviFiltreCodis();
 	}
 	$scope.codiJaSeleccionat = function(iCodi)
 	{
-		console.log(iCodi);
-		console.log($scope.codisSeleccionats);
+		
 		for(var i=0;i<$scope.codisSeleccionats.length;i++)
 	     {
 	     	if($scope.codisSeleccionats[i].id == iCodi) return true;
