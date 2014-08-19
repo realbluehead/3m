@@ -2,7 +2,7 @@ extends layout
 
 block menu
   div(class='navbar navbar-default navbar-fixed-top')
-    div(class='container')
+    div(class='container-fluid')
       div(class='navbar-header')
         a(class='navbar-brand') 3M  
       div(class='navbar-header navbar-right')
@@ -16,6 +16,8 @@ block menu
               for elem in data
                 li
                   a(href='#',ng-click='loadProject("#{elem._id}")') #{elem.nom}
+          li(ng-show='bProjectLoaded')
+            a(href='#') Save
 block content
   div#editorGrups(class='modal fade', tabindex='-1', role='dialog', aria-hidden='true')
     div(class='modal-dialog')
@@ -31,7 +33,7 @@ block content
               td(colspan='2') 
                 h5 Current codes
             tr(ng-repeat='block in codisSeleccionats')
-              td  {{block.name}}
+              td  {{block.nom_complet}}
               td
                 button(type='button' class='btn btn-xs btn-primary', ng-click='treureCodiGrup(this)') Remove
             tr
@@ -42,12 +44,13 @@ block content
                 span(style='margin-right:20px') Filter
                 input(type='text', ng-model='filtreCodis' ng-change='canviFiltreCodis()')
             tr(ng-repeat='block in codisFiltrats')
-              td  {{block.name}}
+              td  {{block.nom_complet}}
               td
                 button(type='button' class='btn btn-xs btn-primary', ng-click='afegirCodiGrup(this)') Add
         div(class='modal-footer')
           button(type='button', class='btn btn-default btn-sm' data-dismiss='modal') Close
           button(type='button', class='btn btn-success btn-sm', ng-click='saveGroupCodes()') Save
+          button(type='button', class='btn btn-success btn-sm', ng-click='deleteGroupCodes()') Delete
       
   div(class='container-fluid')
     div(class='row')

@@ -10,6 +10,7 @@ App3m.controller('mainController',function($scope, $http){
 	$scope.grups = [];
 	$scope.currentGrup = [];
 	$scope.currentGrupId ='';
+	$scope.bProjectLoaded = false;
 
 	$scope.init = function()
 	{
@@ -36,10 +37,20 @@ App3m.controller('mainController',function($scope, $http){
 	     $scope.codisFiltrats = [];
 	     for(var i=0;i<data.codis.length;i++)
 	     {
-	     	if(data.codis[i]!=null) $scope.codisFiltrats.push(data.codis[i]);
+	     	if(data.codis[i]!=null) 
+	     		{
+	     			data.codis[i].nom_complet = $scope.getNomComplet(data.codis,i);
+	     			$scope.codisFiltrats.push(data.codis[i]);
+	     		}
 	     }
-	     console.log($scope.codes.codis);
+	     
 	 });
+	}
+
+	$scope.getNomComplet = function(aCodis, iIndex)
+	{
+		if(aCodis[iIndex].id_pare!=0) return $scope.getNomComplet(aCodis, aCodis[iIndex].id_pare) + '/' + aCodis[iIndex].name;
+		else return aCodis[iIndex].name;
 	}
 	$scope.editGroupCode = function(block)
 	{	
@@ -48,23 +59,22 @@ App3m.controller('mainController',function($scope, $http){
 		// inicializem les variables de l'editor
 		var oGrup = '';
 		$scope.currentGrupId = idGrup;
-		console.log($scope.grups);
+		
 		for(var i=0;i<$scope.grups.length;i++)
 		{
 			if($scope.grups[i].id == idGrup) oGrup = $scope.grups[i];
 		}
-		console.log(oGrup);
+		
 		$scope.codisSeleccionats = oGrup.codis;
 		$scope.currentGrup = oGrup.membres;
-		console.log("Codis seleccionats");
-		console.log($scope.codisSeleccionats);
+		$scope.canviFiltreCodis();
 		// visualitzem l'editor
 		$scope.editCurrentGroup();
 
 	}
 	$scope.toggleCheck  = function(block)
 	{
-		console.log(block.block);
+		
 		block.block.checked = !block.block.checked;
 		if(block.block.checked)
 		{
@@ -154,7 +164,7 @@ App3m.controller('mainController',function($scope, $http){
 	     {
 	     	if($scope.codisSeleccionats[i].id == block.block.id) $scope.codisSeleccionats.splice(i,1);
 	     }
-		console.log($scope.codisSeleccionats);
+		
 		$scope.canviFiltreCodis();
 	}
 	$scope.codiJaSeleccionat = function(iCodi)
@@ -174,7 +184,7 @@ App3m.controller('mainController',function($scope, $http){
 	     {
 	     	if($scope.codes.codis[i]!=null) 
 	     		{
-	     			if($scope.codes.codis[i].name.indexOf(sKeyword)!=-1 && !$scope.codiJaSeleccionat($scope.codes.codis[i].id)) $scope.codisFiltrats.push($scope.codes.codis[i]);
+	     			if($scope.codes.codis[i].nom_complet.toUpperCase().indexOf(sKeyword.toUpperCase())!=-1 && !$scope.codiJaSeleccionat($scope.codes.codis[i].id)) $scope.codisFiltrats.push($scope.codes.codis[i]);
 	     		}
 	     }
 		console.log("Yuhu"+i);
@@ -235,6 +245,7 @@ App3m.controller('mainController',function($scope, $http){
 			$scope.transcriptions.text = data.projecte.aTrans.text;
 			$scope.infoMsg = 'Project loaded!';
 			$scope.currentGrupId = 1;
+			$scope.bProjectLoaded = true;
 	      //$scope.transcriptions.audio.push('a');
 	    });
 		
