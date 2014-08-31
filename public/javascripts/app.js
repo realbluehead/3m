@@ -11,6 +11,9 @@ App3m.controller('mainController',function($scope, $http){
 	$scope.currentGrup = [];
 	$scope.currentGrupId ='';
 	$scope.bProjectLoaded = false;
+	$scope.currentProjectId = '';
+	$scope.currentCoding = '';
+	$scope.currentBlock = '';
 
 	$scope.init = function()
 	{
@@ -176,6 +179,39 @@ App3m.controller('mainController',function($scope, $http){
 	     }
 	     return false;
 	}
+	$scope.editSingleCoding = function(code)
+	{
+		console.log("Edit coding");
+		$scope.currentCoding = code.coding;
+		$scope.currentBlock = code.block;
+		$('#editorCoding').modal('toggle');
+	}
+	$scope.deleteCurrentCoding = function()
+	{
+		var currBlock = $scope.currentBlock;
+		console.log("Deleting current coding");
+		// busquem la transcripcio dins de audio
+		// de moment nomes mirem audio per sha de fer per cada mode
+			for(var j=0;j<$scope.transcriptions.audio.length;j++)
+			{
+				if($scope.transcriptions.audio[j].id==currBlock.id)
+				{
+					// Li treiem la codificacio de larray de codifiacions
+					console.log($scope.transcriptions.audio[j]);
+					for(var i=0;i<$scope.transcriptions.audio[j].codings.length;i++)
+					{
+						if($scope.transcriptions.audio[j].codings[i].id==$scope.currentCoding.id)
+						{
+							
+							$scope.transcriptions.audio[j].codings.splice(i, 1);
+							i=1000;
+						}
+					}
+					j=60000;
+				}
+			}
+		
+	}
 	$scope.canviFiltreCodis = function()
 	{
 		$scope.codisFiltrats = [];
@@ -210,8 +246,55 @@ App3m.controller('mainController',function($scope, $http){
 		$('#editorGrups').modal('toggle');
 	}
 
+	$scope.saveProject = function()
+	{
+		var tempTrans = $scope.transcriptions;
+
+		for (var i=0;i<tempTrans.audio.length;i++)
+		{ 
+			tempTrans.audio[i].contingut2 = $.base64.btoa($scope.transcriptions.audio[i].contingut2);
+			//tempTrans.audio[i].contingut_filtrat = "<span>[</span>" + tempTrans.audio[i].contingut2 + "<span>]</span>";
+     	}
+
+     	for (var i=0;i<tempTrans.video.length;i++)
+		{ 
+			tempTrans.video[i].contingut2 = $.base64.btoa($scope.transcriptions.video[i].contingut2);
+     	}
+
+     	for (var i=0;i<tempTrans.text.length;i++)
+		{ 
+			tempTrans.text[i].contingut2 = $.base64.btoa($scope.transcriptions.text[i].contingut2);
+     	}
+
+		var projecte = {
+						grups: $scope.grups,
+						transcriptions: tempTrans
+		}
+		var iId = $scope.currentProjectId;
+		var request = $http({
+				method: "post",
+				url: "project/save/"+iId,
+				data: {
+					//id: iId
+					projecte: projecte
+				}
+			});
+		request.error(function(data, status, headers, config) {
+			console.log("Project error!");
+			console.log(data);
+		});
+		request.success(function(data, status, headers, config) {
+			console.log("Project saved!");
+		});
+	}
+	$scope.contingutFiltrat = function(block)
+	{
+		console.log(block);
+		return block.contingut2;
+	}
 	$scope.loadProject = function(iId)
 	{
+		$scope.currentProjectId = iId;
 		$scope.infoMsg = 'Loading project...';
 		 var request = $http({
 				method: "get",
@@ -228,6 +311,7 @@ App3m.controller('mainController',function($scope, $http){
 	     	for (var i=0;i<data.projecte.aTrans.audio.length;i++)
 			{ 
 				data.projecte.aTrans.audio[i].contingut2 = $.base64.atob(data.projecte.aTrans.audio[i].contingut2);
+				
 	     	}
 
 	     	for (var i=0;i<data.projecte.aTrans.video.length;i++)
@@ -246,6 +330,7 @@ App3m.controller('mainController',function($scope, $http){
 			$scope.infoMsg = 'Project loaded!';
 			$scope.currentGrupId = 1;
 			$scope.bProjectLoaded = true;
+
 	      //$scope.transcriptions.audio.push('a');
 	    });
 		

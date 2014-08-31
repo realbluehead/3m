@@ -17,8 +17,22 @@ block menu
                 li
                   a(href='#',ng-click='loadProject("#{elem._id}")') #{elem.nom}
           li(ng-show='bProjectLoaded')
-            a(href='#') Save
+            a(href='#', ng-click='saveProject()') Save
 block content
+  div#editorCoding(class='modal', tabindex='-1', role='dialog', aria-hidden='true')
+    div(class='modal-dialog')
+      div(class='modal-content')
+        div(class='modal-header')
+          button(type='button', class='close', data-dismiss='modal')
+            span(aria-hidden='true') &times
+            span(class='sr-only') Close
+          h4(class='modal-title') Coding editing
+        div(class='modal-body' , style='max-height: 200px;overflow-y: auto;')
+          div {{codes.codis[currentCoding.id_code].nom_complet}}
+        div(class='modal-footer')
+          button(type='button', class='btn btn-default btn-sm' data-dismiss='modal') Close
+          button(type='button', class='btn btn-success btn-sm', ng-click='saveCurrentCoding()') Save
+          button(type='button', class='btn btn-success btn-sm', ng-click='deleteCurrentCoding()') Delete
   div#editorGrups(class='modal fade', tabindex='-1', role='dialog', aria-hidden='true')
     div(class='modal-dialog')
       div(class='modal-content')
@@ -80,10 +94,11 @@ block content
                         button(class='btn btn-xs btn-warning') Play
                         button(class='btn btn-xs btn-warning') Edit
                         button(class='btn btn-xs btn-warning') Delete
-                        span(class='label label-success', ng-repeat='coding in block.codings') {{codes.codis[coding.id_code].name}}
+                        span(ng-repeat='coding in block.codings') 
+                          span(class='label label-success', ng-click='editSingleCoding(this)' ) {{codes.codis[coding.id_code].name}}
                         span(ng-repeat='groupId in block.groups')
                           button(class='btn btn-xs btn-primary', ng-click='editGroupCode(this)') {{groupId}}
-                      div(class='panel-body',ng-class="{'block_seleccionat': block.checked}") {{block.contingut2}}
+                      div(class='panel-body',ng-class="{'block_seleccionat': block.checked}", ng-bind-html="block.contingut_filtrat")
       div#trans3_container(class='col-sm-4')
         div(class='container-fluid')
           div(class='row')
@@ -96,7 +111,7 @@ block content
                       div(class='panel-heading')
                         button(class='btn btn-xs btn-warning') Play
                         span(class='label label-success', ng-repeat='coding in block.codings') {{codes.codis[coding.id_code].name}}
-                      div(class='panel-body') {{block.contingut2}}
+                      div(class='panel-body' )
       div#trans2_container(class='col-sm-4')
         div(class='container-fluid')
           div(class='row')
