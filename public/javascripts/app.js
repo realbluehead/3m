@@ -1,4 +1,4 @@
-var App3m = angular.module('App3m',  []);
+var App3m = angular.module('App3m',  ['ngSanitize']);
 
 App3m.controller('mainController',function($scope, $http){
 	$scope.transcriptions = {audio:[],video:[],text:[]};
@@ -14,6 +14,8 @@ App3m.controller('mainController',function($scope, $http){
 	$scope.currentProjectId = '';
 	$scope.currentCoding = '';
 	$scope.currentBlock = '';
+	$scope.blocksCoding = '';
+	$scope.codingEdit = {};
 
 	$scope.init = function()
 	{
@@ -179,11 +181,181 @@ App3m.controller('mainController',function($scope, $http){
 	     }
 	     return false;
 	}
+
+	$scope.highlightTurns = function(type, start,coding)
+	{
+		if(type=='audio')
+		{
+			// hem de saber quants torns cal remarcar.
+			
+			console.log(coding.id_start_bloc + "=>"+coding.id_end_bloc);
+			
+			// Si el coding està dins del mateix bloc nomès cal resaltar aquell bloc
+			if(coding.id_start_bloc=coding.id_end_bloc)
+			{
+				$scope.transcriptions.audio[start].backup_contingut = $scope.transcriptions.audio[start].contingut_filtrat;
+				$scope.transcriptions.audio[start].contingut_filtrat =  "<span class='coding_highlight'>"+
+																$scope.transcriptions.audio[start].contingut_filtrat + 
+																"</span>";
+			}
+			else
+			{
+				// sino, hem de fer bucle recorrent següents blocs fins que l¡id del bloc sigui el de id_end_bloc
+				var iCurrentOffset = start;
+				var bFiGrup = false;
+				while(!bFiGrup)
+				{
+					$scope.transcriptions.audio[iCurrentOffset].backup_contingut = $scope.transcriptions.audio[iCurrentOffset].contingut_filtrat;
+					$scope.transcriptions.audio[iCurrentOffset].contingut_filtrat =  "<span class='coding_highlight'>"+
+																$scope.transcriptions.audio[iCurrentOffset].contingut_filtrat + 
+																"</span>";
+					if($scope.transcriptions.audio[iCurrentOffset].id == coding.id_end_bloc) bFiGrup=true;
+					iCurrentOffset++;									
+				}
+
+			}
+		}
+	}
+	$scope.highlightCoding = function(code)
+	{
+		//console.log("Highlight coding");
+		var bTrobat=false;
+		var currentBlock = code.block;
+		for(var j=0;j<$scope.transcriptions.audio.length;j++)
+			{
+				if($scope.transcriptions.audio[j].id==currentBlock.id)
+				{
+					bTrobat= true;
+					$scope.highlightTurns('audio', j, code.coding);
+					
+					j=10000;
+				}
+			}
+		//console.log(currentBlock);
+	}
+	
+	$scope.unhighlightCoding = function(code)
+	{
+		//console.log("Unhighlight coding");
+		var bTrobat=false;
+		var currentBlock = code.block;
+		for(var j=0;j<$scope.transcriptions.audio.length;j++)
+			{
+				if($scope.transcriptions.audio[j].id==currentBlock.id)
+				{
+					bTrobat= true;
+					$scope.transcriptions.audio[j].contingut_filtrat =  $scope.transcriptions.audio[j].backup_contingut;
+					j=10000;
+				}
+			}
+	}
+
+	$scope.modStartOffset = function(value)
+	{
+		$scope.currentCoding.start_offset += value;
+		$scope.blocksCoding = $scope.getBlocksCoding();
+	}
+
+	$scope.modEndOffset = function(value)
+	{
+		$scope.currentCoding.end_offset += value;
+		$scope.blocksCoding = $scope.getBlocksCoding();
+	}
+
+	$scope.addBlockCoding = function()
+	{
+		var coding = $scope.currentCoding;
+		console.log(coding.id_end_bloc);
+		for(var j=0;j<$scope.transcriptions.audio.length;j++)
+		{
+			// agafem tots els blocks del coding actual
+			if($scope.transcriptions.audio[j].id==coding.id_end_bloc)
+			{
+				console.log("j:"+j+",id="+$scope.transcriptions.audio[j+1].id);
+				$scope.currentCoding.id_end_bloc = $scope.transcriptions.audio[j+1].id;
+				j=1000;
+			}
+		}
+		$scope.blocksCoding = $scope.getBlocksCoding();
+	}
+	$scope.getBlocksCoding = function()
+	{
+		var bTrobat= false;
+		var aBlocks = [];
+		var coding = $scope.currentCoding;
+		for(var j=0;j<$scope.transcriptions.audio.length;j++)
+		{
+			// agafem tots els blocks del coding actual
+			if($scope.transcriptions.audio[j].id==$scope.currentBlock.id)
+			{
+				bTrobat= true;
+				//aBlocks.push($scope.transcriptions.audio[j]);
+
+				var iCurrentOffset = j;
+				var bFiGrup = false;
+				while(!bFiGrup)
+				{
+					console.log("pintat llistat grup "+iCurrentOffset);
+					// dividim string en PRE + SPAN + INTER + SPAN + POST;
+					var sSubject = $scope.transcriptions.audio[iCurrentOffset].backup_contingut;
+					
+					if($scope.transcriptions.audio[iCurrentOffset].id == coding.id_start_bloc)
+					{
+						if(coding.id_start_bloc != coding.id_end_bloc)
+						{
+							var sPre = sSubject.substring(0,coding.start_offset);
+							var sInter = sSubject.substring(coding.start_offset, sSubject.length);
+							var sPost = '';
+						}
+						else
+						{
+							var sPre = sSubject.substring(0,coding.start_offset);
+							var sInter = sSubject.substring(coding.start_offset, coding.end_offset);
+							var sPost = sSubject.substring(coding.end_offset,sSubject.length);
+						}
+						
+					}
+					else
+					{
+						if($scope.transcriptions.audio[iCurrentOffset].id == coding.id_end_bloc)
+						{
+							var sPre = '';
+							var sInter = sSubject.substring(0, coding.end_offset);
+							var sPost = sSubject.substring(coding.end_offset, sSubject.length);
+						}
+						else
+						{
+							var sPre = '';
+							var sInter = sSubject;
+							var sPost = '';
+						}
+					}
+
+					var  filtrat = sPre + "<span class='coding_highlight'>"+
+															sInter + 
+															"</span>" + sPost;
+					//console.log(filtrat);
+					//$scope.transcriptions.audio[iCurrentOffset].contingut_filtrat =  filtrat;
+					$scope.transcriptions.audio[iCurrentOffset].contingut_edit =  filtrat;
+					
+					aBlocks.push($scope.transcriptions.audio[iCurrentOffset]);
+					
+					if($scope.transcriptions.audio[iCurrentOffset].id == coding.id_end_bloc) bFiGrup=true;
+					iCurrentOffset++;									
+				}
+				j=10000;
+			}
+		}
+		//console.log(aBlocks);
+		return aBlocks;
+	}
 	$scope.editSingleCoding = function(code)
 	{
 		console.log("Edit coding");
 		$scope.currentCoding = code.coding;
 		$scope.currentBlock = code.block;
+		$scope.blocksCoding = $scope.getBlocksCoding();
+		
 		$('#editorCoding').modal('toggle');
 	}
 	$scope.deleteCurrentCoding = function()
@@ -253,7 +425,7 @@ App3m.controller('mainController',function($scope, $http){
 		for (var i=0;i<tempTrans.audio.length;i++)
 		{ 
 			tempTrans.audio[i].contingut2 = $.base64.btoa($scope.transcriptions.audio[i].contingut2);
-			//tempTrans.audio[i].contingut_filtrat = "<span>[</span>" + tempTrans.audio[i].contingut2 + "<span>]</span>";
+			tempTrans.audio[i].contingut_filtrat = "<pre>" + tempTrans.audio[i].contingut2 + "</pre>";
      	}
 
      	for (var i=0;i<tempTrans.video.length;i++)
@@ -290,7 +462,7 @@ App3m.controller('mainController',function($scope, $http){
 	$scope.contingutFiltrat = function(block)
 	{
 		console.log(block);
-		return block.contingut2;
+		return "Holaa";
 	}
 	$scope.loadProject = function(iId)
 	{
@@ -311,7 +483,8 @@ App3m.controller('mainController',function($scope, $http){
 	     	for (var i=0;i<data.projecte.aTrans.audio.length;i++)
 			{ 
 				data.projecte.aTrans.audio[i].contingut2 = $.base64.atob(data.projecte.aTrans.audio[i].contingut2);
-				
+				data.projecte.aTrans.audio[i].contingut_filtrat = $("<p>"+data.projecte.aTrans.audio[i].contingut2+"</p>").text();
+				data.projecte.aTrans.audio[i].backup_contingut = data.projecte.aTrans.audio[i].contingut_filtrat;
 	     	}
 
 	     	for (var i=0;i<data.projecte.aTrans.video.length;i++)

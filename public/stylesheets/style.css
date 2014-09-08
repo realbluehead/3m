@@ -11,8 +11,13 @@ body{
 .label
 {
 	margin: 1px;
+	cursor: pointer;
 }
 
+.coding_highlight
+{
+	background-color: lightgreen;
+}
 .block_seleccionat
 {
 	background-color: yellow;
