@@ -27,22 +27,32 @@ block content
             span(aria-hidden='true') &times
             span(class='sr-only') Close
           h4(class='modal-title') Coding editing
-        div(class='modal-body' , style='max-height: 200px;overflow-y: auto;')
+        div(class='modal-body' , style='max-height: 500px;overflow-y: auto;')
           div {{codes.codis[currentCoding.id_code].nom_complet}}
           table(class='table table-striped table-bordered table-hover')
             tr
               td
-                button(type='button', ng-click='modStartOffset(-1)', class='btn btn-warning btn-xs') <-
-                span
-                button(type='button', ng-click='modStartOffset(1)', class='btn btn-warning btn-xs') ->
+                button(type='button', ng-click='modStartOffset(-5)', class='btn btn-warning btn-xs') -5
+                span(class='espai_botons')
+                button(type='button', ng-click='modStartOffset(-1)', class='btn btn-warning btn-xs') -1
+                span(class='espai_botons')
+                button(type='button', ng-click='modStartOffset(1)', class='btn btn-warning btn-xs') +1
+                span(class='espai_botons')
+                button(type='button', ng-click='modStartOffset(5)', class='btn btn-warning btn-xs') +5
             tr(ng-repeat='block in blocksCoding')
               td(ng-bind-html="block.contingut_edit")
             tr
               td
-                button(type='button', ng-click='modEndOffset(-1)', class='btn btn-warning btn-xs') <-
-                span 
-                button(type='button', ng-click='modEndOffset(1)', class='btn btn-warning btn-xs') ->
+                button(type='button', ng-click='modEndOffset(-1)', class='btn btn-warning btn-xs') -1
+                span(class='espai_botons')
+                button(type='button', ng-click='modEndOffset(-5)', class='btn btn-warning btn-xs') -5
+                span(class='espai_botons')
+                button(type='button', ng-click='modEndOffset(1)', class='btn btn-warning btn-xs') +1
+                span(class='espai_botons')
+                button(type='button', ng-click='modEndOffset(5)', class='btn btn-warning btn-xs') +5
+                span(class='espai_botons')
                 button(type='button', ng-click='addBlockCoding()', class='btn btn-warning btn-xs') Add next block
+                button(type='button', ng-click='delBlockCoding()', class='btn btn-warning btn-xs') Remove last block
         div(class='modal-footer')
           button(type='button', class='btn btn-default btn-sm' data-dismiss='modal') Close
           button(type='button', class='btn btn-success btn-sm', ng-click='saveCurrentCoding()') Save
@@ -89,10 +99,10 @@ block content
               div(class='panel panel-warning')
                 div(class='panel-heading')
                   h1(class='panel-title') Video
-                div(class='panel-body')
-                  div#main_video(class="video-js vjs-default-skin vjs-paused vjs-controls-enabled vjs-user-inactive", style="width: 100%; height: 300px;")
-                    video(data-setup="{&quot;example_option&quot;:true}",preload="auto",class="vjs-tech",id="main_video_html5_api",src="http://192.168.1.103/carlesti/videos/M1S1Tue.ogv")
-                      source(type="video/ogg", src="http://192.168.1.103/carlesti/videos/M1S1Tue.ogv")
+                div(class='panel-body', ng-non-bindable)
+                  div#id_div_video()
+                    video#main_video(width="auto", height='400px', controls, data-setup="{}", preload="auto",class="video-js vjs-default-skin vjs-paused")
+                      source#id_source_video(ng-non-bindable, type="video/ogg")
      div(class='row')
       div#trans1_container(class='col-sm-4')
         div(class='container-fluid')
@@ -104,15 +114,15 @@ block content
                 div(class='panel-body transcripcio')
                     div(class='panel panel-default',  ng-repeat='block in transcriptions.audio' )
                       div(class='panel-heading')
-                        button(class='btn btn-xs btn-warning', ng-click='toggleCheck(this)') Select
-                        button(class='btn btn-xs btn-warning') Play
-                        button(class='btn btn-xs btn-warning') Edit
-                        button(class='btn btn-xs btn-warning') Delete
+                        button(class='btn btn-xs btn-warning', ng-click='toggleCheck(this,"A")') Select
+                        button(class='btn btn-xs btn-warning', ng-click='seekPlayer(this)') Play
+                        button(class='btn btn-xs btn-warning', disabled) Edit
+                        button(class='btn btn-xs btn-warning', disabled) Delete
                         span(ng-repeat='coding in block.codings') 
-                          span(class='label label-success', ng-mouseleave='unhighlightCoding(this)', ng-mouseover='highlightCoding(this)', ng-click='editSingleCoding(this)', title='{{codes.codis[coding.id_code].nom_complet}}' ) {{codes.codis[coding.id_code].name}}
-                        span(class='label label-danger') +
+                          span(class='label label-success', ng-mouseleave='unhighlightCoding(this,"A")', ng-mouseover='highlightCoding(this,"A")', ng-click='editSingleCoding(this,"A")', title='{{codes.codis[coding.id_code].nom_complet}}' ) {{codes.codis[coding.id_code].name}}
+                        span(ng-click='newSingleCoding(this,"A")', class='label label-danger') +
                         span(ng-repeat='groupId in block.groups')
-                          button(class='btn btn-xs btn-primary', ng-click='editGroupCode(this)') {{groupId}}
+                          button(class='btn btn-xs btn-primary', ng-click='editGroupCode(this,"A")') {{groupId}}
                       div(class='panel-body',ng-class="{'block_seleccionat': block.checked}", ng-bind-html="block.contingut_filtrat")
       div#trans3_container(class='col-sm-4')
         div(class='container-fluid')
@@ -124,9 +134,16 @@ block content
                 div(class='panel-body transcripcio')
                     div(class='panel panel-default' , ng-repeat='block in transcriptions.text')
                       div(class='panel-heading')
-                        button(class='btn btn-xs btn-warning') Play
-                        span(class='label label-success', ng-repeat='coding in block.codings') {{codes.codis[coding.id_code].name}}
-                      div(class='panel-body' )
+                        button(class='btn btn-xs btn-warning', ng-click='toggleCheck(this,"T")') Select
+                        button(class='btn btn-xs btn-warning', ng-click='seekPlayer(this)') Play
+                        button(class='btn btn-xs btn-warning', disabled) Edit
+                        button(class='btn btn-xs btn-warning', disabled) Delete
+                        span(ng-repeat='coding in block.codings') 
+                          span(class='label label-success', ng-mouseleave='unhighlightCoding(this,"T")', ng-mouseover='highlightCoding(this,"T")', ng-click='editSingleCoding(this,"T")', title='{{codes.codis[coding.id_code].nom_complet}}' ) {{codes.codis[coding.id_code].name}}
+                        span(ng-click='newSingleCoding(this,"T")', class='label label-danger') +
+                        span(ng-repeat='groupId in block.groups')
+                          button(class='btn btn-xs btn-primary', ng-click='editGroupCode(this,"T")') {{groupId}}
+                      div(class='panel-body',ng-class="{'block_seleccionat': block.checked}", ng-bind-html="block.contingut_filtrat")
       div#trans2_container(class='col-sm-4')
         div(class='container-fluid')
           div(class='row')
@@ -137,6 +154,13 @@ block content
                 div(class='panel-body transcripcio')
                     div(class='panel panel-default' , ng-repeat='block in transcriptions.video')
                       div(class='panel-heading')
-                        button(class='btn btn-xs btn-warning') Play
-                        span(class='label label-success', ng-repeat='coding in block.codings') {{codes.codis[coding.id_code].name}}
-                      div(class='panel-body') {{block.contingut2}}
+                        button(class='btn btn-xs btn-warning', ng-click='toggleCheck(this,"I")') Select
+                        button(class='btn btn-xs btn-warning', ng-click='seekPlayer(this)') Play
+                        button(class='btn btn-xs btn-warning', disabled) Edit
+                        button(class='btn btn-xs btn-warning', disabled) Delete
+                        span(ng-repeat='coding in block.codings') 
+                          span(class='label label-success', ng-mouseleave='unhighlightCoding(this,"I")', ng-mouseover='highlightCoding(this,"I")', ng-click='editSingleCoding(this,"I")', title='{{codes.codis[coding.id_code].nom_complet}}' ) {{codes.codis[coding.id_code].name}}
+                        span(ng-click='newSingleCoding(this,"I")', class='label label-danger') +
+                        span(ng-repeat='groupId in block.groups')
+                          button(class='btn btn-xs btn-primary', ng-click='editGroupCode(this,"I")') {{groupId}}
+                      div(class='panel-body',ng-class="{'block_seleccionat': block.checked}", ng-bind-html="block.contingut_filtrat")
