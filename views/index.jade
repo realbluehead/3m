@@ -113,7 +113,7 @@ block content
                   h1(class='panel-title') Verbal
                 div(class='panel-body transcripcio')
                     div(class='panel panel-default',  ng-repeat='block in transcriptions.audio' )
-                      div(class='panel-heading')
+                      div(class='panel-heading', ng-class="{'block_seleccionat': block.checked}")
                         button(class='btn btn-xs btn-warning', ng-click='toggleCheck(this,"A")') Select
                         button(class='btn btn-xs btn-warning', ng-click='seekPlayer(this)') Play
                         button(class='btn btn-xs btn-warning', disabled) Edit
