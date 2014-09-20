@@ -23,7 +23,7 @@ router.get('/load/', function(req, res, next) {
 	      				aResult = {tree:docs[0],
       						codis:aLlista,
       						prova:'a'};
-	      			console.log("FINAL"+aResult.codis);
+	      			console.log("FINAL"+aResult);
 		     		res.send(aResult);
 	      		});
       		

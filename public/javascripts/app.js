@@ -19,6 +19,7 @@ App3m.controller('mainController',function($scope, $http){
 	$scope.currentMode = 'A';
 	$scope.currentVideo = 'http://192.168.1.103:80/carlesti/videos/M1S1Tue.ogv';
 	$scope.player = '';
+	$scope.codiSeleccionat = '';
 
 	$scope.init = function()
 	{
@@ -43,6 +44,7 @@ App3m.controller('mainController',function($scope, $http){
 	     //
 	     $scope.infoMsg = 'Codes tree loaded...';
 	     $scope.codes = data;
+	     console.log($scope.codes.tree);
 	     $scope.codisFiltrats = [];
 	     for(var i=0;i<data.codis.length;i++)
 	     {
@@ -162,34 +164,38 @@ App3m.controller('mainController',function($scope, $http){
 	{
 		// busquem el coding dins del code actual
 		$scope.currentMode = 'A';
+		
 		var coding = $scope.currentCoding;
 		var iCodingId = coding.id;
 		var bTrobat = false;
+		coding.id_code = $scope.codiSeleccionat.id;
 		if($scope.currentMode=='A')
 		{
 			var iBlockId = $scope.currentBlock.id;
-			console.log('salvem :'+iBlockId);
+			console.log('salvem :'+iBlockId+' el seu coding: '+iCodingId);
 			for(var j=0;j<$scope.transcriptions.audio.length;j++)
 			{
 				if($scope.transcriptions.audio[j].id==iBlockId)
 				{
-					
+					console.log("Estem al block");
 					for(var i=0;i<$scope.transcriptions.audio[j].codings.length;i++)
 					{
+						console.log("IT: "+$scope.transcriptions.audio[j].codings[i].id);
 						if($scope.transcriptions.audio[j].codings[i].id==iCodingId)
 						{
 							bTrobat= true;
 							$scope.transcriptions.audio[j].codings[i].start_offset = coding.start_offset;
 							$scope.transcriptions.audio[j].codings[i].end_offset = coding.end_offset;
 							$scope.transcriptions.audio[j].codings[i].id_end_bloc = coding.id_end_bloc;
-							
+							$scope.transcriptions.audio[j].codings[i].id_code = coding.id_code;
+							i=10000;
 						}
 						if(!bTrobat)
 						{
 							console.log("Nou codiiing");
 							console.log(coding);
 							$scope.transcriptions.audio[j].codings.push(coding);
-							i=10000;
+							
 						}
 					}
 					j=10000;
@@ -1022,5 +1028,46 @@ App3m.controller('mainController',function($scope, $http){
 	      //$scope.transcriptions.audio.push('a');
 	    });
 		
+	}
+
+
+	$scope.showCodeManager = function()
+	{
+		$('#editorCodis').modal('toggle');
+		
+	}
+
+	$scope.addCodeTreeChild = function (code)
+	{
+		nouCodi = {
+					id:99999,
+					name:'New Code',
+					nom_complet:''
+				};
+		for (var i=0;i<$scope.codisFiltrats.length;i++)
+		{
+			if($scope.codisFiltrats[i].id==code.code.id)
+			{
+				nouCodi.id_pare = $scope.codisFiltrats[i].id;
+				nouCodi.nom_complet = $scope.codisFiltrats[i].nom_complet + '/New Code';
+				$scope.codisFiltrats.splice(i+1, 0, nouCodi);
+				i=9999;
+			} 
+		}
+	}
+
+	$scope.delCodeTreeChild = function (code)
+	{
+		if(confirm("Are you suuuure Andy?"))
+		{
+			console.log(code.code);
+			for (var i=0;i<$scope.codisFiltrats.length;i++)
+			{
+				if($scope.codisFiltrats[i].id==code.code.id)
+				{
+					$scope.codisFiltrats.splice(i, 1);
+				} 
+			}
+		}
 	}
 });
