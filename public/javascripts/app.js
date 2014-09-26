@@ -20,6 +20,12 @@ App3m.controller('mainController',function($scope, $http){
 	$scope.currentVideo = 'http://192.168.1.103:80/carlesti/videos/M1S1Tue.ogv';
 	$scope.player = '';
 	$scope.codiSeleccionat = '';
+	$scope.offsetAudio = 0;
+	$scope.lastoffsetAudio = 0;
+	$scope.offsetVideo = 0;
+	$scope.lastoffsetVideo = 0;
+	$scope.offsetText = 0;
+	$scope.lastoffsetText = 0;
 
 	$scope.init = function()
 	{
@@ -119,6 +125,26 @@ App3m.controller('mainController',function($scope, $http){
 					if($scope.transcriptions.audio[j].groups==undefined) $scope.transcriptions.audio[j].groups = [];
 					if($scope.transcriptions.audio[j].groups.indexOf(oNouGrup.id)==-1) $scope.transcriptions.audio[j].groups.push(oNouGrup.id);
 					$scope.transcriptions.audio[j].checked =false;
+					j=60000;
+				}
+			}
+			for(var j=0;j<$scope.transcriptions.text.length;j++)
+			{
+				if($scope.transcriptions.text[j].id==$scope.currentGrup[i])
+				{
+					if($scope.transcriptions.text[j].groups==undefined) $scope.transcriptions.text[j].groups = [];
+					if($scope.transcriptions.text[j].groups.indexOf(oNouGrup.id)==-1) $scope.transcriptions.text[j].groups.push(oNouGrup.id);
+					$scope.transcriptions.text[j].checked =false;
+					j=60000;
+				}
+			}
+			for(var j=0;j<$scope.transcriptions.video.length;j++)
+			{
+				if($scope.transcriptions.video[j].id==$scope.currentGrup[i])
+				{
+					if($scope.transcriptions.video[j].groups==undefined) $scope.transcriptions.video[j].groups = [];
+					if($scope.transcriptions.video[j].groups.indexOf(oNouGrup.id)==-1) $scope.transcriptions.video[j].groups.push(oNouGrup.id);
+					$scope.transcriptions.video[j].checked =false;
 					j=60000;
 				}
 			}
@@ -912,17 +938,16 @@ App3m.controller('mainController',function($scope, $http){
 
 	$scope.saveProject = function()
 	{
-		var tempTrans = $scope.transcriptions;
-
+		var tempTrans = '';
+		tempTrans = angular.copy($scope.transcriptions);
 		for (var i=0;i<tempTrans.audio.length;i++)
 		{ 
-			tempTrans.audio[i].contingut2 = $.base64.btoa($scope.transcriptions.audio[i].contingut2);
-			tempTrans.audio[i].contingut_filtrat = "<pre>" + tempTrans.audio[i].contingut2 + "</pre>";
+			tempTrans.audio[i].contingut2 = $.base64.btoa($scope.transcriptions.audio[i].contingut2);			
      	}
 
      	for (var i=0;i<tempTrans.video.length;i++)
 		{ 
-			tempTrans.video[i].contingut2 = $.base64.btoa($scope.transcriptions.video[i].contingut2);
+			tempTrans.video[i].contingut2 = $.base64.btoa($scope.transcriptions.video[i].contingut2);			
      	}
 
      	for (var i=0;i<tempTrans.text.length;i++)
@@ -931,8 +956,8 @@ App3m.controller('mainController',function($scope, $http){
      	}
 
 		var projecte = {
-						grups: $scope.grups,
-						transcriptions: tempTrans
+						grups: angular.copy($scope.grups),
+						aTrans: tempTrans
 		}
 		var iId = $scope.currentProjectId;
 		var request = $http({
@@ -945,10 +970,12 @@ App3m.controller('mainController',function($scope, $http){
 			});
 		request.error(function(data, status, headers, config) {
 			console.log("Project error!");
+			$scope.infoMsg = 'Project error saving!';
 			console.log(data);
 		});
 		request.success(function(data, status, headers, config) {
 			console.log("Project saved!");
+			$scope.infoMsg = 'Project saved!';
 		});
 	}
 	$scope.contingutFiltrat = function(block)
@@ -971,6 +998,9 @@ App3m.controller('mainController',function($scope, $http){
 		// Per cada mode 
 		// Anem al primer block 
 		// Parem al primer que sigui major que currentTime del player
+		$scope.offsetAudio = 0;
+		$scope.offsetVideo = 0;
+		$scope.offsetText = 0;
 
 	}
 	$scope.loadProject = function(iId)
@@ -1014,15 +1044,17 @@ App3m.controller('mainController',function($scope, $http){
 			$scope.transcriptions.audio = data.projecte.aTrans.audio;
 			$scope.transcriptions.video = data.projecte.aTrans.video;
 			$scope.transcriptions.text = data.projecte.aTrans.text;
+			if(data.projecte.grups==undefined) $scope.grups = [];
+			else $scope.grups = data.projecte.grups;
+			console.log($scope.grups);
 			$scope.currentVideo =  'http://192.168.1.103:80/carlesti/videos/' + data.projecte.video;
 			$('#main_video_html5_api').attr('src',$scope.currentVideo);
 			$('#id_source_video').attr('src',$scope.currentVideo);
 			$scope.player = videojs('main_video');
-			$scope.player.on("timeupdate",function() {
-				console.log('Timestamp '+ $scope.player.currentTime());
-			});
+			$scope.player.on("timeupdate", $scope.updateHighlightedPlaying);
 			$scope.infoMsg = 'Project loaded!';
-			$scope.currentGrupId = 1;
+			//$scope.currentGrupId = 1;
+			$scope.currentGrupId = $scope.getMaxGroupId();
 			$scope.bProjectLoaded = true;
 
 	      //$scope.transcriptions.audio.push('a');
@@ -1030,6 +1062,37 @@ App3m.controller('mainController',function($scope, $http){
 		
 	}
 
+	$scope.updateHighlightedPlaying = function()
+	{
+		//console.log('Timestamp '+ $scope.player.currentTime());
+		while($scope.transcriptions.audio[$scope.offsetAudio].start<=$scope.player.currentTime()*1000)
+		{
+			//console.log('Timestamp '+ $scope.player.currentTime()*1000+'=>'+$scope.transcriptions.audio[$scope.offsetAudio].start);
+		    $scope.transcriptions.audio[$scope.lastoffsetAudio].playing = false;
+			$scope.transcriptions.audio[$scope.offsetAudio].playing = true;
+			$scope.lastoffsetAudio = $scope.offsetAudio;
+			$scope.offsetAudio++;
+			$scope.$digest();
+		}
+		while($scope.transcriptions.video[$scope.offsetVideo].start<=$scope.player.currentTime()*1000)
+		{
+			//console.log('Timestamp '+ $scope.player.currentTime()*1000+'=>'+$scope.transcriptions.audio[$scope.offsetAudio].start);
+		    $scope.transcriptions.video[$scope.lastoffsetVideo].playing = false;
+			$scope.transcriptions.video[$scope.offsetVideo].playing = true;
+			$scope.lastoffsetVideo = $scope.offsetVideo;
+			$scope.offsetVideo++;
+			$scope.$digest();
+		}
+		while($scope.transcriptions.text[$scope.offsetText].start<=$scope.player.currentTime()*1000)
+		{
+			//console.log('Timestamp '+ $scope.player.currentTime()*1000+'=>'+$scope.transcriptions.audio[$scope.offsetAudio].start);
+		    $scope.transcriptions.text[$scope.lastoffsetText].playing = false;
+			$scope.transcriptions.text[$scope.offsetText].playing = true;
+			$scope.lastoffsetText = $scope.offsetText;
+			$scope.offsetText++;
+			$scope.$digest();
+		}
+	}
 
 	$scope.showCodeManager = function()
 	{

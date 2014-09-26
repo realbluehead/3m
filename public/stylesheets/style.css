@@ -28,6 +28,11 @@ body{
 	background-color: yellow;
 	color:black;
 }
+.block_playing
+{
+	background-color: lightgreen;
+	color:black;
+}
 .transcripcio
 {
 	max-height: 500px;

@@ -147,7 +147,7 @@ block content
                         span(ng-click='newSingleCoding(this,"A")', class='label label-danger') +
                         span(ng-repeat='groupId in block.groups')
                           button(class='btn btn-xs btn-primary', ng-click='editGroupCode(this,"A")') {{groupId}}
-                      div(class='panel-body',ng-class="{'block_seleccionat': block.checked}", ng-bind-html="block.contingut_filtrat")
+                      div(class='panel-body',ng-class="{'block_seleccionat': block.checked,'block_playing': block.playing}", ng-bind-html="block.contingut_filtrat")
       div#trans3_container(class='col-sm-4')
         div(class='container-fluid')
           div(class='row')
@@ -167,7 +167,7 @@ block content
                         span(ng-click='newSingleCoding(this,"T")', class='label label-danger') +
                         span(ng-repeat='groupId in block.groups')
                           button(class='btn btn-xs btn-primary', ng-click='editGroupCode(this,"T")') {{groupId}}
-                      div(class='panel-body',ng-class="{'block_seleccionat': block.checked}", ng-bind-html="block.contingut_filtrat")
+                      div(class='panel-body', ng-class="{'block_seleccionat': block.checked,'block_playing': block.playing}", ng-bind-html="block.contingut_filtrat")
       div#trans2_container(class='col-sm-4')
         div(class='container-fluid')
           div(class='row')
@@ -187,4 +187,4 @@ block content
                         span(ng-click='newSingleCoding(this,"I")', class='label label-danger') +
                         span(ng-repeat='groupId in block.groups')
                           button(class='btn btn-xs btn-primary', ng-click='editGroupCode(this,"I")') {{groupId}}
-                      div(class='panel-body',ng-class="{'block_seleccionat': block.checked}", ng-bind-html="block.contingut_filtrat")
+                      div(class='panel-body',ng-class="{'block_seleccionat': block.checked,'block_playing': block.playing}", ng-bind-html="block.contingut_filtrat")
