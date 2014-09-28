@@ -135,17 +135,17 @@ block content
               div(class='panel panel-success')
                 div(class='panel-heading')
                   h1(class='panel-title') Verbal
-                div(class='panel-body transcripcio')
+                div#panel_trans_audio(ng-style='scrollAudio', class='panel-body transcripcio')
                     div(class='panel panel-default',  ng-repeat='block in transcriptions.audio' )
-                      div(class='panel-heading', ng-class="{'block_seleccionat': block.checked}")
+                      div(id='block_{{block.id}}', class='panel-heading', ng-class="{'block_seleccionat': block.checked}")
                         button(class='btn btn-xs btn-warning', ng-click='toggleCheck(this,"A")') Select
                         button(class='btn btn-xs btn-warning', ng-click='seekPlayer(this)') Play
                         button(class='btn btn-xs btn-warning', disabled) Edit
                         button(class='btn btn-xs btn-warning', disabled) Delete
-                        span(ng-repeat='coding in block.codings') 
+                        div(style='float:right;display:block', ng-repeat='coding in block.codings') 
                           span(class='label label-success', ng-mouseleave='unhighlightCoding(this,"A")', ng-mouseover='highlightCoding(this,"A")', ng-click='editSingleCoding(this,"A")', title='{{codes.codis[coding.id_code].nom_complet}}' ) {{codes.codis[coding.id_code].name}}
-                        span(ng-click='newSingleCoding(this,"A")', class='label label-danger') +
-                        span(ng-repeat='groupId in block.groups')
+                        div(style='float:right;display:block',ng-click='newSingleCoding(this,"A")', class='label label-danger') +
+                        div(style='float:right;display:block',ng-repeat='groupId in block.groups')
                           button(class='btn btn-xs btn-primary', ng-click='editGroupCode(this,"A")') {{groupId}}
                       div(class='panel-body',ng-class="{'block_seleccionat': block.checked,'block_playing': block.playing}", ng-bind-html="block.contingut_filtrat")
       div#trans3_container(class='col-sm-4')

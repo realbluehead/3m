@@ -26,6 +26,7 @@ App3m.controller('mainController',function($scope, $http){
 	$scope.lastoffsetVideo = 0;
 	$scope.offsetText = 0;
 	$scope.lastoffsetText = 0;
+	$scope.scrollAudio = '';
 
 	$scope.init = function()
 	{
@@ -105,7 +106,47 @@ App3m.controller('mainController',function($scope, $http){
 			$scope.currentGrup.splice(index, 1);
 		}
 	}
-
+	$scope.deleteGroupCodes = function()
+	{
+		console.log('esborrant un grup '+$scope.currentGrupId);
+		var id = $scope.currentGrupId;
+		// Hem de buscar cada membre i treure'n el grup
+		for(var i=0;i<$scope.currentGrup.length;i++)
+		{
+			for(var j=0;j<$scope.transcriptions.audio.length;j++)
+			{
+				if($scope.transcriptions.audio[j].id==$scope.currentGrup[i])
+				{
+					var pos = $scope.transcriptions.audio[j].groups.indexOf(id);
+					$scope.transcriptions.audio[j].groups.splice(pos,1);
+					j=1000;
+				}
+			}
+			for(var j=0;j<$scope.transcriptions.video.length;j++)
+			{
+				if($scope.transcriptions.video[j].id==$scope.currentGrup[i])
+				{
+					var pos = $scope.transcriptions.video[j].groups.indexOf(id);
+					$scope.transcriptions.video[j].groups.splice(pos,1);
+					j=1000;
+				}
+			}
+			for(var j=0;j<$scope.transcriptions.text.length;j++)
+			{
+				if($scope.transcriptions.text[j].id==$scope.currentGrup[i])
+				{
+					var pos = $scope.transcriptions.text[j].groups.indexOf(id);
+					$scope.transcriptions.text[j].groups.splice(pos,1);
+					j=1000;
+				}
+			}
+		}
+		// Hem de treure el grup del array de grups
+		var pos = $scope.grups.indexOf(id);
+		$scope.grups.splice(pos,1);
+		$scope.currentGrup = [];
+		$('#editorGrups').modal('toggle');
+	}
 	$scope.saveGroupCodes = function()
 	{
 		// si grup ja exiteix, canviem valors
@@ -189,12 +230,13 @@ App3m.controller('mainController',function($scope, $http){
 	$scope.saveCurrentCoding = function()
 	{
 		// busquem el coding dins del code actual
-		$scope.currentMode = 'A';
+		//$scope.currentMode = 'A';
 		
 		var coding = $scope.currentCoding;
 		var iCodingId = coding.id;
 		var bTrobat = false;
 		coding.id_code = $scope.codiSeleccionat.id;
+		var iMaxId = 1;
 		if($scope.currentMode=='A')
 		{
 			var iBlockId = $scope.currentBlock.id;
@@ -206,7 +248,7 @@ App3m.controller('mainController',function($scope, $http){
 					console.log("Estem al block");
 					for(var i=0;i<$scope.transcriptions.audio[j].codings.length;i++)
 					{
-						console.log("IT: "+$scope.transcriptions.audio[j].codings[i].id);
+						
 						if($scope.transcriptions.audio[j].codings[i].id==iCodingId)
 						{
 							bTrobat= true;
@@ -214,15 +256,18 @@ App3m.controller('mainController',function($scope, $http){
 							$scope.transcriptions.audio[j].codings[i].end_offset = coding.end_offset;
 							$scope.transcriptions.audio[j].codings[i].id_end_bloc = coding.id_end_bloc;
 							$scope.transcriptions.audio[j].codings[i].id_code = coding.id_code;
+							if($scope.transcriptions.audio[j].codings[i].id>iMaxId) iMaxId = $scope.transcriptions.audio[j].codings[i].id;
 							i=10000;
 						}
-						if(!bTrobat)
-						{
-							console.log("Nou codiiing");
-							console.log(coding);
-							$scope.transcriptions.audio[j].codings.push(coding);
-							
-						}
+						
+					}
+					if(!bTrobat)
+					{
+						console.log("Nou codiiing");
+						coding.id = iMaxId +1;
+						console.log(coding);
+						$scope.transcriptions.audio[j].codings.push(coding);
+						
 					}
 					j=10000;
 				}
@@ -782,9 +827,23 @@ App3m.controller('mainController',function($scope, $http){
 								id_end_bloc:code.coding.id_end_bloc,
 								start_offset:code.coding.start_offset,
 								end_offset:code.coding.end_offset,
-								id_code:code.id_code
+								id_code:code.coding.id_code
 							}
-		console.log(code.coding);
+		console.log("El codi editat es: ");
+		
+		for(var i=0;i<$scope.codisFiltrats.length;i++)
+		{
+			//console.log($scope.codisFiltrats[i]);
+			if($scope.codisFiltrats[i].id==code.coding.id_code)
+			{
+				$scope.codiSeleccionat = $scope.codisFiltrats[i];
+				console.log("Trobaaat");
+				console.log($scope.codiSeleccionat);
+				i=10000;
+			}
+		}
+		//console.log($scope.codisFiltrats[code.id_code]);
+		//$scope.codiSeleccionat = $scope.codes.codis[code.id_code];
 		$scope.currentBlock = code.block;
 		$scope.blocksCoding = $scope.getBlocksCoding();
 		
@@ -887,7 +946,7 @@ App3m.controller('mainController',function($scope, $http){
 				if($scope.transcriptions.audio[j].id==currBlock.id)
 				{
 					// Li treiem la codificacio de larray de codifiacions
-					console.log($scope.transcriptions.audio[j]);
+					
 					for(var i=0;i<$scope.transcriptions.audio[j].codings.length;i++)
 					{
 						if($scope.transcriptions.audio[j].codings[i].id==$scope.currentCoding.id)
@@ -900,7 +959,45 @@ App3m.controller('mainController',function($scope, $http){
 					j=60000;
 				}
 			}
-		
+
+			for(var j=0;j<$scope.transcriptions.video.length;j++)
+			{
+				if($scope.transcriptions.video[j].id==currBlock.id)
+				{
+					// Li treiem la codificacio de larray de codifiacions
+					
+					for(var i=0;i<$scope.transcriptions.video[j].codings.length;i++)
+					{
+						if($scope.transcriptions.video[j].codings[i].id==$scope.currentCoding.id)
+						{
+							
+							$scope.transcriptions.video[j].codings.splice(i, 1);
+							i=1000;
+						}
+					}
+					j=60000;
+				}
+			}
+
+			for(var j=0;j<$scope.transcriptions.text.length;j++)
+			{
+				if($scope.transcriptions.text[j].id==currBlock.id)
+				{
+					// Li treiem la codificacio de larray de codifiacions
+					
+					for(var i=0;i<$scope.transcriptions.text[j].codings.length;i++)
+					{
+						if($scope.transcriptions.text[j].codings[i].id==$scope.currentCoding.id)
+						{
+							
+							$scope.transcriptions.text[j].codings.splice(i, 1);
+							i=1000;
+						}
+					}
+					j=60000;
+				}
+			}
+		$('#editorCoding').modal('toggle');
 	}
 	$scope.canviFiltreCodis = function()
 	{
@@ -1070,9 +1167,13 @@ App3m.controller('mainController',function($scope, $http){
 			//console.log('Timestamp '+ $scope.player.currentTime()*1000+'=>'+$scope.transcriptions.audio[$scope.offsetAudio].start);
 		    $scope.transcriptions.audio[$scope.lastoffsetAudio].playing = false;
 			$scope.transcriptions.audio[$scope.offsetAudio].playing = true;
+			// scroll the panel to the block.
+			//console.log("offset "+$scope.transcriptions.audio[$scope.offsetAudio].id+":"+$('#block_'+$scope.transcriptions.audio[$scope.offsetAudio].id).scrollTop());
+			var top = $('#block_'+$scope.transcriptions.audio[$scope.offsetAudio].id).position().top;
+			$scope.scrollAudio = {'top':top};
 			$scope.lastoffsetAudio = $scope.offsetAudio;
 			$scope.offsetAudio++;
-			$scope.$digest();
+			//$scope.$digest();
 		}
 		while($scope.transcriptions.video[$scope.offsetVideo].start<=$scope.player.currentTime()*1000)
 		{
@@ -1081,7 +1182,7 @@ App3m.controller('mainController',function($scope, $http){
 			$scope.transcriptions.video[$scope.offsetVideo].playing = true;
 			$scope.lastoffsetVideo = $scope.offsetVideo;
 			$scope.offsetVideo++;
-			$scope.$digest();
+		//	$scope.$digest();
 		}
 		while($scope.transcriptions.text[$scope.offsetText].start<=$scope.player.currentTime()*1000)
 		{
@@ -1090,8 +1191,9 @@ App3m.controller('mainController',function($scope, $http){
 			$scope.transcriptions.text[$scope.offsetText].playing = true;
 			$scope.lastoffsetText = $scope.offsetText;
 			$scope.offsetText++;
-			$scope.$digest();
+			//
 		}
+		$scope.$digest();
 	}
 
 	$scope.showCodeManager = function()
