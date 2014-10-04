@@ -21,6 +21,22 @@ block menu
           li(ng-show='bProjectLoaded')
             a(href='#', ng-click='saveProject()') Save
 block content
+  div#editorTranscripcio(class='modal',tabindex='-1',role='dialog')
+    div(class='modal-dialog', style='width:900px')
+      div(class='modal-content')
+         div(class='modal-header')
+           button(type='button', class='close', data-dismiss='modal')
+             span(aria-hidden='true') &times
+             span(class='sr-only') Close
+           h4(class='modal-title') Transcription block
+         div(class='modal-body' , style='max-height: 500px;overflow-y: auto;')
+           div
+             textarea(cols='100', rows='10', ng-model='currentBlock.contingut_filtrat')
+           div(ng-bind-html="currentBlock.contingut_filtrat")
+
+         div(class='modal-footer')
+           button(type='button', class='btn btn-default btn-sm' data-dismiss='modal') Close
+           button(type='button', class='btn btn-success btn-sm', ng-click='saveTranscripcio()') Save
   div#editorCodis(class='modal',tabindex='-1', role='dialog')
     div(class='modal-dialog', style='width:900px')
       div(class='modal-content')
@@ -140,7 +156,7 @@ block content
                       div(id='block_{{block.id}}', class='panel-heading', ng-class="{'block_seleccionat': block.checked}")
                         button(class='btn btn-xs btn-warning', ng-click='toggleCheck(this,"A")') Select
                         button(class='btn btn-xs btn-warning', ng-click='seekPlayer(this)') Play
-                        button(class='btn btn-xs btn-warning', disabled) Edit
+                        button(class='btn btn-xs btn-warning', ng-click='editTranscripcio(this)') Edit
                         button(class='btn btn-xs btn-warning', disabled) Delete
                         div(style='float:right;display:block', ng-repeat='coding in block.codings') 
                           span(class='label label-success', ng-mouseleave='unhighlightCoding(this,"A")', ng-mouseover='highlightCoding(this,"A")', ng-click='editSingleCoding(this,"A")', title='{{codes.codis[coding.id_code].nom_complet}}' ) {{codes.codis[coding.id_code].name}}
