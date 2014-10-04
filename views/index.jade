@@ -156,7 +156,7 @@ block content
                       div(id='block_{{block.id}}', class='panel-heading', ng-class="{'block_seleccionat': block.checked}")
                         button(class='btn btn-xs btn-warning', ng-click='toggleCheck(this,"A")') Select
                         button(class='btn btn-xs btn-warning', ng-click='seekPlayer(this)') Play
-                        button(class='btn btn-xs btn-warning', ng-click='editTranscripcio(this)') Edit
+                        button(class='btn btn-xs btn-warning', ng-click='editTranscripcio(this,"A")') Edit
                         button(class='btn btn-xs btn-warning', disabled) Delete
                         div(style='float:right;display:block', ng-repeat='coding in block.codings') 
                           span(class='label label-success', ng-mouseleave='unhighlightCoding(this,"A")', ng-mouseover='highlightCoding(this,"A")', ng-click='editSingleCoding(this,"A")', title='{{codes.codis[coding.id_code].nom_complet}}' ) {{codes.codis[coding.id_code].name}}

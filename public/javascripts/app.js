@@ -918,7 +918,24 @@ App3m.controller('mainController',function($scope, $http){
 	}
 	$scope.editTranscripcio = function(code,mode)
 	{
+		$scope.currentMode = mode;
 		$scope.currentBlock = angular.copy(code.block);
+		$('#editorTranscripcio').modal('toggle');
+	}
+	$scope.saveTranscripcio = function()
+	{
+		if($scope.currentMode=='A')
+		{
+			for(var j=0;j<$scope.transcriptions.audio.length;j++)
+			{
+				// agafem tots els blocks del coding actual
+				if($scope.transcriptions.audio[j].id==$scope.currentBlock.id)
+				{
+					$scope.transcriptions.audio[j].contingut_filtrat = $scope.currentBlock.contingut_filtrat;
+					$scope.transcriptions.audio[j].contingut2 = $scope.currentBlock.contingut_filtrat;
+				}
+			}
+		}
 		$('#editorTranscripcio').modal('toggle');
 	}
 	$scope.editSingleCoding = function(code,mode)
