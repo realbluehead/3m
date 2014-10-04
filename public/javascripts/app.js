@@ -1140,6 +1140,7 @@ App3m.controller('mainController',function($scope, $http){
 	$scope.saveProject = function()
 	{
 		var tempTrans = '';
+		$scope.infoMsg = 'Saving project!';
 		tempTrans = angular.copy($scope.transcriptions);
 		for (var i=0;i<tempTrans.audio.length;i++)
 		{ 
