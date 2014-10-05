@@ -252,17 +252,21 @@ App3m.controller('mainController',function($scope, $http){
 					}
 					for(var i=0;i<$scope.transcriptions.audio[j].codings.length;i++)
 					{
+						if($scope.transcriptions.audio[j].codings[i].id>=iMaxId) iMaxId = $scope.transcriptions.audio[j].codings[i].id;
 						
 						if($scope.transcriptions.audio[j].codings[i].id==iCodingId)
 						{
 							bTrobat= true;
+							console.log("Canvio el coding "+iCodingId+" per "+coding.id_code);
+							console.log($scope.transcriptions.audio[j].codings[i]);
 							$scope.transcriptions.audio[j].codings[i].start_offset = coding.start_offset;
 							$scope.transcriptions.audio[j].codings[i].end_offset = coding.end_offset;
 							$scope.transcriptions.audio[j].codings[i].id_end_bloc = coding.id_end_bloc;
 							$scope.transcriptions.audio[j].codings[i].id_code = coding.id_code;
-							if($scope.transcriptions.audio[j].codings[i].id>iMaxId) iMaxId = $scope.transcriptions.audio[j].codings[i].id;
-							i=10000;
+							console.log($scope.transcriptions.audio[j].codings[i]);
+							i=1000000;
 						}
+
 						
 					}
 					if(!bTrobat)
@@ -271,6 +275,94 @@ App3m.controller('mainController',function($scope, $http){
 						coding.id = iMaxId +1;
 						console.log(coding);
 						$scope.transcriptions.audio[j].codings.push(coding);
+						
+					}
+					j=10000;
+				}
+			}
+		}
+		if($scope.currentMode=='T')
+		{
+			var iBlockId = $scope.currentBlock.id;
+			console.log('salvem :'+iBlockId+' el seu coding: '+iCodingId);
+			for(var j=0;j<$scope.transcriptions.text.length;j++)
+			{
+				if($scope.transcriptions.text[j].id==iBlockId)
+				{
+					console.log("Estem al block");
+					if($scope.transcriptions.text[j].codings==undefined)
+					{
+						$scope.transcriptions.text[j].codings = [];
+					}
+					for(var i=0;i<$scope.transcriptions.text[j].codings.length;i++)
+					{
+						if($scope.transcriptions.text[j].codings[i].id>=iMaxId) iMaxId = $scope.transcriptions.text[j].codings[i].id;
+						
+						if($scope.transcriptions.text[j].codings[i].id==iCodingId)
+						{
+							bTrobat= true;
+							console.log("Canvio el coding "+iCodingId+" per "+coding.id_code);
+							console.log($scope.transcriptions.text[j].codings[i]);
+							$scope.transcriptions.text[j].codings[i].start_offset = coding.start_offset;
+							$scope.transcriptions.text[j].codings[i].end_offset = coding.end_offset;
+							$scope.transcriptions.text[j].codings[i].id_end_bloc = coding.id_end_bloc;
+							$scope.transcriptions.text[j].codings[i].id_code = coding.id_code;
+							console.log($scope.transcriptions.text[j].codings[i]);
+							i=1000000;
+						}
+							
+						
+					}
+					if(!bTrobat)
+					{
+						console.log("Nou codiiing");
+						coding.id = iMaxId +1;
+						console.log(coding);
+						$scope.transcriptions.text[j].codings.push(coding);
+						
+					}
+					j=10000;
+				}
+			}
+		}
+		if($scope.currentMode=='I')
+		{
+			var iBlockId = $scope.currentBlock.id;
+			console.log('salvem :'+iBlockId+' el seu coding: '+iCodingId);
+			for(var j=0;j<$scope.transcriptions.video.length;j++)
+			{
+				if($scope.transcriptions.video[j].id==iBlockId)
+				{
+					console.log("Estem al block");
+					if($scope.transcriptions.video[j].codings==undefined)
+					{
+						$scope.transcriptions.video[j].codings = [];
+					}
+					for(var i=0;i<$scope.transcriptions.video[j].codings.length;i++)
+					{
+						if($scope.transcriptions.video[j].codings[i].id>=iMaxId) iMaxId = $scope.transcriptions.video[j].codings[i].id;
+						
+						if($scope.transcriptions.video[j].codings[i].id==iCodingId)
+						{
+							bTrobat= true;
+							console.log("Canvio el coding "+iCodingId+" per "+coding.id_code);
+							console.log($scope.transcriptions.video[j].codings[i]);
+							$scope.transcriptions.video[j].codings[i].start_offset = coding.start_offset;
+							$scope.transcriptions.video[j].codings[i].end_offset = coding.end_offset;
+							$scope.transcriptions.video[j].codings[i].id_end_bloc = coding.id_end_bloc;
+							$scope.transcriptions.video[j].codings[i].id_code = coding.id_code;
+							console.log($scope.transcriptions.video[j].codings[i]);
+							i=1000000;
+						}
+							
+						
+					}
+					if(!bTrobat)
+					{
+						console.log("Nou codiiing");
+						coding.id = iMaxId +1;
+						console.log(coding);
+						$scope.transcriptions.video[j].codings.push(coding);
 						
 					}
 					j=10000;
@@ -417,7 +509,7 @@ App3m.controller('mainController',function($scope, $http){
 			// Si el coding està dins del mateix bloc nomès cal resaltar aquell bloc
 			if(coding.id_start_bloc==coding.id_end_bloc)
 			{
-				$scope.transcriptions.audio[start].contingut_filtrat =  $scope.transcriptions.audio[start].backup_contingut
+				$scope.transcriptions.audio[start].contingut_filtrat =  $scope.transcriptions.audio[start].backup_contingut;
 			}
 			else
 			{
@@ -426,7 +518,7 @@ App3m.controller('mainController',function($scope, $http){
 				var bFiGrup = false;
 				while(!bFiGrup && $scope.transcriptions.audio[iCurrentOffset]!=undefined)
 				{
-					$scope.transcriptions.audio[iCurrentOffset].contingut_filtrat =  $scope.transcriptions.audio[iCurrentOffset].backup_contingut
+					$scope.transcriptions.audio[iCurrentOffset].contingut_filtrat =  $scope.transcriptions.audio[iCurrentOffset].backup_contingut;
 					
 					if($scope.transcriptions.audio[iCurrentOffset].id == coding.id_end_bloc) bFiGrup=true;
 					iCurrentOffset++;									
@@ -442,10 +534,8 @@ App3m.controller('mainController',function($scope, $http){
 			// Si el coding està dins del mateix bloc nomès cal resaltar aquell bloc
 			if(coding.id_start_bloc==coding.id_end_bloc)
 			{
-				$scope.transcriptions.text[start].backup_contingut = $scope.transcriptions.text[start].contingut_filtrat;
-				$scope.transcriptions.text[start].contingut_filtrat =  "<span class='coding_highlight'>"+
-																$scope.transcriptions.text[start].contingut_filtrat + 
-																"</span>";
+				$scope.transcriptions.text[start].contingut_filtrat =  $scope.transcriptions.text[start].backup_contingut;
+
 			}
 			else
 			{
@@ -454,29 +544,26 @@ App3m.controller('mainController',function($scope, $http){
 				var bFiGrup = false;
 				while(!bFiGrup && $scope.transcriptions.text[iCurrentOffset]!=undefined)
 				{
-					$scope.transcriptions.text[iCurrentOffset].backup_contingut = $scope.transcriptions.text[iCurrentOffset].contingut_filtrat;
-					$scope.transcriptions.text[iCurrentOffset].contingut_filtrat =  "<span class='coding_highlight'>"+
-																$scope.transcriptions.text[iCurrentOffset].contingut_filtrat + 
-																"</span>";
+					$scope.transcriptions.text[iCurrentOffset].contingut_filtrat =  $scope.transcriptions.text[iCurrentOffset].backup_contingut;
+					
 					if($scope.transcriptions.text[iCurrentOffset].id == coding.id_end_bloc) bFiGrup=true;
-					iCurrentOffset++;									
+					iCurrentOffset++;												
 				}
 
 			}
 		}
+		console.log("commm");
 		if($scope.currentMode=='I')
 		{
 			// hem de saber quants torns cal remarcar.
-			
+			console.log("Cosas I");
 			console.log(coding.id_start_bloc + "=>"+coding.id_end_bloc);
 			
 			// Si el coding està dins del mateix bloc nomès cal resaltar aquell bloc
 			if(coding.id_start_bloc==coding.id_end_bloc)
 			{
-				$scope.transcriptions.video[start].backup_contingut = $scope.transcriptions.video[start].contingut_filtrat;
-				$scope.transcriptions.video[start].contingut_filtrat =  "<span class='coding_highlight'>"+
-																$scope.transcriptions.video[start].contingut_filtrat + 
-																"</span>";
+				$scope.transcriptions.video[start].contingut_filtrat =  $scope.transcriptions.video[start].backup_contingut;
+
 			}
 			else
 			{
@@ -485,10 +572,8 @@ App3m.controller('mainController',function($scope, $http){
 				var bFiGrup = false;
 				while(!bFiGrup && $scope.transcriptions.video[iCurrentOffset]!=undefined)
 				{
-					$scope.transcriptions.video[iCurrentOffset].backup_contingut = $scope.transcriptions.video[iCurrentOffset].contingut_filtrat;
-					$scope.transcriptions.video[iCurrentOffset].contingut_filtrat =  "<span class='coding_highlight'>"+
-																$scope.transcriptions.video[iCurrentOffset].contingut_filtrat + 
-																"</span>";
+					$scope.transcriptions.video[iCurrentOffset].contingut_filtrat =  $scope.transcriptions.video[iCurrentOffset].backup_contingut;
+					
 					if($scope.transcriptions.video[iCurrentOffset].id == coding.id_end_bloc) bFiGrup=true;
 					iCurrentOffset++;									
 				}
@@ -572,7 +657,8 @@ App3m.controller('mainController',function($scope, $http){
 					if($scope.transcriptions.text[j].id==currentBlock.id)
 					{
 						bTrobat= true;
-						$scope.transcriptions.text[j].contingut_filtrat =  $scope.transcriptions.text[j].backup_contingut;
+						$scope.unhighlightTurns(j, code.coding);
+						//$scope.transcriptions.text[j].contingut_filtrat =  $scope.transcriptions.text[j].backup_contingut;
 						j=10000;
 					}
 				}
@@ -584,7 +670,8 @@ App3m.controller('mainController',function($scope, $http){
 					if($scope.transcriptions.video[j].id==currentBlock.id)
 					{
 						bTrobat= true;
-						$scope.transcriptions.video[j].contingut_filtrat =  $scope.transcriptions.video[j].backup_contingut;
+						$scope.unhighlightTurns(j, code.coding);
+						//$scope.transcriptions.video[j].contingut_filtrat =  $scope.transcriptions.video[j].backup_contingut;
 						j=10000;
 					}
 				}
@@ -950,7 +1037,8 @@ App3m.controller('mainController',function($scope, $http){
 								end_offset:code.coding.end_offset,
 								id_code:code.coding.id_code
 							}
-		console.log("El codi editat es: ");
+
+		//console.log("El codi editat es: "+code.coding.id_code);
 		
 		for(var i=0;i<$scope.codisFiltrats.length;i++)
 		{
@@ -958,8 +1046,6 @@ App3m.controller('mainController',function($scope, $http){
 			if($scope.codisFiltrats[i].id==code.coding.id_code)
 			{
 				$scope.codiSeleccionat = $scope.codisFiltrats[i];
-				console.log("Trobaaat");
-				console.log($scope.codiSeleccionat);
 				i=10000;
 			}
 		}
