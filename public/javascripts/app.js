@@ -27,6 +27,9 @@ App3m.controller('mainController',function($scope, $http){
 	$scope.offsetText = 0;
 	$scope.lastoffsetText = 0;
 	$scope.scrollAudio = '';
+	$scope.audioToggle = true;
+	$scope.videoToggle = true;
+	$scope.textToggle = true;
 
 	$scope.init = function()
 	{
@@ -145,8 +148,13 @@ App3m.controller('mainController',function($scope, $http){
 		var pos = $scope.grups.indexOf(id);
 		$scope.grups.splice(pos,1);
 		$scope.currentGrup = [];
+		$scope.codisSeleccionats = [];
+	    $scope.filtreCodis='';
+	    $scope.canviFiltreCodis();
+		$scope.currentGrupId = $scope.getMaxGroupId();
 		$('#editorGrups').modal('toggle');
 	}
+
 	$scope.saveGroupCodes = function()
 	{
 		// si grup ja exiteix, canviem valors
@@ -216,7 +224,15 @@ App3m.controller('mainController',function($scope, $http){
 		console.log($scope.grups);
 		$('#editorGrups').modal('toggle');
 	}
-
+	$scope.resetGroupEditing = function()
+	{
+		console.log("reseting");
+		$scope.currentGrup = [];
+		$scope.codisSeleccionats = [];
+	    $scope.filtreCodis='';
+	    $scope.canviFiltreCodis();
+		$scope.currentGrupId = $scope.getMaxGroupId();
+	}
 	$scope.getMaxGroupId = function()
 	{
 		var iCurrentMaxId = 0;
@@ -407,7 +423,7 @@ App3m.controller('mainController',function($scope, $http){
 		{
 			// hem de saber quants torns cal remarcar.
 			
-			console.log(coding.id_start_bloc + "=>"+coding.id_end_bloc);
+		//	console.log(coding.id_start_bloc + "=>"+coding.id_end_bloc);
 			
 			// Si el coding està dins del mateix bloc nomès cal resaltar aquell bloc
 			if(coding.id_start_bloc==coding.id_end_bloc)
@@ -468,7 +484,7 @@ App3m.controller('mainController',function($scope, $http){
 		{
 			// hem de saber quants torns cal remarcar.
 			
-			console.log(coding.id_start_bloc + "=>"+coding.id_end_bloc);
+		//	console.log(coding.id_start_bloc + "=>"+coding.id_end_bloc);
 			
 			// Si el coding està dins del mateix bloc nomès cal resaltar aquell bloc
 			if(coding.id_start_bloc==coding.id_end_bloc)
@@ -504,7 +520,7 @@ App3m.controller('mainController',function($scope, $http){
 		{
 			// hem de saber quants torns cal remarcar.
 			
-			console.log(coding.id_start_bloc + "=>"+coding.id_end_bloc);
+		//	console.log(coding.id_start_bloc + "=>"+coding.id_end_bloc);
 			
 			// Si el coding està dins del mateix bloc nomès cal resaltar aquell bloc
 			if(coding.id_start_bloc==coding.id_end_bloc)
@@ -552,12 +568,12 @@ App3m.controller('mainController',function($scope, $http){
 
 			}
 		}
-		console.log("commm");
+		
 		if($scope.currentMode=='I')
 		{
 			// hem de saber quants torns cal remarcar.
-			console.log("Cosas I");
-			console.log(coding.id_start_bloc + "=>"+coding.id_end_bloc);
+		//	console.log("Cosas I");
+		//	console.log(coding.id_start_bloc + "=>"+coding.id_end_bloc);
 			
 			// Si el coding està dins del mateix bloc nomès cal resaltar aquell bloc
 			if(coding.id_start_bloc==coding.id_end_bloc)
@@ -1221,7 +1237,9 @@ App3m.controller('mainController',function($scope, $http){
 	}
 	$scope.tecla = function($event)
 	{
-		console.log($event);
+		//console.log($event.keyCode);
+		//$event.preventDefault();
+		//				return false;
 		if($event.ctrlKey)
 		{
 			switch($event.keyCode)
@@ -1230,11 +1248,41 @@ App3m.controller('mainController',function($scope, $http){
 						$event.preventDefault();
 						return false;
 				break;
+				case 84:$scope.nouBlock();
+						$event.preventDefault();
+						return false;
+				break;
 			}
 		}
 		
 	}
-
+	$scope.nouBlock = function()
+	{
+		
+		var nouBlock = {
+						id:99999999,
+						contingut2:'',
+						contingut_filtrat:'',
+						codings:[]
+						};
+		if($scope.audioToggle==true)
+		{
+			console.log("Nou block a audio");
+			var i=0;
+			while(i<$scope.transcriptions.audio.length)
+			{
+				//if($scope.transcriptions.audio[i])
+			}
+		}
+		if($scope.textToggle==true)
+		{
+			console.log("Nou block a text");
+		}
+		if($scope.videoToggle==true)
+		{
+			console.log("Nou block a video");
+		}
+	}
 	$scope.editCurrentGroup = function()
 	{
 		$('#editorGrups').modal('toggle');

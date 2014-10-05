@@ -101,7 +101,7 @@ block content
     div(class='modal-dialog')
       div(class='modal-content')
         div(class='modal-header')
-          button(type='button', class='close', data-dismiss='modal')
+          button(type='button', class='close', data-dismiss='modal', ng-click='resetGroupEditing()')
             span(aria-hidden='true') &times
             span(class='sr-only') Close
           h4(class='modal-title') Group editing ({{currentGrup.length}} turns selected)
@@ -126,7 +126,7 @@ block content
               td
                 button(type='button' class='btn btn-xs btn-primary', ng-click='afegirCodiGrup(this)') Add
         div(class='modal-footer')
-          button(type='button', class='btn btn-default btn-sm' data-dismiss='modal') Close
+          button(type='button', class='btn btn-default btn-sm' data-dismiss='modal', ng-click='resetGroupEditing()') Close
           button(type='button', class='btn btn-success btn-sm', ng-click='saveGroupCodes()') Save
           button(type='button', class='btn btn-success btn-sm', ng-click='deleteGroupCodes()') Delete
       
@@ -150,7 +150,9 @@ block content
             div(class='col-sm-12')
               div(class='panel panel-success')
                 div(class='panel-heading')
-                  h1(class='panel-title') Verbal
+                  h1(class='panel-title') 
+                    input(type='checkbox', ng-model='audioToggle')
+                    span Verbal
                 div#panel_trans_audio(ng-style='scrollAudio', class='panel-body transcripcio')
                     div(class='panel panel-default',  ng-repeat='block in transcriptions.audio' )
                       div(id='block_{{block.id}}', class='panel-heading', ng-class="{'block_seleccionat': block.checked}")
@@ -170,7 +172,9 @@ block content
             div(class='col-sm-12')
               div(class='panel panel-danger')
                 div(class='panel-heading')
-                  h1(class='panel-title') No verbal
+                  h1(class='panel-title')
+                    input(type='checkbox', ng-model='textToggle')
+                    span No verbal
                 div(class='panel-body transcripcio')
                     div(class='panel panel-default' , ng-repeat='block in transcriptions.text')
                       div(class='panel-heading')
@@ -190,7 +194,9 @@ block content
             div(class='col-sm-12')
               div(class='panel panel-info')
                 div(class='panel-heading')
-                  h1(class='panel-title') Interfície
+                  h1(class='panel-title') 
+                    input(type='checkbox', ng-model='videoToggle')
+                    span Interfície
                 div(class='panel-body transcripcio')
                     div(class='panel panel-default' , ng-repeat='block in transcriptions.video')
                       div(class='panel-heading')
