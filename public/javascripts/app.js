@@ -1458,13 +1458,86 @@ App3m.controller('mainController',function($scope, $http){
 		
 	}
 
+	$scope.insertCode = function(aTree, idPare, nouCodi,level)
+	{
+		
+		for(var i=0;i<aTree.length;i++)
+		{
+			if(aTree[i].id==idPare)
+			{
+				aTree[i].children.push(nouCodi);
+				return true;
+			}
+			//console.log(level);
+			if($scope.insertCode(aTree[i].children, idPare, nouCodi, level+1)) return true;
+
+		}
+		return false;
+	}
+	$scope.aLlistaNova = [];
+	$scope.regenerateCodeList = function(aTree)
+	{
+		console.log(aTree);
+		for(var i=0;i<aTree.length;i++)
+		{
+			aCodi = aTree[i];
+			$scope.aLlistaNova[aCodi.id] = {id:aCodi.id, name:aCodi.name, id_pare:aCodi.id_pare};
+			if(aCodi.children!=undefined) $scope.regenerateCodeList(aCodi.children);
+		}
+		
+
+	}
+	$scope.getNextCodeId = function()
+	{
+		var iCurrentMaxId = 0;
+		for(var i=0;i<$scope.codisFiltrats.length;i++)
+		{
+			if($scope.codisFiltrats[i].id>=iCurrentMaxId) iCurrentMaxId = $scope.codisFiltrats[i].id;
+		}
+		return iCurrentMaxId+1;
+	}
+	$scope.saveCodeTree = function()
+	{
+		 var request = $http({
+				method: "post",
+				cache:false,
+				url: "codes/save/",
+				data: {
+					codes: $scope.codes.tree.codis
+				}
+			});
+		request.success(function(data, status, headers, config) {
+			console.log("Salvats!");
+			$scope.loadCodes();
+			$scope.showCodeManager();
+		});
+
+	}
 	$scope.addCodeTreeChild = function (code)
 	{
-		nouCodi = {
-					id:99999,
+		var idPare = code.code.id;
+		var nouCodi = {
+					id:$scope.getNextCodeId(),
 					name:'New Code',
-					nom_complet:''
+					nom_complet:'',
+					id_pare: idPare,
+					children:[]
 				};
+		
+		$scope.insertCode($scope.codes.tree.codis, idPare, nouCodi,0);
+		$scope.regenerateCodeList($scope.codes.tree.codis);
+		console.log($scope.aLlistaNova );
+		$scope.codes.codis = $scope.aLlistaNova;
+		$scope.codisFiltrats = [];
+	     for(var i=0;i<$scope.codes.codis.length;i++)
+	     {
+	     	if($scope.codes.codis[i]!=null) 
+	     		{
+	     			$scope.codes.codis[i].nom_complet = $scope.getNomComplet($scope.codes.codis,i);
+	     			$scope.codisFiltrats.push($scope.codes.codis[i]);
+	     		}
+	     }
+				/*
 		for (var i=0;i<$scope.codisFiltrats.length;i++)
 		{
 			if($scope.codisFiltrats[i].id==code.code.id)
@@ -1474,7 +1547,8 @@ App3m.controller('mainController',function($scope, $http){
 				$scope.codisFiltrats.splice(i+1, 0, nouCodi);
 				i=9999;
 			} 
-		}
+		}*/
+
 	}
 
 	$scope.delCodeTreeChild = function (code)
