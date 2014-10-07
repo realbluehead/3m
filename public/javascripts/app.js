@@ -1261,26 +1261,68 @@ App3m.controller('mainController',function($scope, $http){
 		
 		var nouBlock = {
 						id:99999999,
-						contingut2:'',
-						contingut_filtrat:'',
+						contingut2:'New',
+						contingut_filtrat:'New',
+						backup_contingut:'New',
 						codings:[]
 						};
+		var currTime = $scope.player.currentTime();
+		console.log("CurrTime:"+currTime);
+		var secs = Math.floor(currTime%60);
+		var mins =  Math.floor(currTime/60);
+		var hores =   Math.floor(currTime/360);
+		if(secs<9) secs = '0'+secs;
+		if(mins<9) mins = '0'+mins;
+		//if(hores<9) hores = '0'+hores;
+		var sTime = "("+hores+":"+mins+":"+secs+") ";
+		nouBlock.contingut2 = sTime;
+		nouBlock.contingut_filtrat = sTime;
+		nouBlock.backup_contingut = sTime;
+		$scope.player.pause();
 		if($scope.audioToggle==true)
 		{
-			console.log("Nou block a audio");
+			//console.log("Nou block a audio");
 			var i=0;
 			while(i<$scope.transcriptions.audio.length)
 			{
-				//if($scope.transcriptions.audio[i])
+				if($scope.transcriptions.audio[i].start/1000>currTime)
+				{
+					//console.log('Afegim el nou block');
+					$scope.transcriptions.audio.splice(i, 0, angular.copy(nouBlock));
+					i = $scope.transcriptions.audio.length+3;
+				}
+				i++;
 			}
 		}
 		if($scope.textToggle==true)
 		{
 			console.log("Nou block a text");
+			var i=0;
+			while(i<$scope.transcriptions.text.length)
+			{
+				if($scope.transcriptions.text[i].start/1000>currTime)
+				{
+					//console.log('Afegim el nou block');
+					$scope.transcriptions.text.splice(i, 0, angular.copy(nouBlock));
+					i = $scope.transcriptions.text.length+3;
+				}
+				i++;
+			}
 		}
 		if($scope.videoToggle==true)
 		{
 			console.log("Nou block a video");
+			var i=0;
+			while(i<$scope.transcriptions.video.length)
+			{
+				if($scope.transcriptions.video[i].start/1000>currTime)
+				{
+					//console.log('Afegim el nou block');
+					$scope.transcriptions.video.splice(i, 0, angular.copy(nouBlock));
+					i = $scope.transcriptions.video.length+3;
+				}
+				i++;
+			}
 		}
 	}
 	$scope.editCurrentGroup = function()
@@ -1449,7 +1491,7 @@ App3m.controller('mainController',function($scope, $http){
 			$scope.offsetText++;
 			//
 		}
-		$scope.$digest();
+		//$scope.$digest();
 	}
 
 	$scope.showCodeManager = function()
