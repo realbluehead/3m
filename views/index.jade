@@ -21,7 +21,7 @@ block menu
           li(ng-show='bProjectLoaded')
             a(href='#', ng-click='saveProject()') Save
 block content
-  div#editorTranscripcio(class='modal',tabindex='-1',role='dialog')
+  div#editorTranscripcio(class='modal',tabindex='-1',role='dialog', data-backdrop="static")
     div(class='modal-dialog', style='width:900px')
       div(class='modal-content')
          div(class='modal-header')
@@ -37,7 +37,7 @@ block content
          div(class='modal-footer')
            button(type='button', class='btn btn-default btn-sm' data-dismiss='modal') Close
            button(type='button', class='btn btn-success btn-sm', ng-click='saveTranscripcio()') Save
-  div#editorCodis(class='modal',tabindex='-1', role='dialog')
+  div#editorCodis(class='modal',tabindex='-1', role='dialog', data-backdrop="static")
     div(class='modal-dialog', style='width:900px')
       div(class='modal-content')
          div(class='modal-header')
@@ -57,7 +57,7 @@ block content
          div(class='modal-footer')
            button(type='button', class='btn btn-default btn-sm' data-dismiss='modal') Close
            button(type='button', class='btn btn-success btn-sm', ng-click='saveCodeTree()') Save
-  div#editorCoding(class='modal', tabindex='-1', role='dialog', aria-hidden='true')
+  div#editorCoding(class='modal', tabindex='-1', role='dialog', aria-hidden='true', data-backdrop="static")
     div(class='modal-dialog')
       div(class='modal-content')
         div(class='modal-header')
@@ -97,7 +97,7 @@ block content
           button(type='button', class='btn btn-default btn-sm' data-dismiss='modal') Close
           button(type='button', class='btn btn-success btn-sm', ng-click='saveCurrentCoding()') Save
           button(type='button', class='btn btn-success btn-sm', ng-click='deleteCurrentCoding()') Delete
-  div#editorGrups(class='modal fade', tabindex='-1', role='dialog', aria-hidden='true')
+  div#editorGrups(class='modal fade', tabindex='-1', role='dialog', aria-hidden='true', data-backdrop="static")
     div(class='modal-dialog')
       div(class='modal-content')
         div(class='modal-header')

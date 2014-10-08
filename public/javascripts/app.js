@@ -1081,7 +1081,7 @@ App3m.controller('mainController',function($scope, $http){
 	$scope.getCodingNewId = function()
 	{
 		//$scope.currentMode = 'A';
-		var iMaxId;
+		var iMaxId=0;
 		var iBlockId = $scope.currentBlock.id;
 		if($scope.currentMode=='A')
 		{
@@ -1090,7 +1090,10 @@ App3m.controller('mainController',function($scope, $http){
 			{
 				if($scope.transcriptions.audio[j].id==iBlockId)
 				{
-					
+					if($scope.transcriptions.audio[j].codings==undefined)
+					{
+						$scope.transcriptions.audio[j].codings = [];
+					}
 					for(var i=0;i<$scope.transcriptions.audio[j].codings.length;i++)
 					{
 						if($scope.transcriptions.audio[j].codings[i].id>iMaxId)
@@ -1109,7 +1112,10 @@ App3m.controller('mainController',function($scope, $http){
 			{
 				if($scope.transcriptions.text[j].id==iBlockId)
 				{
-					
+					if($scope.transcriptions.text[j].codings==undefined)
+					{
+						$scope.transcriptions.text[j].codings = [];
+					}
 					for(var i=0;i<$scope.transcriptions.text[j].codings.length;i++)
 					{
 						if($scope.transcriptions.text[j].codings[i].id>iMaxId)
@@ -1128,7 +1134,10 @@ App3m.controller('mainController',function($scope, $http){
 			{
 				if($scope.transcriptions.video[j].id==iBlockId)
 				{
-					
+					if($scope.transcriptions.video[j].codings==undefined)
+					{
+						$scope.transcriptions.video[j].codings = [];
+					}
 					for(var i=0;i<$scope.transcriptions.video[j].codings.length;i++)
 					{
 						if($scope.transcriptions.video[j].codings[i].id>iMaxId)
