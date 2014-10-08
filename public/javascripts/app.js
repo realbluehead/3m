@@ -80,18 +80,24 @@ App3m.controller('mainController',function($scope, $http){
 		// inicializem les variables de l'editor
 		var oGrup = '';
 		$scope.currentGrupId = idGrup;
-		
+		var bTrobat = false;
 		for(var i=0;i<$scope.grups.length;i++)
 		{
-			if($scope.grups[i].id == idGrup) oGrup = $scope.grups[i];
+			if($scope.grups[i].id == idGrup) 
+				{
+					bTrobat = true;
+					oGrup = $scope.grups[i];
+				}
 		}
-		
-		$scope.codisSeleccionats = oGrup.codis;
-		$scope.currentGrup = oGrup.membres;
-		$scope.canviFiltreCodis();
-		// visualitzem l'editor
-		$scope.editCurrentGroup();
-
+		if(!bTrobat) console.log("Error de coherencia de dades de grup "+idGrup);
+		else
+		{
+			$scope.codisSeleccionats = oGrup.codis;
+			$scope.currentGrup = oGrup.membres;
+			$scope.canviFiltreCodis();
+			// visualitzem l'editor
+			$scope.editCurrentGroup();
+		}
 	}
 	$scope.toggleCheck  = function(block,mode)
 	{
@@ -1441,6 +1447,7 @@ App3m.controller('mainController',function($scope, $http){
 			$scope.transcriptions.text = data.projecte.aTrans.text;
 			if(data.projecte.grups==undefined) $scope.grups = [];
 			else $scope.grups = data.projecte.grups;
+			console.log("Volcat de grups");
 			console.log($scope.grups);
 			$scope.currentVideo =  'http://192.168.1.103:80/carlesti/videos/' + data.projecte.video;
 			$('#main_video_html5_api').attr('src',$scope.currentVideo);
