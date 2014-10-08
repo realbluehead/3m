@@ -159,7 +159,7 @@ block content
                         button(class='btn btn-xs btn-warning', ng-click='toggleCheck(this,"A")') Select
                         button(class='btn btn-xs btn-warning', ng-click='seekPlayer(this)') Play
                         button(class='btn btn-xs btn-warning', ng-click='editTranscripcio(this,"A")') Edit
-                        button(class='btn btn-xs btn-warning', disabled) Delete
+                        button(class='btn btn-xs btn-warning', ng-click='deleteTranscripcio(this,"A")') Delete
                         div(style='float:right;display:block', ng-repeat='coding in block.codings') 
                           span(class='label label-success', ng-mouseleave='unhighlightCoding(this,"A")', ng-mouseover='highlightCoding(this,"A")', ng-click='editSingleCoding(this,"A")', title='{{codes.codis[coding.id_code].nom_complet}}' ) {{codes.codis[coding.id_code].name}}
                         div(style='float:right;display:block',ng-click='newSingleCoding(this,"A")', class='label label-danger') +
@@ -181,7 +181,7 @@ block content
                         button(class='btn btn-xs btn-warning', ng-click='toggleCheck(this,"T")') Select
                         button(class='btn btn-xs btn-warning', ng-click='seekPlayer(this)') Play
                         button(class='btn btn-xs btn-warning', ng-click='editTranscripcio(this,"T")') Edit
-                        button(class='btn btn-xs btn-warning', disabled) Delete
+                        button(class='btn btn-xs btn-warning', ng-click='deleteTranscripcio(this,"T")') Delete
                         span(ng-repeat='coding in block.codings') 
                           span(class='label label-success', ng-mouseleave='unhighlightCoding(this,"T")', ng-mouseover='highlightCoding(this,"T")', ng-click='editSingleCoding(this,"T")', title='{{codes.codis[coding.id_code].nom_complet}}' ) {{codes.codis[coding.id_code].name}}
                         span(ng-click='newSingleCoding(this,"T")', class='label label-danger') +
@@ -203,7 +203,7 @@ block content
                         button(class='btn btn-xs btn-warning', ng-click='toggleCheck(this,"I")') Select
                         button(class='btn btn-xs btn-warning', ng-click='seekPlayer(this)') Play
                         button(class='btn btn-xs btn-warning', ng-click='editTranscripcio(this,"I")') Edit
-                        button(class='btn btn-xs btn-warning', disabled) Delete
+                        button(class='btn btn-xs btn-warning', ng-click='deleteTranscripcio(this,"I")') Delete
                         span(ng-repeat='coding in block.codings') 
                           span(class='label label-success', ng-mouseleave='unhighlightCoding(this,"I")', ng-mouseover='highlightCoding(this,"I")', ng-click='editSingleCoding(this,"I")', title='{{codes.codis[coding.id_code].nom_complet}}' ) {{codes.codis[coding.id_code].name}}
                         span(ng-click='newSingleCoding(this,"I")', class='label label-danger') +

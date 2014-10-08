@@ -1025,6 +1025,63 @@ App3m.controller('mainController',function($scope, $http){
 		//console.log(aBlocks);
 		return aBlocks;
 	}
+	$scope.deleteTranscripcio = function(code,mode)
+	{
+		$scope.currentMode = mode;
+		var bTrobat=false;
+		if(confirm("Are youu suuure Andyyy?"))
+		{
+			console.log("Esborrant");
+			if($scope.currentMode=='A')
+			{
+				for(var j=0;j<$scope.transcriptions.audio.length;j++)
+				{
+					if($scope.transcriptions.audio[j].id==code.block.id)
+					{
+						console.log("del yuuhu");
+						$scope.transcriptions.audio.splice(j,1);
+						bTrobat=true;						
+						j=60000;
+					}
+				}
+			}
+			if($scope.currentMode=='T')
+			{
+				for(var j=0;j<$scope.transcriptions.text.length;j++)
+				{
+					if($scope.transcriptions.text[j].id==code.block.id)
+					{
+						console.log("del yuuhu");
+						$scope.transcriptions.text.splice(j,1);
+						bTrobat=true;						
+						j=60000;
+					}
+				}
+			}
+			if($scope.currentMode=='I')
+			{
+				for(var j=0;j<$scope.transcriptions.video.length;j++)
+				{
+					if($scope.transcriptions.video[j].id==code.block.id)
+					{
+						console.log("del yuuhu");
+						$scope.transcriptions.video.splice(j,1);
+						bTrobat=true;						
+						j=60000;
+					}
+				}
+			}
+			if(bTrobat)
+			{
+				// treure el codi dels grups
+			}
+			else
+			{
+				console.log("Error de coherencia al esborrar un block");
+			}
+		}
+		else console.log("Esborrat abortat");
+	}
 	$scope.editTranscripcio = function(code,mode)
 	{
 		$scope.currentMode = mode;
