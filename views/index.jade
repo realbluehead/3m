@@ -156,10 +156,12 @@ block content
                 div#panel_trans_audio(ng-style='scrollAudio', class='panel-body transcripcio')
                     div(class='panel panel-default',  ng-repeat='block in transcriptions.audio' )
                       div(id='block_{{block.id}}', class='panel-heading', ng-class="{'block_seleccionat': block.checked}")
-                        button(class='btn btn-xs btn-warning', ng-click='toggleCheck(this,"A")') Select
-                        button(class='btn btn-xs btn-warning', ng-click='seekPlayer(this)') Play
-                        button(class='btn btn-xs btn-warning', ng-click='editTranscripcio(this,"A")') Edit
-                        button(class='btn btn-xs btn-warning', ng-click='deleteTranscripcio(this,"A")') Delete
+                        button(class='btn btn-xs btn-warning', title='Select', ng-click='toggleCheck(this,"A")') S
+                        button(class='btn btn-xs btn-warning', title='Play', ng-click='seekPlayer(this)') P
+                        button(class='btn btn-xs btn-warning', title='Edit', ng-click='editTranscripcio(this,"A")') E
+                        button(class='btn btn-xs btn-warning', title='Delete', ng-click='deleteTranscripcio(this,"A")') D
+                        button(class='btn btn-xs btn-danger', title='Copy to No Verbal', ng-click='copyTransToText(this)') NV
+                        button(class='btn btn-xs btn-info', title='Copy to Interficie', ng-click='copyTransToVideo(this)') I
                         div(style='float:right;display:block', ng-repeat='coding in block.codings') 
                           span(class='label label-success', ng-mouseleave='unhighlightCoding(this,"A")', ng-mouseover='highlightCoding(this,"A")', ng-click='editSingleCoding(this,"A")', title='{{codes.codis[coding.id_code].nom_complet}}' ) {{codes.codis[coding.id_code].name}}
                         div(style='float:right;display:block',ng-click='newSingleCoding(this,"A")', class='label label-danger') +
@@ -178,10 +180,12 @@ block content
                 div(class='panel-body transcripcio')
                     div(class='panel panel-default' , ng-repeat='block in transcriptions.text')
                       div(class='panel-heading')
-                        button(class='btn btn-xs btn-warning', ng-click='toggleCheck(this,"T")') Select
-                        button(class='btn btn-xs btn-warning', ng-click='seekPlayer(this)') Play
-                        button(class='btn btn-xs btn-warning', ng-click='editTranscripcio(this,"T")') Edit
-                        button(class='btn btn-xs btn-warning', ng-click='deleteTranscripcio(this,"T")') Delete
+                        button(class='btn btn-xs btn-warning', ng-click='toggleCheck(this,"T")') S
+                        button(class='btn btn-xs btn-warning', ng-click='seekPlayer(this)') P
+                        button(class='btn btn-xs btn-warning', ng-click='editTranscripcio(this,"T")') E
+                        button(class='btn btn-xs btn-warning', ng-click='deleteTranscripcio(this,"T")') D
+                        button(class='btn btn-xs btn-success', title='Copy to Verbal', ng-click='copyTransToAudio(this)') V
+                        button(class='btn btn-xs btn-info', title='Copy to Interficie', ng-click='copyTransToVideo(this)') I
                         span(ng-repeat='coding in block.codings') 
                           span(class='label label-success', ng-mouseleave='unhighlightCoding(this,"T")', ng-mouseover='highlightCoding(this,"T")', ng-click='editSingleCoding(this,"T")', title='{{codes.codis[coding.id_code].nom_complet}}' ) {{codes.codis[coding.id_code].name}}
                         span(ng-click='newSingleCoding(this,"T")', class='label label-danger') +
@@ -200,10 +204,12 @@ block content
                 div(class='panel-body transcripcio')
                     div(class='panel panel-default' , ng-repeat='block in transcriptions.video')
                       div(class='panel-heading')
-                        button(class='btn btn-xs btn-warning', ng-click='toggleCheck(this,"I")') Select
-                        button(class='btn btn-xs btn-warning', ng-click='seekPlayer(this)') Play
-                        button(class='btn btn-xs btn-warning', ng-click='editTranscripcio(this,"I")') Edit
-                        button(class='btn btn-xs btn-warning', ng-click='deleteTranscripcio(this,"I")') Delete
+                        button(class='btn btn-xs btn-warning', ng-click='toggleCheck(this,"I")') S
+                        button(class='btn btn-xs btn-warning', ng-click='seekPlayer(this)') P
+                        button(class='btn btn-xs btn-warning', ng-click='editTranscripcio(this,"I")') E
+                        button(class='btn btn-xs btn-warning', ng-click='deleteTranscripcio(this,"I")') D
+                        button(class='btn btn-xs btn-success', title='Copy to Verbal', ng-click='copyTransToAudio(this)') V
+                        button(class='btn btn-xs btn-danger', title='Copy to No Verbal', ng-click='copyTransToText(this)') NV
                         span(ng-repeat='coding in block.codings') 
                           span(class='label label-success', ng-mouseleave='unhighlightCoding(this,"I")', ng-mouseover='highlightCoding(this,"I")', ng-click='editSingleCoding(this,"I")', title='{{codes.codis[coding.id_code].nom_complet}}' ) {{codes.codis[coding.id_code].name}}
                         span(ng-click='newSingleCoding(this,"I")', class='label label-danger') +

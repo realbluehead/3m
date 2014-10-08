@@ -1328,11 +1328,95 @@ App3m.controller('mainController',function($scope, $http){
 		}
 		
 	}
+	$scope.getMaxIdBlock = function()
+	{
+		var iCurrentMaxId = 0;
+		for(var i=0;i<$scope.transcriptions.text.length;i++)
+		{
+			if($scope.transcriptions.text[i].id>=iCurrentMaxId) iCurrentMaxId = $scope.transcriptions.text[i].id;
+		}
+		for(var i=0;i<$scope.transcriptions.audio.length;i++)
+		{
+			if($scope.transcriptions.audio[i].id>=iCurrentMaxId) iCurrentMaxId = $scope.transcriptions.audio[i].id;
+		}
+		for(var i=0;i<$scope.transcriptions.video.length;i++)
+		{
+			if($scope.transcriptions.video[i].id>=iCurrentMaxId) iCurrentMaxId = $scope.transcriptions.video[i].id;
+		}
+		console.log("MAX ID:"+(iCurrentMaxId+1));
+		return iCurrentMaxId+1;
+	}
+	$scope.copyTransToText = function(block)
+	{
+		var nouBlock = {
+						id:$scope.getMaxIdBlock(),
+						contingut2: block.block.contingut2,
+						contingut_filtrat:block.block.contingut2,
+						backup_contingut:block.block.contingut2,
+						codings:[]
+						};
+		var i=0;
+		var startOriginal = block.block.start;
+		while(i<$scope.transcriptions.text.length)
+		{
+			if($scope.transcriptions.text[i].start>startOriginal)
+			{
+				console.log('Afegim el nou block');
+				$scope.transcriptions.text.splice(i, 0, angular.copy(nouBlock));
+				i = $scope.transcriptions.text.length+3;
+			}
+			i++;
+		}				
+	}
+	$scope.copyTransToVideo = function(block)
+	{
+		var nouBlock = {
+						id:$scope.getMaxIdBlock(),
+						contingut2: block.block.contingut2,
+						contingut_filtrat:block.block.contingut2,
+						backup_contingut:block.block.contingut2,
+						codings:[]
+						};
+		var i=0;
+		var startOriginal = block.block.start;
+		while(i<$scope.transcriptions.video.length)
+		{
+			if($scope.transcriptions.video[i].start>startOriginal)
+			{
+				console.log('Afegim el nou block');
+				$scope.transcriptions.video.splice(i, 0, angular.copy(nouBlock));
+				i = $scope.transcriptions.video.length+3;
+			}
+			i++;
+		}				
+	}
+	$scope.copyTransToAudio = function(block)
+	{
+		var nouBlock = {
+						id:$scope.getMaxIdBlock(),
+						contingut2: block.block.contingut2,
+						contingut_filtrat:block.block.contingut2,
+						backup_contingut:block.block.contingut2,
+						codings:[]
+						};
+		var i=0;
+		var startOriginal = block.block.start;
+		while(i<$scope.transcriptions.audio.length)
+		{
+			if($scope.transcriptions.audio[i].start>startOriginal)
+			{
+				console.log('Afegim el nou block');
+				$scope.transcriptions.audio.splice(i, 0, angular.copy(nouBlock));
+				i = $scope.transcriptions.audio.length+3;
+			}
+			i++;
+		}				
+	}
 	$scope.nouBlock = function()
 	{
 		
 		var nouBlock = {
-						id:99999999,
+						id:$scope.getMaxIdBlock(),
 						contingut2:'New',
 						contingut_filtrat:'New',
 						backup_contingut:'New',
