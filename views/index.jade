@@ -52,7 +52,7 @@ block content
                   button(class='btn btn-xs btn-success', ng-click='addCodeTreeChild(this)') +Child
                   button(class='btn btn-xs', ng-click='delCodeTreeChild(this)') Delete
                 td
-                  span {{code.nom_complet.substring(0,code.nom_complet.length-code.name.length)}}
+                  span {{code.nom_complet_pare}}
                   input(type='text',size='{{code.name.length}}', ng-model='code.name')        
          div(class='modal-footer')
            button(type='button', class='btn btn-default btn-sm' data-dismiss='modal') Close

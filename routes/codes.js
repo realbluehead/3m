@@ -24,7 +24,11 @@ router.get('/load/', function(req, res, next) {
       						codis:aLlista,
       						prova:'a'};
 	      			console.log("FINAL"+aResult);
-		     		res.send(aResult);
+	      			db.close(
+	      				function() {
+	      					res.send(aResult);
+	      				});
+		     		
 	      		});
       		
       		
@@ -35,10 +39,11 @@ router.get('/load/', function(req, res, next) {
 });
 router.post('/save/', function(req,res,next)
 {
-	var oCodis = [];
-	oCodis.push(req.body.codes);
-	var MongoClient = mongo.MongoClient;
-	MongoClient.connect('mongodb://127.0.0.1:27017/m3', function(err, db) {
+	var oCodis = {codis:req.body.codes};
+	//console.log(oCodis);
+
+	var mongoClient = mongo.MongoClient;
+	mongoClient.connect('mongodb://127.0.0.1:27017/m3', function(err, db) {
 	    if(err) throw err;
 
 	    var collection = db.collection('m3_codes');
@@ -47,10 +52,13 @@ router.post('/save/', function(req,res,next)
 	    {
 	      if (err) console.log(err);
 	      	// tenim l'arbre pero estaria be tenir un array indexat per id_codi
-	      	console.log("salvant");
-	      	console.log(docs);
 	      	console.log("salvat");
-	      	res.send({count:oCodis.length});
+	      	db.close(
+	      				function() {
+res.send({count:oCodis.length});
+
+	      				});
+	      	
 	      });
 	});
 	

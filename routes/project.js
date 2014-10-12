@@ -25,7 +25,11 @@ router.post('/save/:id', function(req, res, next) {
 	    	{
 	    		console.log('updated');
 	    		console.log(docs.projecte.grups);
-	     		res.send('Hola');
+	    		db.close(function()
+	    		{
+	    			res.send('Hola');
+	    		})
+	     		
 	    	});
 	     
 	    });
@@ -47,7 +51,10 @@ router.get('/load/:id', function(req, res, next) {
 	    collection.findOne({'_id': new ObjectId(iId)}, function(err, docs) {
 	    	//docs.projecte.aTrans = docs.projecte.aTrans2;
 	      if (err) console.log(err);
-	     	res.send(docs);
+	      db.close(function()
+	    		{
+	    			res.send(docs);
+	    		})
 	    });
 	  })
 	

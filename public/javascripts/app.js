@@ -61,6 +61,8 @@ App3m.controller('mainController',function($scope, $http){
 	     	if(data.codis[i]!=null) 
 	     		{
 	     			data.codis[i].nom_complet = $scope.getNomComplet(data.codis,i);
+	     			data.codis[i].nom_complet_pare = data.codis[i].nom_complet.substring(0,data.codis[i].nom_complet.length-$scope.codes.codis[i].name.length);
+	     			
 	     			$scope.codisFiltrats.push(data.codis[i]);
 	     		}
 	     }
@@ -1206,6 +1208,7 @@ App3m.controller('mainController',function($scope, $http){
 				}
 			}
 		}
+		iMaxId++;
 		console.log("Nou Id de coding: "+iMaxId);
 		return iMaxId;
 	}
@@ -1697,6 +1700,7 @@ App3m.controller('mainController',function($scope, $http){
 	}
 	$scope.saveCodeTree = function()
 	{
+		$scope.updateCodeTree($scope.codes.tree.codis);
 		 var request = $http({
 				method: "post",
 				cache:false,
@@ -1710,7 +1714,33 @@ App3m.controller('mainController',function($scope, $http){
 			$scope.loadCodes();
 			$scope.showCodeManager();
 		});
+		console.log();
 
+	}
+	$scope.updateCodeTree = function(aTree)
+	{
+		for(var i=0;i<aTree.length;i++)
+		{
+			var aCode = aTree[i];
+			
+			var iIndex =0; 
+			var bTrobat=false;
+			while((!bTrobat) && (iIndex<$scope.codisFiltrats.length))
+			{
+				if($scope.codisFiltrats[iIndex].id==aCode.id) bTrobat=true;
+				else iIndex++;
+			}
+			if(!bTrobat) {
+				console.log("Ens el carreguem!");
+				aTree.splice(i,1);
+			}
+			else
+			{
+				aCode.name = $scope.codisFiltrats[iIndex].name;
+				if(aCode.children!=undefined) $scope.updateCodeTree(aCode.children);
+			}
+		}
+		
 	}
 	$scope.addCodeTreeChild = function (code)
 	{
@@ -1722,10 +1752,10 @@ App3m.controller('mainController',function($scope, $http){
 					id_pare: idPare,
 					children:[]
 				};
-		
+		$scope.updateCodeTree($scope.codes.tree.codis);
 		$scope.insertCode($scope.codes.tree.codis, idPare, nouCodi,0);
 		$scope.regenerateCodeList($scope.codes.tree.codis);
-		console.log($scope.aLlistaNova );
+		
 		$scope.codes.codis = $scope.aLlistaNova;
 		$scope.codisFiltrats = [];
 	     for(var i=0;i<$scope.codes.codis.length;i++)
@@ -1733,9 +1763,11 @@ App3m.controller('mainController',function($scope, $http){
 	     	if($scope.codes.codis[i]!=null) 
 	     		{
 	     			$scope.codes.codis[i].nom_complet = $scope.getNomComplet($scope.codes.codis,i);
+	     			$scope.codes.codis[i].nom_complet_pare = 'a'+$scope.codes.codis[i].nom_complet.substring(0,$scope.codes.codis[i].nom_complet.length-$scope.codes.codis[i].name.length);
 	     			$scope.codisFiltrats.push($scope.codes.codis[i]);
 	     		}
 	     }
+	    
 				/*
 		for (var i=0;i<$scope.codisFiltrats.length;i++)
 		{
@@ -1762,6 +1794,7 @@ App3m.controller('mainController',function($scope, $http){
 					$scope.codisFiltrats.splice(i, 1);
 				} 
 			}
+			$scope.updateCodeTree($scope.codes.tree.codis);
 		}
 	}
 });

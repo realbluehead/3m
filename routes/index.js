@@ -12,8 +12,11 @@ router.get('/', function(req, res, next) {
 	    collection.find({},{'sort':'nom'}).toArray(function(err, results) {
 	       	data = results;
 	        // Tanquem la db
-	        db.close();
-	        res.render('index', { title: '3M', data: data });
+	        db.close(function()
+	        	{
+	        		 res.render('index', { title: '3M', data: data });
+	        	});
+	       
 	      });
 	});
   	
