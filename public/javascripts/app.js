@@ -30,6 +30,7 @@ App3m.controller('mainController',function($scope, $http){
 	$scope.audioToggle = true;
 	$scope.videoToggle = true;
 	$scope.textToggle = true;
+	$scope.currentIdCode = '';
 
 	$scope.init = function()
 	{
@@ -259,7 +260,8 @@ App3m.controller('mainController',function($scope, $http){
 		var coding = $scope.currentCoding;
 		var iCodingId = coding.id;
 		var bTrobat = false;
-		coding.id_code = $scope.codiSeleccionat.id;
+		//coding.id_code = $scope.codiSeleccionat.id;
+		coding.id_code = $scope.currentIdCode;
 		var iMaxId = 1;
 		if($scope.currentMode=='A')
 		{
@@ -1142,7 +1144,7 @@ App3m.controller('mainController',function($scope, $http){
 								end_offset:code.coding.end_offset,
 								id_code:code.coding.id_code
 							}
-
+		$scope.currentIdCode = code.coding.id_code;
 		//console.log("El codi editat es: "+code.coding.id_code);
 		
 		for(var i=0;i<$scope.codisFiltrats.length;i++)
@@ -1821,4 +1823,10 @@ App3m.controller('mainController',function($scope, $http){
 			$scope.updateCodeTree($scope.codes.tree.codis);
 		}
 	}
+	$scope.setCodi = function(block)
+	{
+		console.log('Add '+block.block.id);
+		$scope.currentIdCode = block.block.id;
+	}
+	
 });
