@@ -1104,6 +1104,30 @@ App3m.controller('mainController',function($scope, $http){
 				}
 			}
 		}
+		if($scope.currentMode=='T')
+		{
+			for(var j=0;j<$scope.transcriptions.text.length;j++)
+			{
+				// agafem tots els blocks del coding actual
+				if($scope.transcriptions.text[j].id==$scope.currentBlock.id)
+				{
+					$scope.transcriptions.text[j].contingut_filtrat = $scope.currentBlock.contingut_filtrat;
+					$scope.transcriptions.text[j].contingut2 = $scope.currentBlock.contingut_filtrat;
+				}
+			}
+		}
+		if($scope.currentMode=='I')
+		{
+			for(var j=0;j<$scope.transcriptions.video.length;j++)
+			{
+				// agafem tots els blocks del coding actual
+				if($scope.transcriptions.video[j].id==$scope.currentBlock.id)
+				{
+					$scope.transcriptions.video[j].contingut_filtrat = $scope.currentBlock.contingut_filtrat;
+					$scope.transcriptions.video[j].contingut2 = $scope.currentBlock.contingut_filtrat;
+				}
+			}
+		}
 		$('#editorTranscripcio').modal('toggle');
 	}
 	$scope.editSingleCoding = function(code,mode)
@@ -1602,7 +1626,7 @@ App3m.controller('mainController',function($scope, $http){
 			else $scope.grups = data.projecte.grups;
 			console.log("Volcat de grups");
 			console.log($scope.grups);
-			$scope.currentVideo =  'http://192.168.1.103:80/carlesti/videos/' + data.projecte.video;
+			$scope.currentVideo =  'videos/' + data.projecte.video;
 			$('#main_video_html5_api').attr('src',$scope.currentVideo);
 			$('#id_source_video').attr('src',$scope.currentVideo);
 			$scope.player = videojs('main_video');
