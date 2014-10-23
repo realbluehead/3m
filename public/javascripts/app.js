@@ -1444,14 +1444,14 @@ App3m.controller('mainController',function($scope, $http){
 	$scope.nouBlock = function()
 	{
 		
-		var nouBlock = {
-						id:$scope.getMaxIdBlock(),
+		var nouBlock = {						
 						contingut2:'New',
 						contingut_filtrat:'New',
 						backup_contingut:'New',
 						codings:[]
 						};
 		var currTime = $scope.player.currentTime();
+		nouBlock.start = Math.floor(currTime*1000);
 		console.log("CurrTime:"+currTime);
 		var secs = Math.floor(currTime%60);
 		var mins =  Math.floor(currTime/60);
@@ -1468,45 +1468,99 @@ App3m.controller('mainController',function($scope, $http){
 		{
 			//console.log("Nou block a audio");
 			var i=0;
-			while(i<$scope.transcriptions.audio.length)
+			var bInsertat=false;
+			nouBlock.id = $scope.getMaxIdBlock();
+
+			if($scope.transcriptions.audio.length>0) 
 			{
-				if($scope.transcriptions.audio[i].start/1000>currTime)
+				while(i<$scope.transcriptions.audio.length)
 				{
-					//console.log('Afegim el nou block');
-					$scope.transcriptions.audio.splice(i, 0, angular.copy(nouBlock));
-					i = $scope.transcriptions.audio.length+3;
+					if($scope.transcriptions.audio[i].start/1000>currTime)
+					{
+						//console.log('Afegim el nou block');
+						$scope.transcriptions.audio.splice(i, 0, angular.copy(nouBlock));
+						i = $scope.transcriptions.audio.length+3;
+						bInsertat=true;
+					}
+					i++;
 				}
-				i++;
+				if(!bInsertat)
+				{
+					$scope.transcriptions.audio.push(angular.copy(nouBlock));
+				}
+			}
+			else
+			{
+				$scope.offsetAudio = 0;
+				$scope.lastoffsetAudio = 0;
+				
+				$scope.transcriptions.audio.splice(i, 0, angular.copy(nouBlock));
 			}
 		}
 		if($scope.textToggle==true)
 		{
 			console.log("Nou block a text");
 			var i=0;
-			while(i<$scope.transcriptions.text.length)
+			var bInsertat=false;
+			nouBlock.id = $scope.getMaxIdBlock();
+			if($scope.transcriptions.text.length>0) 
 			{
-				if($scope.transcriptions.text[i].start/1000>currTime)
+				while(i<$scope.transcriptions.text.length)
 				{
-					//console.log('Afegim el nou block');
-					$scope.transcriptions.text.splice(i, 0, angular.copy(nouBlock));
-					i = $scope.transcriptions.text.length+3;
+					if($scope.transcriptions.text[i].start/1000>currTime)
+					{
+						console.log('Afegim el nou block');
+						$scope.transcriptions.text.splice(i, 0, angular.copy(nouBlock));
+						i = $scope.transcriptions.text.length+3;
+						bInsertat=true;
+					}
+					i++;
 				}
-				i++;
+				if(!bInsertat)
+				{
+					$scope.transcriptions.text.push(angular.copy(nouBlock));
+				}
+			}
+			else
+			{
+				
+				$scope.offsetText = 0;
+				$scope.lastoffsetText = 0;
+				$scope.transcriptions.text.splice(i, 0, angular.copy(nouBlock));
 			}
 		}
 		if($scope.videoToggle==true)
 		{
 			console.log("Nou block a video");
 			var i=0;
-			while(i<$scope.transcriptions.video.length)
+			var bInsertat=false;
+			nouBlock.id = $scope.getMaxIdBlock();
+			if($scope.transcriptions.video.length>0) 
 			{
-				if($scope.transcriptions.video[i].start/1000>currTime)
+				console.log("Yeaaaah");
+				while(i<$scope.transcriptions.video.length)
 				{
-					//console.log('Afegim el nou block');
-					$scope.transcriptions.video.splice(i, 0, angular.copy(nouBlock));
-					i = $scope.transcriptions.video.length+3;
+					if($scope.transcriptions.video[i].start/1000>=currTime)
+					{
+						console.log('Afegim el nou block');
+						$scope.transcriptions.video.splice(i, 0, angular.copy(nouBlock));
+						i = $scope.transcriptions.video.length+3;
+						bInsertat=true;
+					}
+					i++;
 				}
-				i++;
+				if(!bInsertat)
+				{
+					$scope.transcriptions.video.push(angular.copy(nouBlock));
+				}
+			}
+			else
+			{
+				$scope.offsetVideo = 0;
+				$scope.lastoffsetVideo = 0;
+				
+				$scope.transcriptions.video.splice(i, 0, angular.copy(nouBlock));
+				console.log($scope.transcriptions.video);
 			}
 		}
 	}
@@ -1646,6 +1700,7 @@ App3m.controller('mainController',function($scope, $http){
 	$scope.updateHighlightedPlaying = function()
 	{
 		//console.log('Timestamp '+ $scope.player.currentTime());
+		if($scope.transcriptions.audio[$scope.offsetAudio]!=undefined)
 		while($scope.transcriptions.audio[$scope.offsetAudio].start<=$scope.player.currentTime()*1000)
 		{
 			//console.log('Timestamp '+ $scope.player.currentTime()*1000+'=>'+$scope.transcriptions.audio[$scope.offsetAudio].start);
@@ -1659,6 +1714,8 @@ App3m.controller('mainController',function($scope, $http){
 			$scope.offsetAudio++;
 			//$scope.$digest();
 		}
+		console.log($scope.offsetVideo);
+		if($scope.transcriptions.video[$scope.offsetVideo]!=undefined)
 		while($scope.transcriptions.video[$scope.offsetVideo].start<=$scope.player.currentTime()*1000)
 		{
 			//console.log('Timestamp '+ $scope.player.currentTime()*1000+'=>'+$scope.transcriptions.audio[$scope.offsetAudio].start);
@@ -1668,6 +1725,7 @@ App3m.controller('mainController',function($scope, $http){
 			$scope.offsetVideo++;
 		//	$scope.$digest();
 		}
+		if($scope.transcriptions.text[$scope.offsetText]!=undefined)
 		while($scope.transcriptions.text[$scope.offsetText].start<=$scope.player.currentTime()*1000)
 		{
 			//console.log('Timestamp '+ $scope.player.currentTime()*1000+'=>'+$scope.transcriptions.audio[$scope.offsetAudio].start);
