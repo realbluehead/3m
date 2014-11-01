@@ -1385,17 +1385,23 @@ App3m.controller('mainController',function($scope, $http){
 						codings:[]
 						};
 		var i=0;
+		nouBlock.start = block.block.start;
 		var startOriginal = block.block.start;
-		while(i<$scope.transcriptions.text.length)
-		{
-			if($scope.transcriptions.text[i].start>startOriginal)
+		if($scope.transcriptions.text.length>0) 
 			{
-				console.log('Afegim el nou block');
-				$scope.transcriptions.text.splice(i, 0, angular.copy(nouBlock));
-				i = $scope.transcriptions.text.length+3;
+				while(i<$scope.transcriptions.text.length)
+				{
+					if($scope.transcriptions.text[i].start>startOriginal)
+					{
+						console.log('Afegim el nou block');
+						$scope.transcriptions.text.splice(i, 0, angular.copy(nouBlock));
+						i = $scope.transcriptions.text.length+3;
+					}
+					i++;
+				}	
 			}
-			i++;
-		}				
+			else $scope.transcriptions.text.push(angular.copy(nouBlock));		
+
 	}
 	$scope.copyTransToVideo = function(block)
 	{
@@ -1407,17 +1413,22 @@ App3m.controller('mainController',function($scope, $http){
 						codings:[]
 						};
 		var i=0;
+		nouBlock.start = block.block.start;
 		var startOriginal = block.block.start;
-		while(i<$scope.transcriptions.video.length)
-		{
-			if($scope.transcriptions.video[i].start>startOriginal)
+		if($scope.transcriptions.video.length>0) 
 			{
-				console.log('Afegim el nou block');
-				$scope.transcriptions.video.splice(i, 0, angular.copy(nouBlock));
-				i = $scope.transcriptions.video.length+3;
+				while(i<$scope.transcriptions.video.length)
+				{
+					if($scope.transcriptions.video[i].start>startOriginal)
+					{
+						console.log('Afegim el nou block');
+						$scope.transcriptions.video.splice(i, 0, angular.copy(nouBlock));
+						i = $scope.transcriptions.video.length+3;
+					}
+					i++;
+				}				
 			}
-			i++;
-		}				
+			else $scope.transcriptions.video.push(angular.copy(nouBlock));	
 	}
 	$scope.copyTransToAudio = function(block)
 	{
@@ -1429,17 +1440,22 @@ App3m.controller('mainController',function($scope, $http){
 						codings:[]
 						};
 		var i=0;
+		nouBlock.start = block.block.start;
 		var startOriginal = block.block.start;
-		while(i<$scope.transcriptions.audio.length)
-		{
-			if($scope.transcriptions.audio[i].start>startOriginal)
+		if($scope.transcriptions.audio.length>0) 
 			{
-				console.log('Afegim el nou block');
-				$scope.transcriptions.audio.splice(i, 0, angular.copy(nouBlock));
-				i = $scope.transcriptions.audio.length+3;
-			}
-			i++;
-		}				
+			while(i<$scope.transcriptions.audio.length)
+			{
+				if($scope.transcriptions.audio[i].start>startOriginal)
+				{
+					console.log('Afegim el nou block');
+					$scope.transcriptions.audio.splice(i, 0, angular.copy(nouBlock));
+					i = $scope.transcriptions.audio.length+3;
+				}
+				i++;
+			}		
+		}
+		else 	$scope.transcriptions.audio.push(angular.copy(nouBlock));	
 	}
 	$scope.nouBlock = function()
 	{
@@ -1682,7 +1698,7 @@ App3m.controller('mainController',function($scope, $http){
 			else $scope.grups = data.projecte.grups;
 			console.log("Volcat de grups");
 			console.log($scope.grups);
-			$scope.currentVideo =  'http://192.168.1.103:80/carlesti/videos/' + data.projecte.video;
+			$scope.currentVideo =  'http://192.168.1.103:80/carlesti/videos/' + data.projecte.video+'.webm';
 			$('#main_video_html5_api').attr('src',$scope.currentVideo);
 			$('#id_source_video').attr('src',$scope.currentVideo);
 			$scope.player = videojs('main_video');
