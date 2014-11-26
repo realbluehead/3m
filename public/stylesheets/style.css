@@ -60,3 +60,7 @@ body{
     background: none repeat scroll 0 0 transparent;
     color: #ebebeb;
 }
+
+.block_error {
+	background-color: red;
+}

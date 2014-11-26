@@ -31,6 +31,7 @@ App3m.controller('mainController',function($scope, $http){
 	$scope.videoToggle = true;
 	$scope.textToggle = true;
 	$scope.currentIdCode = '';
+	$scope.codiArrel = '';
 
 	$scope.init = function()
 	{
@@ -1103,6 +1104,7 @@ App3m.controller('mainController',function($scope, $http){
 				{
 					$scope.transcriptions.audio[j].contingut_filtrat = $scope.currentBlock.contingut_filtrat;
 					$scope.transcriptions.audio[j].contingut2 = $scope.currentBlock.contingut_filtrat;
+					$scope.transcriptions.audio[j].start = $scope.currentBlock.start;
 				}
 			}
 		}
@@ -1115,6 +1117,7 @@ App3m.controller('mainController',function($scope, $http){
 				{
 					$scope.transcriptions.text[j].contingut_filtrat = $scope.currentBlock.contingut_filtrat;
 					$scope.transcriptions.text[j].contingut2 = $scope.currentBlock.contingut_filtrat;
+					$scope.transcriptions.text[j].start = $scope.currentBlock.start;
 				}
 			}
 		}
@@ -1127,6 +1130,7 @@ App3m.controller('mainController',function($scope, $http){
 				{
 					$scope.transcriptions.video[j].contingut_filtrat = $scope.currentBlock.contingut_filtrat;
 					$scope.transcriptions.video[j].contingut2 = $scope.currentBlock.contingut_filtrat;
+					$scope.transcriptions.video[j].start = $scope.currentBlock.start;
 				}
 			}
 		}
@@ -1471,7 +1475,7 @@ App3m.controller('mainController',function($scope, $http){
 		console.log("CurrTime:"+currTime);
 		var secs = Math.floor(currTime%60);
 		var mins =  Math.floor(currTime/60);
-		var hores =   Math.floor(currTime/360);
+		var hores =   Math.floor(currTime/3600);
 		if(secs<9) secs = '0'+secs;
 		if(mins<9) mins = '0'+mins;
 		//if(hores<9) hores = '0'+hores;
@@ -1762,7 +1766,11 @@ App3m.controller('mainController',function($scope, $http){
 
 	$scope.insertCode = function(aTree, idPare, nouCodi,level)
 	{
-		
+		if(idPare==0)
+		{
+			aTree.push(nouCodi);
+			return true;
+		}
 		for(var i=0;i<aTree.length;i++)
 		{
 			if(aTree[i].id==idPare)
@@ -1842,6 +1850,35 @@ App3m.controller('mainController',function($scope, $http){
 		}
 		
 	}
+
+	$scope.addCodeTreeRoot = function ()
+	{
+		var idPare  = 0;
+		var nouCodi = {
+					id:$scope.getNextCodeId(),
+					name:$scope.codiArrel,
+					nom_complet:$scope.codiArrel,
+					id_pare: idPare,
+					children:[]
+				};
+				console.log(nouCodi);
+		$scope.updateCodeTree($scope.codes.tree.codis);
+		$scope.insertCode($scope.codes.tree.codis, idPare, nouCodi,0);
+		$scope.regenerateCodeList($scope.codes.tree.codis);
+		
+		$scope.codes.codis = $scope.aLlistaNova;
+		$scope.codisFiltrats = [];
+
+		 for(var i=0;i<$scope.codes.codis.length;i++)
+	     {
+	     	if($scope.codes.codis[i]!=null) 
+	     		{
+	     			$scope.codes.codis[i].nom_complet = $scope.getNomComplet($scope.codes.codis,i);
+	     			$scope.codes.codis[i].nom_complet_pare = $scope.codes.codis[i].nom_complet.substring(0,$scope.codes.codis[i].nom_complet.length-$scope.codes.codis[i].name.length);
+	     			$scope.codisFiltrats.push($scope.codes.codis[i]);
+	     		}
+	     }
+	}
 	$scope.addCodeTreeChild = function (code)
 	{
 		var idPare = code.code.id;
@@ -1863,7 +1900,7 @@ App3m.controller('mainController',function($scope, $http){
 	     	if($scope.codes.codis[i]!=null) 
 	     		{
 	     			$scope.codes.codis[i].nom_complet = $scope.getNomComplet($scope.codes.codis,i);
-	     			$scope.codes.codis[i].nom_complet_pare = 'a'+$scope.codes.codis[i].nom_complet.substring(0,$scope.codes.codis[i].nom_complet.length-$scope.codes.codis[i].name.length);
+	     			$scope.codes.codis[i].nom_complet_pare = $scope.codes.codis[i].nom_complet.substring(0,$scope.codes.codis[i].nom_complet.length-$scope.codes.codis[i].name.length);
 	     			$scope.codisFiltrats.push($scope.codes.codis[i]);
 	     		}
 	     }
