@@ -93,7 +93,13 @@ App3m.controller('mainController',function($scope, $http){
 					oGrup = $scope.grups[i];
 				}
 		}
-		if(!bTrobat) console.log("Error de coherencia de dades de grup "+idGrup);
+		if(!bTrobat) 
+		{
+				console.log("Error de coherencia de dades de grup "+idGrup);
+				var pos = block.$parent.block.groups.indexOf(idGrup);
+				block.$parent.block.groups.splice(pos,1);
+			alert("Hi havia una incherencia de dades que s'ha resolt. Recorda salvar el projecte.");
+		}
 		else
 		{
 			$scope.codisSeleccionats = oGrup.codis;
