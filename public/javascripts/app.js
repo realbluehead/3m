@@ -1269,6 +1269,12 @@ App3m.controller('mainController',function($scope, $http){
 		
 		$('#editorCoding').modal('toggle');
 	}
+	$scope.deleteCurrentCodingAll = function()
+	{
+		var currBlock = $scope.currentBlock;
+		currBlock.codings = [];
+		$('#editorCoding').modal('toggle');
+	}
 	$scope.deleteCurrentCoding = function()
 	{
 		var currBlock = $scope.currentBlock;
