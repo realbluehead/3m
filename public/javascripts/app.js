@@ -161,13 +161,21 @@ App3m.controller('mainController',function($scope, $http){
 			}
 		}
 		// Hem de treure el grup del array de grups
-		var pos = $scope.grups.indexOf(id);
+		
+		for(var i=0;i<$scope.grups.length;i++)
+		{
+			if($scope.grups[i].id==id) pos = i;
+		}
+		console.log("Esborro de grups ["+id+"] que es a posicio ["+pos+"]");
 		$scope.grups.splice(pos,1);
 		$scope.currentGrup = [];
 		$scope.codisSeleccionats = [];
 	    $scope.filtreCodis='';
 	    $scope.canviFiltreCodis();
 		$scope.currentGrupId = $scope.getMaxGroupId();
+		console.log("Despres desborrar");
+		console.log($scope.grups);
+		console.log($scope.currentGrupId);
 		$('#editorGrups').modal('toggle');
 	}
 
