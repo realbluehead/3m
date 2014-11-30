@@ -251,11 +251,11 @@ App3m.controller('mainController',function($scope, $http){
 	$scope.resetGroupEditing = function()
 	{
 		console.log("reseting");
-		$scope.currentGrup = [];
-		$scope.codisSeleccionats = [];
+		//$scope.currentGrup = [];
+		//$scope.codisSeleccionats = [];
 	    $scope.filtreCodis='';
 	    $scope.canviFiltreCodis();
-		$scope.currentGrupId = $scope.getMaxGroupId();
+		//$scope.currentGrupId = $scope.getMaxGroupId();
 	}
 	$scope.getMaxGroupId = function()
 	{
