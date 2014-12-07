@@ -1959,5 +1959,138 @@ App3m.controller('mainController',function($scope, $http){
 		console.log('Add '+block.block.id);
 		$scope.currentIdCode = block.block.id;
 	}
+
+	$scope.showStats = function()
+	{
+		$('#stats').modal('toggle');
+		var aDataVerbal = [];
+		var aDataTextual = [];
+		var aDataVideo = [];
+		var iMaxTimestamp = 0;
+		for (var i=0;i<$scope.transcriptions.audio.length;i++)
+		{
+			var iNum = 0;
+			if($scope.transcriptions.audio[i].codings!=undefined)
+			{
+				iNum+= $scope.transcriptions.audio[i].codings.length;
+			}
+			if($scope.transcriptions.audio[i].groups!=undefined)
+			{
+
+				for(var j=0;j<$scope.transcriptions.audio[i].groups[j];j++)
+				{
+					var iIdGrup = $scope.transcriptions.audio[i].groups[j];
+					for(var k=0;k<$scope.grups.length;k++)
+					{
+						if($scope.grups[k].id == iIdGrup) 
+							{
+								oGrup = $scope.grups[k];
+							}
+					}
+					iNum+= oGrup.codis.length;
+				}
+			}
+			if($scope.transcriptions.audio[i].start!=undefined) aDataVerbal.push([$scope.transcriptions.audio[i].start, iNum]);
+			if(iMaxTimestamp<$scope.transcriptions.audio[i].start && iNum>0) 
+			 iMaxTimestamp = $scope.transcriptions.audio[i].start;
+		}
+		for (var i=0;i<$scope.transcriptions.text.length;i++)
+		{
+			var iNum = 0;
+			if($scope.transcriptions.text[i].codings!=undefined)
+			{
+				iNum+= $scope.transcriptions.text[i].codings.length;
+			}
+			if($scope.transcriptions.text[i].groups!=undefined)
+			{
+
+				for(var j=0;j<$scope.transcriptions.text[i].groups[j];j++)
+				{
+					var iIdGrup = $scope.transcriptions.text[i].groups[j];
+					for(var k=0;k<$scope.grups.length;k++)
+					{
+						if($scope.grups[k].id == iIdGrup) 
+							{
+								oGrup = $scope.grups[k];
+							}
+					}
+					iNum+= oGrup.codis.length;
+				}
+			}
+			if($scope.transcriptions.text[i].start!=undefined) aDataTextual.push([$scope.transcriptions.text[i].start, iNum]);
+			if(iMaxTimestamp<$scope.transcriptions.text[i].start && iNum>0) 
+			 iMaxTimestamp = $scope.transcriptions.text[i].start;
+		}
+
+		for (var i=0;i<$scope.transcriptions.video.length;i++)
+		{
+			var iNum = 0;
+			if($scope.transcriptions.video[i].codings!=undefined)
+			{
+				iNum+= $scope.transcriptions.video[i].codings.length;
+			}
+			if($scope.transcriptions.video[i].groups!=undefined)
+			{
+
+				for(var j=0;j<$scope.transcriptions.video[i].groups[j];j++)
+				{
+					var iIdGrup = $scope.transcriptions.video[i].groups[j];
+					for(var k=0;k<$scope.grups.length;k++)
+					{
+						if($scope.grups[k].id == iIdGrup) 
+							{
+								oGrup = $scope.grups[k];
+							}
+					}
+					iNum+= oGrup.codis.length;
+				}
+			}
+			if($scope.transcriptions.video[i].start!=undefined) aDataVideo.push([$scope.transcriptions.video[i].start, iNum]);
+			if(iMaxTimestamp<$scope.transcriptions.video[i].start && iNum>0) 
+			 iMaxTimestamp = $scope.transcriptions.video[i].start;
+		}
+		console.log(iMaxTimestamp);
+		$('#stat_graf').highcharts({
+        chart: {
+            type: 'area'
+        },
+        title: {
+            text: 'Code density'
+        },
+        xAxis: {
+            title: {
+                text: 'Timestamp'
+            },
+            max: iMaxTimestamp
+        },
+        yAxis: {
+            title: {
+                text: 'Number of codes'
+            },
+            min: 0
+        },
+        tooltip: {
+            headerFormat: '<b>{series.name}</b><br>',
+            pointFormat: '{point.x}: {point.y} codes'
+        },
+
+        series: [{
+            name: 'Verbal',
+            // Define the data points. All series have a dummy year
+            // of 1970/71 in order to be compared on the same x axis. Note
+            // that in JavaScript, months start at 0 for January, 1 for February etc.
+            data: aDataVerbal
+        	},
+        	{
+        		name: 'No verbal',
+        		data: aDataTextual
+        	},
+        	{
+        		name: 'Interfície',
+        		data: aDataVideo
+        	}]
+    	});
+
+	}
 	
 });

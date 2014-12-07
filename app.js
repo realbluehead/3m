@@ -10,6 +10,7 @@ var users = require('./routes/users');
 var project = require('./routes/project');
 var codes = require('./routes/codes'); 
 var utils = require('./routes/utils');
+var analyze = require('./routes/analyze');
 
 var app = express();      
 
@@ -26,6 +27,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 
 app.use('/', routes);
+app.use('/analyze', analyze);
 app.use('/project',project);
 app.use('/codes',codes);
 app.use('/users', users);

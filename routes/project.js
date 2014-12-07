@@ -60,7 +60,28 @@ router.get('/load/:id', function(req, res, next) {
 	
 });
 
+router.get('/list', function(req, res, next) {
+   var iId = req.params.id;
+ 
+	var MongoClient = mongo.MongoClient;
+	var ObjectId = mongo.ObjectID;
+	
+	MongoClient.connect('mongodb://127.0.0.1:27017/m3', function(err, db) {
+	    if(err) throw err;
 
+	    var collection = db.collection('m3');
+	    collection.find({},{'sort':'nom'}).toArray(function(err, results) {
+	       	data = results;
+	        // Tanquem la db
+	        db.close(function()
+	        	{
+	        		 res.send(data);
+	        	});
+	       
+	      });
+	  })
+	
+});
 
 
 module.exports = router;
