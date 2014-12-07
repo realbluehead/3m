@@ -1966,7 +1966,12 @@ App3m.controller('mainController',function($scope, $http){
 		var aDataVerbal = [];
 		var aDataTextual = [];
 		var aDataVideo = [];
+		var aSuma=[];
 		var iMaxTimestamp = 0;
+		for (var i=0;i<400;i++)
+		{
+			aSuma[i] = 0;
+		}
 		for (var i=0;i<$scope.transcriptions.audio.length;i++)
 		{
 			var iNum = 0;
@@ -1990,8 +1995,13 @@ App3m.controller('mainController',function($scope, $http){
 					iNum+= oGrup.codis.length;
 				}
 			}
-			if($scope.transcriptions.audio[i].start!=undefined) aDataVerbal.push([$scope.transcriptions.audio[i].start, iNum]);
+			if($scope.transcriptions.audio[i].start!=undefined) 
+				{
+					aDataVerbal.push([$scope.transcriptions.audio[i].start, iNum]);
+					aSuma[Math.round($scope.transcriptions.audio[i].start/60000)]+=iNum;
+				}
 			if(iMaxTimestamp<$scope.transcriptions.audio[i].start && iNum>0) 
+
 			 iMaxTimestamp = $scope.transcriptions.audio[i].start;
 		}
 		for (var i=0;i<$scope.transcriptions.text.length;i++)
@@ -2017,7 +2027,11 @@ App3m.controller('mainController',function($scope, $http){
 					iNum+= oGrup.codis.length;
 				}
 			}
-			if($scope.transcriptions.text[i].start!=undefined) aDataTextual.push([$scope.transcriptions.text[i].start, iNum]);
+			if($scope.transcriptions.text[i].start!=undefined) 
+				{
+					aDataTextual.push([$scope.transcriptions.text[i].start, iNum]);
+					aSuma[Math.round($scope.transcriptions.text[i].start/60000)]+=iNum;
+				}
 			if(iMaxTimestamp<$scope.transcriptions.text[i].start && iNum>0) 
 			 iMaxTimestamp = $scope.transcriptions.text[i].start;
 		}
@@ -2045,14 +2059,25 @@ App3m.controller('mainController',function($scope, $http){
 					iNum+= oGrup.codis.length;
 				}
 			}
-			if($scope.transcriptions.video[i].start!=undefined) aDataVideo.push([$scope.transcriptions.video[i].start, iNum]);
+			if($scope.transcriptions.video[i].start!=undefined) 
+				{
+					aDataVideo.push([$scope.transcriptions.video[i].start, iNum]);
+					aSuma[Math.round($scope.transcriptions.video[i].start/60000)]+=iNum;
+				}
 			if(iMaxTimestamp<$scope.transcriptions.video[i].start && iNum>0) 
 			 iMaxTimestamp = $scope.transcriptions.video[i].start;
 		}
-		console.log(iMaxTimestamp);
+		// genero un array amb acumulats per cada minut (60000)
+		console.log(iMaxTimestamp)
+		console.log(iMaxTimestamp/60000);
+		var aAcumulat = [];
+		for(var m=0;m<Math.round(iMaxTimestamp/60000)+1;m++)
+		{
+			aAcumulat.push([m,aSuma[m]]);
+		}
 		$('#stat_graf').highcharts({
         chart: {
-            type: 'area'
+            type: 'column'
         },
         title: {
             text: 'Code density'
@@ -2061,7 +2086,7 @@ App3m.controller('mainController',function($scope, $http){
             title: {
                 text: 'Timestamp'
             },
-            max: iMaxTimestamp
+            max: m+1
         },
         yAxis: {
             title: {
@@ -2071,23 +2096,15 @@ App3m.controller('mainController',function($scope, $http){
         },
         tooltip: {
             headerFormat: '<b>{series.name}</b><br>',
-            pointFormat: '{point.x}: {point.y} codes'
+            pointFormat: 'Minut {point.x}: {point.y} codes'
         },
 
         series: [{
-            name: 'Verbal',
+            name: 'Per minut',
             // Define the data points. All series have a dummy year
             // of 1970/71 in order to be compared on the same x axis. Note
             // that in JavaScript, months start at 0 for January, 1 for February etc.
-            data: aDataVerbal
-        	},
-        	{
-        		name: 'No verbal',
-        		data: aDataTextual
-        	},
-        	{
-        		name: 'Interfície',
-        		data: aDataVideo
+            data: aAcumulat
         	}]
     	});
 
