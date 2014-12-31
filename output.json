@@ -1,0 +1,988 @@
+MongoDB shell version: 2.4.9
+connecting to: m3
+{
+	"_id" : ObjectId("53e72737b8bc8cad2f27e7dc"),
+	"codis" : [
+		{
+			"id" : 1,
+			"id_pare" : 0,
+			"name" : "Strategy",
+			"color" : "c73250",
+			"children" : [
+				{
+					"id" : 2,
+					"name" : "Type",
+					"nom_complet" : "",
+					"id_pare" : 1,
+					"children" : [
+						{
+							"id" : 3,
+							"name" : "Transactional",
+							"nom_complet" : "",
+							"id_pare" : 2,
+							"children" : [
+								{
+									"id" : 5,
+									"name" : "F2F",
+									"nom_complet" : "",
+									"id_pare" : 3,
+									"children" : [
+										{
+											"id" : 6,
+											"name" : "Negotiation",
+											"nom_complet" : "",
+											"id_pare" : 5,
+											"children" : [
+												{
+													"id" : 7,
+													"name" : "clarif req",
+													"nom_complet" : "",
+													"id_pare" : 6,
+													"children" : [ ]
+												},
+												{
+													"id" : 8,
+													"name" : "def req",
+													"nom_complet" : "",
+													"id_pare" : 6,
+													"children" : [ ]
+												},
+												{
+													"id" : 9,
+													"name" : "comp check",
+													"nom_complet" : "",
+													"id_pare" : 6,
+													"children" : [ ]
+												},
+												{
+													"id" : 10,
+													"name" : "confirm check",
+													"nom_complet" : "",
+													"id_pare" : 6,
+													"children" : [ ]
+												},
+												{
+													"id" : 11,
+													"name" : "repet req",
+													"nom_complet" : "",
+													"id_pare" : 6,
+													"children" : [ ]
+												}
+											]
+										},
+										{
+											"id" : 12,
+											"name" : "Discourse",
+											"nom_complet" : "",
+											"id_pare" : 5,
+											"children" : [
+												{
+													"id" : 13,
+													"name" : "self repet",
+													"nom_complet" : "",
+													"id_pare" : 12,
+													"children" : [ ]
+												},
+												{
+													"id" : 14,
+													"name" : "reproduction",
+													"nom_complet" : "",
+													"id_pare" : 12,
+													"children" : [
+														{
+															"id" : 15,
+															"name" : "exact",
+															"nom_complet" : "",
+															"id_pare" : 14,
+															"children" : [ ]
+														},
+														{
+															"id" : 16,
+															"name" : "correction",
+															"nom_complet" : "",
+															"id_pare" : 14,
+															"children" : [ ]
+														}
+													]
+												},
+												{
+													"id" : 17,
+													"name" : "completion",
+													"nom_complet" : "",
+													"id_pare" : 12,
+													"children" : [ ]
+												},
+												{
+													"id" : 18,
+													"name" : "expansion",
+													"nom_complet" : "",
+													"id_pare" : 12,
+													"children" : [ ]
+												},
+												{
+													"id" : 19,
+													"name" : "refomulation",
+													"nom_complet" : "",
+													"id_pare" : 12,
+													"children" : [
+														{
+															"id" : 20,
+															"name" : "self",
+															"nom_complet" : "",
+															"id_pare" : 19,
+															"children" : [ ]
+														},
+														{
+															"id" : 21,
+															"name" : "other",
+															"nom_complet" : "",
+															"id_pare" : 19,
+															"children" : [ ]
+														}
+													]
+												},
+												{
+													"id" : 173,
+													"name" : "Input Elicitation",
+													"nom_complet" : "",
+													"id_pare" : 12,
+													"children" : [ ]
+												}
+											]
+										},
+										{
+											"id" : 22,
+											"name" : "Code Switch",
+											"nom_complet" : "",
+											"id_pare" : 5,
+											"children" : [ ]
+										},
+										{
+											"id" : 23,
+											"name" : "AppealHelp",
+											"nom_complet" : "",
+											"id_pare" : 5,
+											"children" : [ ]
+										}
+									]
+								},
+								{
+									"id" : 24,
+									"name" : "Online",
+									"nom_complet" : "",
+									"id_pare" : 3,
+									"children" : [
+										{
+											"id" : 25,
+											"name" : "MetaModal",
+											"nom_complet" : "",
+											"id_pare" : 24,
+											"children" : [
+												{
+													"id" : 26,
+													"name" : "Channel Check",
+													"nom_complet" : "",
+													"id_pare" : 25,
+													"children" : [ ]
+												},
+												{
+													"id" : 27,
+													"name" : "ID Check",
+													"nom_complet" : "",
+													"id_pare" : 25,
+													"children" : [ ]
+												},
+												{
+													"id" : 28,
+													"name" : "Location check",
+													"nom_complet" : "",
+													"id_pare" : 25,
+													"children" : [ ]
+												},
+												{
+													"id" : 29,
+													"name" : "Speakers",
+													"nom_complet" : "",
+													"id_pare" : 25,
+													"children" : [ ]
+												},
+												{
+													"id" : 31,
+													"name" : "Tech Advice",
+													"nom_complet" : "",
+													"id_pare" : 25,
+													"children" : [ ]
+												},
+												{
+													"id" : 170,
+													"name" : "ReceptionCheck",
+													"nom_complet" : "",
+													"id_pare" : 25,
+													"children" : [ ]
+												},
+												{
+													"id" : 174,
+													"name" : "help req",
+													"nom_complet" : "",
+													"id_pare" : 25,
+													"children" : [ ]
+												}
+											]
+										},
+										{
+											"id" : 32,
+											"name" : "Channel Switch",
+											"nom_complet" : "",
+											"id_pare" : 24,
+											"children" : [
+												{
+													"id" : 33,
+													"name" : "Oral-Written",
+													"nom_complet" : "",
+													"id_pare" : 32,
+													"children" : [ ]
+												},
+												{
+													"id" : 34,
+													"name" : "Written-Oral",
+													"nom_complet" : "",
+													"id_pare" : 32,
+													"children" : [ ]
+												},
+												{
+													"id" : 35,
+													"name" : "Overlap",
+													"nom_complet" : "",
+													"id_pare" : 32,
+													"children" : [ ]
+												},
+												{
+													"id" : 36,
+													"name" : "same time",
+													"nom_complet" : "",
+													"id_pare" : 32,
+													"children" : [ ]
+												}
+											]
+										},
+										{
+											"id" : 37,
+											"name" : "Addressivity",
+											"nom_complet" : "",
+											"id_pare" : 24,
+											"children" : [
+												{
+													"id" : 38,
+													"name" : "Textual",
+													"nom_complet" : "",
+													"id_pare" : 37,
+													"children" : [ ]
+												},
+												{
+													"id" : 39,
+													"name" : "Proximity",
+													"nom_complet" : "",
+													"id_pare" : 37,
+													"children" : [ ]
+												}
+											]
+										},
+										{
+											"id" : 40,
+											"name" : "Feedback markers",
+											"nom_complet" : "",
+											"id_pare" : 24,
+											"children" : [ ]
+										},
+										{
+											"id" : 41,
+											"name" : "Time-saving",
+											"nom_complet" : "",
+											"id_pare" : 24,
+											"children" : [ ]
+										},
+										{
+											"id" : 42,
+											"name" : "In-world Ref",
+											"nom_complet" : "",
+											"id_pare" : 24,
+											"children" : [
+												{
+													"id" : 43,
+													"name" : "term",
+													"nom_complet" : "",
+													"id_pare" : 42,
+													"children" : [ ]
+												},
+												{
+													"id" : 44,
+													"name" : "deictic",
+													"nom_complet" : "",
+													"id_pare" : 42,
+													"children" : [ ]
+												},
+												{
+													"id" : 45,
+													"name" : "pointing",
+													"nom_complet" : "",
+													"id_pare" : 42,
+													"children" : [ ]
+												},
+												{
+													"id" : 46,
+													"name" : "proximity",
+													"nom_complet" : "",
+													"id_pare" : 42,
+													"children" : [ ]
+												}
+											]
+										}
+									]
+								}
+							]
+						},
+						{
+							"id" : 4,
+							"name" : "Interactional",
+							"nom_complet" : "",
+							"id_pare" : 2,
+							"children" : [
+								{
+									"id" : 47,
+									"name" : "humor",
+									"nom_complet" : "",
+									"id_pare" : 4,
+									"children" : [ ]
+								},
+								{
+									"id" : 48,
+									"name" : "small talk",
+									"nom_complet" : "",
+									"id_pare" : 4,
+									"children" : [ ]
+								},
+								{
+									"id" : 49,
+									"name" : "MUVE talk",
+									"nom_complet" : "",
+									"id_pare" : 4,
+									"children" : [ ]
+								},
+								{
+									"id" : 50,
+									"name" : "inclusive forms",
+									"nom_complet" : "",
+									"id_pare" : 4,
+									"children" : [ ]
+								},
+								{
+									"id" : 51,
+									"name" : "greetings/leave takings",
+									"nom_complet" : "",
+									"id_pare" : 4,
+									"children" : [ ]
+								},
+								{
+									"id" : 52,
+									"name" : "use of character names",
+									"nom_complet" : "",
+									"id_pare" : 4,
+									"children" : [ ]
+								},
+								{
+									"id" : 53,
+									"name" : "use of avatar animations",
+									"nom_complet" : "",
+									"id_pare" : 4,
+									"children" : [ ]
+								},
+								{
+									"id" : 54,
+									"name" : "positive reinforcement",
+									"nom_complet" : "",
+									"id_pare" : 4,
+									"children" : [ ]
+								},
+								{
+									"id" : 55,
+									"name" : "keyboard symbols",
+									"nom_complet" : "",
+									"id_pare" : 4,
+									"children" : [
+										{
+											"id" : 56,
+											"name" : "text for intonation",
+											"nom_complet" : "",
+											"id_pare" : 55,
+											"children" : [ ]
+										},
+										{
+											"id" : 57,
+											"name" : "upper case",
+											"nom_complet" : "",
+											"id_pare" : 55,
+											"children" : [ ]
+										},
+										{
+											"id" : 58,
+											"name" : "punctuation",
+											"nom_complet" : "",
+											"id_pare" : 55,
+											"children" : [ ]
+										},
+										{
+											"id" : 59,
+											"name" : "symbols/emoticons",
+											"nom_complet" : "",
+											"id_pare" : 55,
+											"children" : [ ]
+										}
+									]
+								},
+								{
+									"id" : 171,
+									"name" : "NegPoliteness",
+									"nom_complet" : "",
+									"id_pare" : 4,
+									"children" : [
+										{
+											"id" : 172,
+											"name" : "apology",
+											"nom_complet" : "",
+											"id_pare" : 171,
+											"children" : [ ]
+										}
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"id" : 98,
+					"name" : "Teaching",
+					"nom_complet" : "",
+					"id_pare" : 1,
+					"children" : [ ]
+				},
+				{
+					"id" : 99,
+					"name" : "Agent",
+					"nom_complet" : "",
+					"id_pare" : 1,
+					"children" : [
+						{
+							"id" : 100,
+							"name" : "Initiatior",
+							"nom_complet" : "",
+							"id_pare" : 99,
+							"children" : [
+								{
+									"id" : 102,
+									"name" : "T",
+									"nom_complet" : "",
+									"id_pare" : 100,
+									"children" : [ ]
+								},
+								{
+									"id" : 103,
+									"name" : "St",
+									"nom_complet" : "",
+									"id_pare" : 100,
+									"children" : [ ]
+								}
+							]
+						},
+						{
+							"id" : 101,
+							"name" : "Target",
+							"nom_complet" : "",
+							"id_pare" : 99,
+							"children" : [
+								{
+									"id" : 104,
+									"name" : "T",
+									"nom_complet" : "",
+									"id_pare" : 101,
+									"children" : [ ]
+								},
+								{
+									"id" : 105,
+									"name" : "St",
+									"nom_complet" : "",
+									"id_pare" : 101,
+									"children" : [ ]
+								}
+							]
+						}
+					]
+				},
+				{
+					"id" : 106,
+					"name" : "Modal Density",
+					"nom_complet" : "",
+					"id_pare" : 1,
+					"children" : [
+						{
+							"id" : 107,
+							"name" : "intensity",
+							"nom_complet" : "",
+							"id_pare" : 106,
+							"children" : [ ]
+						},
+						{
+							"id" : 108,
+							"name" : "complexity",
+							"nom_complet" : "",
+							"id_pare" : 106,
+							"children" : [ ]
+						}
+					]
+				}
+			]
+		},
+		{
+			"id" : 109,
+			"name" : "Turn",
+			"nom_complet" : "Turn",
+			"id_pare" : 0,
+			"children" : [
+				{
+					"id" : 112,
+					"name" : "Sender",
+					"nom_complet" : "",
+					"id_pare" : 109,
+					"children" : [
+						{
+							"id" : 115,
+							"name" : "T",
+							"nom_complet" : "",
+							"id_pare" : 112,
+							"children" : [ ]
+						},
+						{
+							"id" : 116,
+							"name" : "St",
+							"nom_complet" : "",
+							"id_pare" : 112,
+							"children" : [ ]
+						}
+					]
+				},
+				{
+					"id" : 117,
+					"name" : "Receiver",
+					"nom_complet" : "",
+					"id_pare" : 109,
+					"children" : [
+						{
+							"id" : 118,
+							"name" : "T",
+							"nom_complet" : "",
+							"id_pare" : 117,
+							"children" : [ ]
+						},
+						{
+							"id" : 119,
+							"name" : "St",
+							"nom_complet" : "",
+							"id_pare" : 117,
+							"children" : [ ]
+						},
+						{
+							"id" : 120,
+							"name" : "class",
+							"nom_complet" : "",
+							"id_pare" : 117,
+							"children" : [ ]
+						},
+						{
+							"id" : 121,
+							"name" : "group",
+							"nom_complet" : "",
+							"id_pare" : 117,
+							"children" : [ ]
+						},
+						{
+							"id" : 122,
+							"name" : "unclear",
+							"nom_complet" : "",
+							"id_pare" : 117,
+							"children" : [ ]
+						}
+					]
+				},
+				{
+					"id" : 123,
+					"name" : "Mode",
+					"nom_complet" : "",
+					"id_pare" : 109,
+					"children" : [
+						{
+							"id" : 124,
+							"name" : "Verbal",
+							"nom_complet" : "",
+							"id_pare" : 123,
+							"children" : [
+								{
+									"id" : 125,
+									"name" : "Audible",
+									"nom_complet" : "",
+									"id_pare" : 124,
+									"children" : [ ]
+								},
+								{
+									"id" : 126,
+									"name" : "Textual",
+									"nom_complet" : "",
+									"id_pare" : 124,
+									"children" : [
+										{
+											"id" : 127,
+											"name" : "LC",
+											"nom_complet" : "",
+											"id_pare" : 126,
+											"children" : [ ]
+										},
+										{
+											"id" : 128,
+											"name" : "IM",
+											"nom_complet" : "",
+											"id_pare" : 126,
+											"children" : [ ]
+										}
+									]
+								}
+							]
+						},
+						{
+							"id" : 129,
+							"name" : "Non-Verbal",
+							"nom_complet" : "",
+							"id_pare" : 123,
+							"children" : [
+								{
+									"id" : 130,
+									"name" : "avatar-related",
+									"nom_complet" : "",
+									"id_pare" : 129,
+									"children" : [
+										{
+											"id" : 131,
+											"name" : "gesture",
+											"nom_complet" : "",
+											"id_pare" : 130,
+											"children" : [ ]
+										},
+										{
+											"id" : 132,
+											"name" : "pantomime",
+											"nom_complet" : "",
+											"id_pare" : 130,
+											"children" : [ ]
+										},
+										{
+											"id" : 133,
+											"name" : "environment-related",
+											"nom_complet" : "",
+											"id_pare" : 130,
+											"children" : [
+												{
+													"id" : 134,
+													"name" : "movement",
+													"nom_complet" : "",
+													"id_pare" : 133,
+													"children" : [
+														{
+															"id" : 135,
+															"name" : "stand",
+															"nom_complet" : "",
+															"id_pare" : 134,
+															"children" : [ ]
+														},
+														{
+															"id" : 136,
+															"name" : "sit",
+															"nom_complet" : "",
+															"id_pare" : 134,
+															"children" : [ ]
+														},
+														{
+															"id" : 137,
+															"name" : "walk",
+															"nom_complet" : "",
+															"id_pare" : 134,
+															"children" : [ ]
+														},
+														{
+															"id" : 138,
+															"name" : "jump",
+															"nom_complet" : "",
+															"id_pare" : 134,
+															"children" : [ ]
+														},
+														{
+															"id" : 139,
+															"name" : "fly",
+															"nom_complet" : "",
+															"id_pare" : 134,
+															"children" : [ ]
+														},
+														{
+															"id" : 140,
+															"name" : "teleport",
+															"nom_complet" : "",
+															"id_pare" : 134,
+															"children" : [ ]
+														},
+														{
+															"id" : 141,
+															"name" : "land",
+															"nom_complet" : "",
+															"id_pare" : 134,
+															"children" : [ ]
+														},
+														{
+															"id" : 142,
+															"name" : "turn",
+															"nom_complet" : "",
+															"id_pare" : 134,
+															"children" : [ ]
+														},
+														{
+															"id" : 167,
+															"name" : "enter world",
+															"nom_complet" : "",
+															"id_pare" : 134,
+															"children" : [ ]
+														}
+													]
+												},
+												{
+													"id" : 168,
+													"name" : "exit world",
+													"nom_complet" : "",
+													"id_pare" : 133,
+													"children" : [ ]
+												}
+											]
+										}
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"id" : 143,
+					"name" : "Nature",
+					"nom_complet" : "",
+					"id_pare" : 109,
+					"children" : [
+						{
+							"id" : 144,
+							"name" : "Lang Task Focused",
+							"nom_complet" : "",
+							"id_pare" : 143,
+							"children" : [
+								{
+									"id" : 145,
+									"name" : "Task",
+									"nom_complet" : "",
+									"id_pare" : 144,
+									"children" : [ ]
+								},
+								{
+									"id" : 146,
+									"name" : "Form",
+									"nom_complet" : "",
+									"id_pare" : 144,
+									"children" : [ ]
+								}
+							]
+						},
+						{
+							"id" : 147,
+							"name" : "Procedural",
+							"nom_complet" : "",
+							"id_pare" : 143,
+							"children" : [
+								{
+									"id" : 148,
+									"name" : "logistics",
+									"nom_complet" : "",
+									"id_pare" : 147,
+									"children" : [ ]
+								},
+								{
+									"id" : 149,
+									"name" : "social",
+									"nom_complet" : "",
+									"id_pare" : 147,
+									"children" : [ ]
+								},
+								{
+									"id" : 150,
+									"name" : "technical",
+									"nom_complet" : "",
+									"id_pare" : 147,
+									"children" : [ ]
+								}
+							]
+						}
+					]
+				}
+			]
+		},
+		{
+			"id" : 110,
+			"name" : "Interface",
+			"nom_complet" : "Interface",
+			"id_pare" : 0,
+			"children" : [
+				{
+					"id" : 113,
+					"name" : "Zoom",
+					"nom_complet" : "",
+					"id_pare" : 110,
+					"children" : [ ]
+				},
+				{
+					"id" : 151,
+					"name" : "speakers",
+					"nom_complet" : "",
+					"id_pare" : 110,
+					"children" : [ ]
+				},
+				{
+					"id" : 152,
+					"name" : "mic",
+					"nom_complet" : "",
+					"id_pare" : 110,
+					"children" : [ ]
+				},
+				{
+					"id" : 153,
+					"name" : "open nc",
+					"nom_complet" : "",
+					"id_pare" : 110,
+					"children" : [ ]
+				},
+				{
+					"id" : 154,
+					"name" : "nc drag",
+					"nom_complet" : "",
+					"id_pare" : 110,
+					"children" : [ ]
+				},
+				{
+					"id" : 156,
+					"name" : "send IM",
+					"nom_complet" : "",
+					"id_pare" : 110,
+					"children" : [ ]
+				},
+				{
+					"id" : 157,
+					"name" : "receive IM",
+					"nom_complet" : "",
+					"id_pare" : 110,
+					"children" : [ ]
+				},
+				{
+					"id" : 158,
+					"name" : "right click object",
+					"nom_complet" : "",
+					"id_pare" : 110,
+					"children" : [ ]
+				},
+				{
+					"id" : 159,
+					"name" : "right click avatar",
+					"nom_complet" : "",
+					"id_pare" : 110,
+					"children" : [ ]
+				},
+				{
+					"id" : 160,
+					"name" : "object drag",
+					"nom_complet" : "",
+					"id_pare" : 110,
+					"children" : [ ]
+				},
+				{
+					"id" : 169,
+					"name" : "left click object",
+					"nom_complet" : "",
+					"id_pare" : 110,
+					"children" : [ ]
+				},
+				{
+					"id" : 175,
+					"name" : "tp offer",
+					"nom_complet" : "",
+					"id_pare" : 110,
+					"children" : [ ]
+				}
+			]
+		},
+		{
+			"id" : 111,
+			"name" : "LessonStage",
+			"nom_complet" : "LessonStage",
+			"id_pare" : 0,
+			"children" : [
+				{
+					"id" : 114,
+					"name" : "Instructions",
+					"nom_complet" : "",
+					"id_pare" : 111,
+					"children" : [ ]
+				},
+				{
+					"id" : 161,
+					"name" : "social disc",
+					"nom_complet" : "",
+					"id_pare" : 111,
+					"children" : [ ]
+				},
+				{
+					"id" : 162,
+					"name" : "presentation",
+					"nom_complet" : "",
+					"id_pare" : 111,
+					"children" : [ ]
+				},
+				{
+					"id" : 163,
+					"name" : "modeling",
+					"nom_complet" : "",
+					"id_pare" : 111,
+					"children" : [ ]
+				},
+				{
+					"id" : 164,
+					"name" : "practice",
+					"nom_complet" : "",
+					"id_pare" : 111,
+					"children" : [ ]
+				},
+				{
+					"id" : 165,
+					"name" : "feedback",
+					"nom_complet" : "",
+					"id_pare" : 111,
+					"children" : [ ]
+				},
+				{
+					"id" : 166,
+					"name" : "classroom management",
+					"nom_complet" : "",
+					"id_pare" : 111,
+					"children" : [ ]
+				}
+			]
+		}
+	]
+}
+bye
