@@ -17,7 +17,7 @@ App3m.controller('mainController',function($scope, $http){
 	$scope.blocksCoding = '';
 	$scope.codingEdit = {};
 	$scope.currentMode = 'A';
-	$scope.currentVideo = 'http://192.168.1.103:80/carlesti/videos/M1S1Tue.ogv';
+	$scope.currentVideo = 'http://192.168.1.104:80/carlesti/videos/M1S1Tue.ogv';
 	$scope.player = '';
 	$scope.codiSeleccionat = '';
 	$scope.offsetAudio = 0;
@@ -1800,7 +1800,7 @@ App3m.controller('mainController',function($scope, $http){
 			else $scope.grups = data.projecte.grups;
 			console.log("Volcat de grups");
 			console.log($scope.grups);
-			$scope.currentVideo =  'http://192.168.1.103:80/carlesti/videos/' + data.projecte.video+'.webm';
+			$scope.currentVideo =  'http://192.168.1.104:80/carlesti/videos/' + data.projecte.video+'.webm';
 			$('#main_video_html5_api').attr('src',$scope.currentVideo);
 			$('#id_source_video').attr('src',$scope.currentVideo);
 			$scope.player = videojs('main_video');
