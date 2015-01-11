@@ -14,9 +14,9 @@ block menu
             a(class='dropdown-toggle', href='#', data-toggle='dropdown') Projectes
               span(class='caret')
             ul(class='dropdown-menu')
-              for elem in data
+              each elem,index in data
                 li
-                  a(href='#',ng-click='loadProject("#{elem._id}")') #{elem.nom}
+                  a(href='#',ng-click='loadProject("#{elem._id}")') #{index+1} .- #{elem.nom}
           li
             a(href='#', ng-click='showCodeManager()') Code Manager
           li
@@ -25,6 +25,8 @@ block menu
             a(href='/analyze') Analyze
           li(ng-show='bProjectLoaded')
             a(href='#', ng-click='saveProject()') Save
+          li
+            h4(ng-bind='projectName')
 block content
   div#stats(class='modal',tabindex='-1',role='dialog', data-backdrop="static")
     div(class='modal-dialog', style='width:900px')
@@ -192,6 +194,7 @@ block content
                 div#panel_trans_audio(ng-style='scrollAudio', class='panel-body transcripcio')
                     div(class='panel panel-default',  ng-repeat='block in transcriptions.audio' )
                       div(id='block_{{block.id}}', class='panel-heading', ng-class="{'block_seleccionat': block.checked}")
+                        button(class='btn btn-xs btn-warning', ng-click='fix(this,"A")') F
                         button(class='btn btn-xs btn-warning', title='Select', ng-click='toggleCheck(this,"A")') S
                         button(class='btn btn-xs btn-warning', title='Play', ng-click='seekPlayer(this)') P
                         button(class='btn btn-xs btn-warning', title='Edit', ng-click='editTranscripcio(this,"A")') E
@@ -216,6 +219,7 @@ block content
                 div(class='panel-body transcripcio')
                     div(class='panel panel-default' , ng-repeat='block in transcriptions.text')
                       div(class='panel-heading')
+                        button(class='btn btn-xs btn-warning', ng-click='fix(this,"T")') F
                         button(class='btn btn-xs btn-warning', ng-click='toggleCheck(this,"T")') S
                         button(class='btn btn-xs btn-warning', ng-click='seekPlayer(this)') P
                         button(class='btn btn-xs btn-warning', ng-click='editTranscripcio(this,"T")') E
@@ -240,6 +244,7 @@ block content
                 div(class='panel-body transcripcio')
                     div(class='panel panel-default' , ng-repeat='block in transcriptions.video')
                       div(class='panel-heading')
+                        button(class='btn btn-xs btn-warning', ng-click='fix(this,"I")') F
                         button(class='btn btn-xs btn-warning', ng-click='toggleCheck(this,"I")') S
                         button(class='btn btn-xs btn-warning', ng-click='seekPlayer(this)') P
                         button(class='btn btn-xs btn-warning', ng-click='editTranscripcio(this,"I")') E

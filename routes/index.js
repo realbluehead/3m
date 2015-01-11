@@ -9,15 +9,27 @@ router.get('/', function(req, res, next) {
 	    if(err) throw err;
 
 	    var collection = db.collection('m3');
-	    collection.find({},{'sort':'nom'}).toArray(function(err, results) {
-	       	data = results;
-	        // Tanquem la db
-	        db.close(function()
-	        	{
-	        		 res.render('index', { title: '3M', data: data });
-	        	});
-	       
+	    var cursor = collection.find({}).batchSize(2);
+	    var data = [];
+	    cursor.each(function(err, item) {
+	 		console.log("item");
+	 		if(!err) 
+	 		{
+		       	if(item==null)
+		       	{
+			        // Tanquem la db
+			        console.log("acabem");
+			        db.close(function()
+			        	{
+			        		 res.render('index', { title: '3M', data: data });
+			        	});
+		       }
+	      	 data.push(item);
+	      	}
+	      	else console.log(err);
 	      });
+
+	   
 	});
   	
 });

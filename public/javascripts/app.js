@@ -32,6 +32,7 @@ App3m.controller('mainController',function($scope, $http){
 	$scope.textToggle = true;
 	$scope.currentIdCode = '';
 	$scope.codiArrel = '';
+	$scope.projectName = 'Cap projecte carregat';
 
 	$scope.init = function()
 	{
@@ -107,6 +108,83 @@ App3m.controller('mainController',function($scope, $http){
 			$scope.canviFiltreCodis();
 			// visualitzem l'editor
 			$scope.editCurrentGroup();
+		}
+	}
+	$scope.fix = function(block,mode)
+	{
+		
+		// reorder the block
+		if(mode=='A')
+		{
+			var iBlockId = block.block.id;
+			var bTime = 0;
+			for(var j=0;j<$scope.transcriptions.audio.length;j++)
+			{
+				//console.log(j+": "+$scope.transcriptions.text[j].start);
+				if(block.block.id==$scope.transcriptions.audio[j].id)
+				{
+					$scope.transcriptions.audio.splice(j,1);
+				}
+			}
+			
+			for(var j=0;j<$scope.transcriptions.audio.length;j++)
+			{
+				//console.log(j+": "+$scope.transcriptions.text[j].start);
+				if(block.block.start<$scope.transcriptions.audio[j].start)
+				{
+					console.log("reinsertant a "+j);
+					$scope.transcriptions.audio.splice(j,0,block.block);
+					j = 10000;
+				}
+			}
+		}
+		if(mode=='T')
+		{
+			var iBlockId = block.block.id;
+			var bTime = 0;
+			for(var j=0;j<$scope.transcriptions.text.length;j++)
+			{
+				//console.log(j+": "+$scope.transcriptions.text[j].start);
+				if(block.block.id==$scope.transcriptions.text[j].id)
+				{
+					$scope.transcriptions.text.splice(j,1);
+				}
+			}
+			
+			for(var j=0;j<$scope.transcriptions.text.length;j++)
+			{
+				//console.log(j+": "+$scope.transcriptions.text[j].start);
+				if(block.block.start<$scope.transcriptions.text[j].start)
+				{
+					console.log("reinsertant a "+j);
+					$scope.transcriptions.text.splice(j,0,block.block);
+					j = 10000;
+				}
+			}
+		}
+		if(mode=='I')
+		{
+			var iBlockId = block.block.id;
+			var bTime = 0;
+			for(var j=0;j<$scope.transcriptions.video.length;j++)
+			{
+				//console.log(j+": "+$scope.transcriptions.text[j].start);
+				if(block.block.id==$scope.transcriptions.video[j].id)
+				{
+					$scope.transcriptions.video.splice(j,1);
+				}
+			}
+			
+			for(var j=0;j<$scope.transcriptions.video.length;j++)
+			{
+				//console.log(j+": "+$scope.transcriptions.text[j].start);
+				if(block.block.start<$scope.transcriptions.video[j].start)
+				{
+					console.log("reinsertant a "+j);
+					$scope.transcriptions.video.splice(j,0,block.block);
+					j = 10000;
+				}
+			}
 		}
 	}
 	$scope.toggleCheck  = function(block,mode)
@@ -1731,7 +1809,7 @@ App3m.controller('mainController',function($scope, $http){
 			//$scope.currentGrupId = 1;
 			$scope.currentGrupId = $scope.getMaxGroupId();
 			$scope.bProjectLoaded = true;
-
+			$scope.projectName = data.projecte.nom;
 	      //$scope.transcriptions.audio.push('a');
 	    });
 		
