@@ -9,7 +9,7 @@ router.get('/', function(req, res, next) {
 	    if(err) throw err;
 
 	    var collection = db.collection('m3');
-	    var cursor = collection.find({}).batchSize(2);
+	    var cursor = collection.find({}).sort({'nom':1}).batchSize(12);
 	    var data = [];
 	    cursor.each(function(err, item) {
 	 		console.log("item");
