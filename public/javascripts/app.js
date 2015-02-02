@@ -57,21 +57,24 @@ App3m.controller('mainController',function($scope, $http){
 	     //
 	     $scope.infoMsg = 'Codes tree loaded...';
 	     $scope.codes = data;
-	     console.log($scope.codes.tree);
+	     console.log(data);
 	     $scope.codisFiltrats = [];
+	     data.codis.sort(function (a,b) {
+			  if (a.nom < b.nom)
+			     return -1;
+			  if (a.nom > b.nom)
+			    return 1;
+			  return 0;
+			});
 	     for(var i=0;i<data.codis.length;i++)
 	     {
-	     	if(data.codis[i]!=null) 
-	     		{
-	     			data.codis[i].nom_complet = $scope.getNomComplet(data.codis,i);
-	     			data.codis[i].nom_complet_pare = data.codis[i].nom_complet.substring(0,data.codis[i].nom_complet.length-$scope.codes.codis[i].name.length);
-	     			
-	     			$scope.codisFiltrats.push(data.codis[i]);
-	     		}
+	     	$scope.codisFiltrats.push(data.codis[i])
 	     }
 	     
 	 });
 	}
+
+
 
 	$scope.getNomComplet = function(aCodis, iIndex)
 	{
@@ -1432,9 +1435,9 @@ App3m.controller('mainController',function($scope, $http){
 		for(var i=0;i<$scope.codes.codis.length;i++)
 	     {
 	     	if($scope.codes.codis[i]!=null) 
-	     		{
-	     			if($scope.codes.codis[i].nom_complet.toUpperCase().indexOf(sKeyword.toUpperCase())!=-1 && !$scope.codiJaSeleccionat($scope.codes.codis[i].id)) $scope.codisFiltrats.push($scope.codes.codis[i]);
-	     		}
+     		{
+     			if($scope.codes.codis[i].nom.toUpperCase().indexOf(sKeyword.toUpperCase())!=-1 && !$scope.codiJaSeleccionat($scope.codes.codis[i].id)) $scope.codisFiltrats.push($scope.codes.codis[i]);
+     		}
 	     }
 		console.log("Yuhu"+i);
 	}
@@ -1810,6 +1813,7 @@ App3m.controller('mainController',function($scope, $http){
 			$scope.currentGrupId = $scope.getMaxGroupId();
 			$scope.bProjectLoaded = true;
 			$scope.projectName = data.projecte.nom;
+			console.log(aNotrobats);
 	      //$scope.transcriptions.audio.push('a');
 	    });
 		
@@ -1906,21 +1910,30 @@ App3m.controller('mainController',function($scope, $http){
 	}
 	$scope.saveCodeTree = function()
 	{
-		$scope.updateCodeTree($scope.codes.tree.codis);
+		
+		var aCodisBons = [];
+		/*for(var i=0;i<$scope.codisFiltrats.length;i++)
+		{
+			aCodisBons.push({'nom':$scope.codisFiltrats[i].nom_complet,id:$scope.codisFiltrats[i].id});
+		}
+		console.log(aCodisBons);*/
+		aCodisBons = $scope.codisFiltrats;
+		/*
+		$scope.updateCodeTree($scope.codes.tree.codis);*/
 		 var request = $http({
 				method: "post",
 				cache:false,
 				url: "codes/save/",
 				data: {
-					codes: $scope.codes.tree.codis
+					codes: aCodisBons
 				}
 			});
+
 		request.success(function(data, status, headers, config) {
 			console.log("Salvats!");
-			$scope.loadCodes();
+			//$scope.loadCodes();
 			$scope.showCodeManager();
 		});
-		console.log();
 
 	}
 	$scope.updateCodeTree = function(aTree)
@@ -1948,26 +1961,43 @@ App3m.controller('mainController',function($scope, $http){
 		}
 		
 	}
-
+	var aNotrobats = {};
+	$scope.getCodeById = function(iId, bFull)
+	{
+		for(var i=0;i<$scope.codes.codis.length;i++)
+		{
+			if($scope.codes.codis[i].id==iId) 
+			{
+				if(bFull) return $scope.codes.codis[i].nom;
+				else 
+				{
+					var aParts = $scope.codes.codis[i].nom.split("/");
+					return aParts[aParts.length-1];
+				}
+			}
+		}
+		// NO trobat! Que fem?
+		if(aNotrobats['id_'+iId] === undefined) aNotrobats['id_'+iId]=0;
+		else aNotrobats['id_'+iId]++;
+		//console.log("NO TROBAT!"+iId);
+		return "NO TROBAT!";
+	}
 	$scope.addCodeTreeRoot = function ()
 	{
 		var idPare  = 0;
 		var nouCodi = {
 					id:$scope.getNextCodeId(),
-					name:$scope.codiArrel,
-					nom_complet:$scope.codiArrel,
-					id_pare: idPare,
-					children:[]
-				};
-				console.log(nouCodi);
-		$scope.updateCodeTree($scope.codes.tree.codis);
-		$scope.insertCode($scope.codes.tree.codis, idPare, nouCodi,0);
-		$scope.regenerateCodeList($scope.codes.tree.codis);
+					nom:$scope.codiArrel};
+		console.log(nouCodi);
+		$scope.codisFiltrats.push(nouCodi);
+		//$scope.updateCodeTree($scope.codes.tree.codis);
+		//$scope.insertCode($scope.codes.tree.codis, idPare, nouCodi,0);
+		//$scope.regenerateCodeList($scope.codes.tree.codis);
 		
-		$scope.codes.codis = $scope.aLlistaNova;
-		$scope.codisFiltrats = [];
+		//$scope.codes.codis = $scope.aLlistaNova;
+		//$scope.codisFiltrats = [];
 
-		 for(var i=0;i<$scope.codes.codis.length;i++)
+		 /*for(var i=0;i<$scope.codes.codis.length;i++)
 	     {
 	     	if($scope.codes.codis[i]!=null) 
 	     		{
@@ -1975,7 +2005,7 @@ App3m.controller('mainController',function($scope, $http){
 	     			$scope.codes.codis[i].nom_complet_pare = $scope.codes.codis[i].nom_complet.substring(0,$scope.codes.codis[i].nom_complet.length-$scope.codes.codis[i].name.length);
 	     			$scope.codisFiltrats.push($scope.codes.codis[i]);
 	     		}
-	     }
+	     }*/
 	}
 	$scope.addCodeTreeChild = function (code)
 	{
@@ -2029,7 +2059,7 @@ App3m.controller('mainController',function($scope, $http){
 					$scope.codisFiltrats.splice(i, 1);
 				} 
 			}
-			$scope.updateCodeTree($scope.codes.tree.codis);
+			//$scope.updateCodeTree($scope.codes.tree.codis);
 		}
 	}
 	$scope.setCodi = function(block)

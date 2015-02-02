@@ -71,17 +71,15 @@ block content
            table(class='table table-striped table-bordered table-hover')
               tr
                 td
-                  Nou codi Arrel
+                  Nou codi
                 td
                   input(type='text',size='40', ng-model='codiArrel')     
                   button(class='btn btn-xs btn-success', ng-click='addCodeTreeRoot()') Add
               tr(ng-repeat='code in codisFiltrats')
                 td(width='150px')
-                  button(class='btn btn-xs btn-success', ng-click='addCodeTreeChild(this)') +Child
                   button(class='btn btn-xs', ng-click='delCodeTreeChild(this)') Delete
                 td
-                  span {{code.nom_complet_pare}}
-                  input(type='text',size='{{code.name.length}}', ng-model='code.name')        
+                  input(type='text',size='{{code.nom.length}}', ng-model='code.nom')        
          div(class='modal-footer')
            button(type='button', class='btn btn-default btn-sm' data-dismiss='modal') Close
            button(type='button', class='btn btn-success btn-sm', ng-click='saveCodeTree()') Save
@@ -121,13 +119,13 @@ block content
             tr
               td(colspan='2') 
                 h5 Current code 
-                {{codes.codis[currentIdCode].nom_complet}}
+                {{getCodeById(currentIdCode, true)}}
             tr
               td(colspan='2') 
                 span(style='margin-right:20px') Filter
                 input(type='text', ng-model='filtreCodis' ng-change='canviFiltreCodis()')
             tr(ng-repeat='block in codisFiltrats')
-              td  {{block.nom_complet}}
+              td  {{block.nom}}
               td
                 button(type='button' class='btn btn-xs btn-primary', ng-click='setCodi(this)') Set
         div(class='modal-footer')
@@ -149,7 +147,7 @@ block content
               td(colspan='2') 
                 h5 Current codes
             tr(ng-repeat='block in codisSeleccionats')
-              td  {{block.nom_complet}}
+              td  {{block.nom}}
               td
                 button(type='button' class='btn btn-xs btn-primary', ng-click='treureCodiGrup(this)') Remove
             tr
@@ -160,7 +158,7 @@ block content
                 span(style='margin-right:20px') Filter
                 input(type='text', ng-model='filtreCodis' ng-change='canviFiltreCodis()')
             tr(ng-repeat='block in codisFiltrats')
-              td  {{block.nom_complet}}
+              td  {{block.nom}}
               td
                 button(type='button' class='btn btn-xs btn-primary', ng-click='afegirCodiGrup(this)') Add
         div(class='modal-footer')
@@ -202,7 +200,7 @@ block content
                         button(class='btn btn-xs btn-danger', title='Copy to No Verbal', ng-click='copyTransToText(this)') NV
                         button(class='btn btn-xs btn-info', title='Copy to Interficie', ng-click='copyTransToVideo(this)') I
                         div(style='float:right;display:block', ng-repeat='coding in block.codings') 
-                          span(class='label label-success', ng-mouseleave='unhighlightCoding(this,"A")', ng-mouseover='highlightCoding(this,"A")', ng-click='editSingleCoding(this,"A")', title='{{codes.codis[coding.id_code].nom_complet}}' ) {{codes.codis[coding.id_code].name}}
+                          span(class='label label-success', ng-mouseleave='unhighlightCoding(this,"A")', ng-mouseover='highlightCoding(this,"A")', ng-click='editSingleCoding(this,"A")', title='{{getCodeById(coding.id_code, true)}}' ) {{getCodeById(coding.id_code, false)}}
                         div(style='float:right;display:block',ng-click='newSingleCoding(this,"A")', class='label label-danger') +
                         div(style='float:right;display:block',ng-repeat='groupId in block.groups')
                           button(class='btn btn-xs btn-primary', ng-click='editGroupCode(this,"A")') {{groupId}}
@@ -227,7 +225,7 @@ block content
                         button(class='btn btn-xs btn-success', title='Copy to Verbal', ng-click='copyTransToAudio(this)') V
                         button(class='btn btn-xs btn-info', title='Copy to Interficie', ng-click='copyTransToVideo(this)') I
                         span(ng-repeat='coding in block.codings') 
-                          span(class='label label-success', ng-mouseleave='unhighlightCoding(this,"T")', ng-mouseover='highlightCoding(this,"T")', ng-click='editSingleCoding(this,"T")', title='{{codes.codis[coding.id_code].nom_complet}}' ) {{codes.codis[coding.id_code].name}}
+                          span(class='label label-success', ng-mouseleave='unhighlightCoding(this,"T")', ng-mouseover='highlightCoding(this,"T")', ng-click='editSingleCoding(this,"T")', title='{{getCodeById(coding.id_code, true)}}' ) {{getCodeById(coding.id_code, false)}}
                         span(ng-click='newSingleCoding(this,"T")', class='label label-danger') +
                         span(ng-repeat='groupId in block.groups')
                           button(class='btn btn-xs btn-primary', ng-click='editGroupCode(this,"T")') {{groupId}}
@@ -252,7 +250,7 @@ block content
                         button(class='btn btn-xs btn-success', title='Copy to Verbal', ng-click='copyTransToAudio(this)') V
                         button(class='btn btn-xs btn-danger', title='Copy to No Verbal', ng-click='copyTransToText(this)') NV
                         span(ng-repeat='coding in block.codings') 
-                          span(class='label label-success', ng-mouseleave='unhighlightCoding(this,"I")', ng-mouseover='highlightCoding(this,"I")', ng-click='editSingleCoding(this,"I")', title='{{codes.codis[coding.id_code].nom_complet}}' ) {{codes.codis[coding.id_code].name}}
+                          span(class='label label-success', ng-mouseleave='unhighlightCoding(this,"I")', ng-mouseover='highlightCoding(this,"I")', ng-click='editSingleCoding(this,"I")', title='{{getCodeById(coding.id_code, true)}}' ) {{getCodeById(coding.id_code, false)}}
                         span(ng-click='newSingleCoding(this,"I")', class='label label-danger') +
                         span(ng-repeat='groupId in block.groups')
                           button(class='btn btn-xs btn-primary', ng-click='editGroupCode(this,"I")') {{groupId}}
