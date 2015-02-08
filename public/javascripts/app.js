@@ -57,7 +57,7 @@ App3m.controller('mainController',function($scope, $http){
 	     //
 	     $scope.infoMsg = 'Codes tree loaded...';
 	     $scope.codes = data;
-	     console.log(data);
+	     //console.log(data);
 	     $scope.codisFiltrats = [];
 	     data.codis.sort(function (a,b) {
 			  if (a.nom < b.nom)
@@ -1799,6 +1799,25 @@ App3m.controller('mainController',function($scope, $http){
 			$scope.transcriptions.audio = data.projecte.aTrans.audio;
 			$scope.transcriptions.video = data.projecte.aTrans.video;
 			$scope.transcriptions.text = data.projecte.aTrans.text;
+			// sort
+			$scope.transcriptions.audio.sort(function (a,b)
+			{
+				if(a.start < b.start) return -1;
+				    if(a.start > b.start) return 1;
+				    return 0;
+			});
+			$scope.transcriptions.video.sort(function (a,b)
+			{
+				if(a.start < b.start) return -1;
+				    if(a.start > b.start) return 1;
+				    return 0;
+			});
+			$scope.transcriptions.text.sort(function (a,b)
+			{
+				if(a.start < b.start) return -1;
+				    if(a.start > b.start) return 1;
+				    return 0;
+			});
 			if(data.projecte.grups==undefined) $scope.grups = [];
 			else $scope.grups = data.projecte.grups;
 			console.log("Volcat de grups");
@@ -1962,8 +1981,9 @@ App3m.controller('mainController',function($scope, $http){
 		
 	}
 	var aNotrobats = {};
-	$scope.getCodeById = function(iId, bFull)
+	$scope.getCodeById = function(iId, bFull, oCode)
 	{
+		//console.log(oCode);
 		for(var i=0;i<$scope.codes.codis.length;i++)
 		{
 			if($scope.codes.codis[i].id==iId) 
@@ -1980,7 +2000,11 @@ App3m.controller('mainController',function($scope, $http){
 		if(aNotrobats['id_'+iId] === undefined) aNotrobats['id_'+iId]=0;
 		else aNotrobats['id_'+iId]++;
 		//console.log("NO TROBAT!"+iId);
-		return "NO TROBAT!";
+		if(oCode!=null) 
+			{
+				delete oCode;
+				return "[["+oCode.id_code+"]]";
+			}
 	}
 	$scope.addCodeTreeRoot = function ()
 	{
