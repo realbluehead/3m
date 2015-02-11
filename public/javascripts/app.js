@@ -1802,20 +1802,20 @@ App3m.controller('mainController',function($scope, $http){
 			// sort
 			$scope.transcriptions.audio.sort(function (a,b)
 			{
-				if(a.start < b.start) return -1;
-				    if(a.start > b.start) return 1;
+				if(parseInt(a.start) < parseInt(b.start)) return -1;
+				    if(parseInt(a.start) > parseInt(b.start)) return 1;
 				    return 0;
 			});
 			$scope.transcriptions.video.sort(function (a,b)
 			{
-				if(a.start < b.start) return -1;
-				    if(a.start > b.start) return 1;
+				if(parseInt(a.start) < parseInt(b.start)) return -1;
+				    if(parseInt(a.start) > parseInt(b.start)) return 1;
 				    return 0;
 			});
 			$scope.transcriptions.text.sort(function (a,b)
 			{
-				if(a.start < b.start) return -1;
-				    if(a.start > b.start) return 1;
+				if(parseInt(a.start) < parseInt(b.start)) return -1;
+				    if(parseInt(a.start) > parseInt(b.start)) return 1;
 				    return 0;
 			});
 			if(data.projecte.grups==undefined) $scope.grups = [];
