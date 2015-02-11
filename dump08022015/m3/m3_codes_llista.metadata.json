@@ -1,0 +1,1 @@
+{ "options" : { "create" : "m3_codes_llista" }, "indexes" : [ { "v" : 1, "key" : { "_id" : 1 }, "ns" : "m3.m3_codes_llista", "name" : "_id_" } ] }
