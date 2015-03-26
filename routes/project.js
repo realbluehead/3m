@@ -70,7 +70,7 @@ router.get('/list', function(req, res, next) {
 	    if(err) throw err;
 console.log('fua');
 	    var collection = db.collection('m3');
-	    var cursor = collection.find({}).sort({'nom':1}).batchSize(5);
+	    var cursor = collection.find({}).sort({'nom':1}).batchSize(12);
 	    var data = [];
 	    cursor.each(function(err, item) {
 	 		console.log("item");

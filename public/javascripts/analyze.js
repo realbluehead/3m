@@ -9,7 +9,7 @@ App3m.controller('mainController',function($scope, $http){
 	$scope.aTurns = [];
 	$scope.oTurns = {};
 	$scope.aSelected = [];
-	$scope.bDebug = true;
+	$scope.bDebug = false;
 	$scope.bReady = false;
 	$scope.bQuery1 = false;
 	$scope.aResult = [];
@@ -46,15 +46,15 @@ App3m.controller('mainController',function($scope, $http){
 	}
 	$scope.addColumn = function()
 	{
-		//$scope.aColumns.push($scope.newColSelected);
-		for(var i=0;i<$scope.aCodes.length;i++) $scope.aColumns.push($scope.aCodes[i]);
+		$scope.aColumns.push($scope.newColSelected);
+		//for(var i=0;i<$scope.aCodes.length;i++) $scope.aColumns.push($scope.aCodes[i]);
 		
 		reQuery();
 	}
 	$scope.addRow = function()
 	{
-		//$scope.aRows.push($scope.newRowSelected);
-		for(var i=0;i<$scope.aCodes.length;i++) $scope.aRows.push($scope.aCodes[i]);
+		$scope.aRows.push($scope.newRowSelected);
+		//for(var i=0;i<$scope.aCodes.length;i++) $scope.aRows.push($scope.aCodes[i]);
 		reQuery();
 	}
 	$scope.showQuery = function()
