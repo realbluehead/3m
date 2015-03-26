@@ -4,51 +4,62 @@ block menu
     div(class='container-fluid')
       div(class='navbar-header')
         a(class='navbar-brand') 3M - Analyzer
-      div(class='navbar-header navbar-right')
-        a(class='info-msg') {{infoMsg}}  
 block content
   .container-fluid
     .row
-       .col-12 
-         .panel.panel-primary
-           .panel-heading Filters
-           .panel-body
-             table.table.table-bordered.table-responsive
-               tr
-                 td
-                   select(ng-model="codiSeleccionat" ng-options="code.nom_complet for code in codisFiltrats", ng-change='nouCodiFiltre()')
-               tr
-                 td
-                   span(ng-repeat='codi in aFilterCodes') 
-                     span(class='label label-success', ng-click='deleteFilterCode(this)') {{codi.nom_complet}}
-               tr
-                 td
-                   button.btn.btn-sm.btn-success.pull-right(ng-click='getStats()') Get Stats
-       .col-12 
-         .panel.panel-default
-           .panel-heading Resultats
-           .panel-body
-             .container-fluid
-               .row
-                 .col-12
-                   .panel.panel-default
-                     .panel-heading General
-                     .panel-body
-                       table.table.table-bordered.table-responsive
-                         tr
-                           td Total Turns analyzed
-                           td {{stats.total_turns_analyzed}} 
-                           td Total Turns matching filter
-                           td {{stats.total_turns_matching}} 
-                 .col-12
-                   .panel.panel-default
-                     .panel-heading Detail
-                     .panel-body
-                       table.table.table-bordered.table-responsive
-                         tr(ng-repeat="block in aMatchingTurns")                           
-                           td(ng-bind-html="block.original.contingut_filtrat")
-                                          
+      .col-sm-12
+        table.table.table-striped
+          tr
+            td #Torns
+            td Codis 
+          tr(ng-repeat='sMatches in aKeys')
+            td {{sMatches.replace('h','')}}
+            td {{getListMatches(sMatches)}}
+      div(ng-class='queryClass')#dades
+        .panel.panel-primary
+          .panel-heading(ng-click='showQuery()') Query  
+          .panel-body(style='overflow:auto')
+            table.table-bordered.table-striped.table-responsive
+              tr
+                th Filter
+                th(ng-repeat='sCol in aColumns track by $index') 
+                  div
+                    button.btn.btn-xs.btn-danger(ng-click='delColumn($index)',title='Remove') {{sCol.nom}}
+                th
+                  select.input-sm(style='width:100px',ng-options='oCodi.nom for oCodi in aCodes ', ng-model='newColSelected')
+                th
+                  button.btn.btn-xs.btn-primary(style='margin-left:5px',ng-click='addColumn()') Add
+              tr(ng-if='!bDebug',ng-repeat='sRow in aRows')
+                td
+                  button.btn.btn-xs.btn-danger(ng-click='delRow($index)',title='Remove') {{sRow.nom}}
+                td(ng-repeat='aCell in aResult[$index]') 
+                  button.btn.btn-xs(ng-if='aCell.length>0',ng-click='showTurns($parent.$parent.$index, $index)') {{aCell.length}}
 
-
+              tr
+                td
+                  select.input-sm(style='width:100px',ng-options='oCodi.nom for oCodi in aCodes ', ng-model='newRowSelected')
+              tr
+                td
+                  button.btn.btn-xs.btn-primary(style='margin-top:5px',ng-click='addRow()') Add
+      div(ng-class='turnsClass')
+        .panel.panel-primary
+          .panel-heading Turns
+          .panel-body
+            table.table-bordered.table-striped.table-responsive
+              tr
+                td
+                  input.input-sm(type='checkbox', ng-model='bShowGroups', value='')
+                  | Groups
+                  input.input-sm(type='checkbox', ng-model='bShowCodings', value='')
+                  | Codes
+              tr(ng-repeat='oTorn in aCurrentTurns')
+                td {{getTornText(oTorn)}}
+                  span(ng-if='bShowCodings')
+                    button.btn.btn-xs.btn-success(style='margin:2px 2px',ng-repeat='oCode in getTorn(oTorn).codings') {{oCode.id_code}}
+                  span(ng-if='bShowGroups')
+                    button.btn.btn-xs.btn-primary(style='margin:2px 2px',ng-repeat='oGroup in getTorn(oTorn).groups') {{oGroup}}
+          
+        
+                  
 block extrajs
   script(src='/javascripts/analyze.js')

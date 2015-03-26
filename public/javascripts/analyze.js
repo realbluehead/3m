@@ -2,207 +2,301 @@ var App3m = angular.module('App3m',  ['ngSanitize']);
 
 App3m.controller('mainController',function($scope, $http){
 	$scope.infoMsg = "Ready...";
-	$scope.projects = [];
-	$scope.codes = [];
-	$scope.codisFiltrats = [];
-	$scope.codiSeleccionat  = '';
-	$scope.aFilterCodes = [];
-	$scope.stats = {total_turns_analyzed:0, total_turns_matching:0};
-	$scope.aMatchingTurns = [];
+	$scope.aMatrix = [];
+	$scope.workingMatrix = [];
+	$scope.aCodes = [];
+	$scope.oCodes = {};
+	$scope.aTurns = [];
+	$scope.oTurns = {};
+	$scope.aSelected = [];
+	$scope.bDebug = true;
+	$scope.bReady = false;
+	$scope.bQuery1 = false;
+	$scope.aResult = [];
+	$scope.newColSelected;
+	$scope.aTurnsBossa = [];
+	$scope.aFilteredCodes = [];
+	$scope.aColumns = [];
+	$scope.aRows = [];
+	$scope.newColSelected;
+	$scope.newRowSelected;
+	$scope.aCurrentTurns;
+	$scope.bShowCodings=false;
+	$scope.bShowGroups=false;
+	$scope.queryClass='col-sm-10';
+	$scope.turnsClass='col-sm-2';
+	$scope.aKeys = [];
+	$scope.aList = {};
+	
 
 	$scope.init = function()
 	{
-		$scope.loadProjects();
+		$scope.loadMatrix();
 
 	}
+	$scope.delColumn = function(index)
+	{
+		$scope.aColumns.splice(index,1);
+		reQuery();
+	}
+	$scope.delRow = function(index)
+	{
+		$scope.aRows.splice(index,1);
+		reQuery();
+	}
+	$scope.addColumn = function()
+	{
+		//$scope.aColumns.push($scope.newColSelected);
+		for(var i=0;i<$scope.aCodes.length;i++) $scope.aColumns.push($scope.aCodes[i]);
+		
+		reQuery();
+	}
+	$scope.addRow = function()
+	{
+		//$scope.aRows.push($scope.newRowSelected);
+		for(var i=0;i<$scope.aCodes.length;i++) $scope.aRows.push($scope.aCodes[i]);
+		reQuery();
+	}
+	$scope.showQuery = function()
+	{
+		$scope.queryClass='col-sm-10';
+		$scope.turnsClass='col-sm-2';
+	}
+	$scope.showTurns = function(iRow,iCol)
+	{
+		$scope.aCurrentTurns = $scope.aResult[iRow][iCol];
+		$scope.queryClass='col-sm-3';
+		$scope.turnsClass='col-sm-9';
+		//console.log($scope.aResult[iRow][iCol]);
+	}
+	$scope.getTornText = function(iIndexTorn)
+	{
+		var sKeyTorn = $scope.aTurns[iIndexTorn];
+		var oTorn = $scope.oTurns[sKeyTorn];
+		//console.log(oTorn);
+		return oTorn.contingut_filtrat;
+	}
+	$scope.getTorn = function(iIndexTorn)
+	{
+		var sKeyTorn = $scope.aTurns[iIndexTorn];
+		var oTorn = $scope.oTurns[sKeyTorn];
+		return oTorn;
+	}
+	$scope.getListMatches = function(sMatches)
+	{
+		var aMat = $scope.aList[sMatches];
+		var sText = '';
+		var bDone = {};
+		for(var i=0;i<aMat.length;i++)
+		{
+			if(bDone['c'+aMat[i].i] && bDone['c'+aMat[i].j])
+			{
 
-	$scope.loadProjects = function()
+			}
+			else
+			{
+				sText += "(";
+				var oCode = $scope.aCodes[aMat[i].i];
+				sText += oCode.nom + ',';
+				oCode = $scope.aCodes[aMat[i].j];
+				sText += oCode.nom;
+				sText += ")";
+				bDone['c'+aMat[i].i] = true;
+				bDone['c'+aMat[i].j] = true;
+			}
+		}
+		return sText;
+	}
+	function reQuery()
+	{
+		//inicialitzem matriu
+		$scope.aResult = [];
+		for(var i=0;i<$scope.aRows.length;i++)
+		{
+			var aRow = [];
+			for(var j=0;j<$scope.aColumns.length;j++)
+			{
+				aTornsMacthing = getTornsMatching(i,j);
+				aRow.push(aTornsMacthing);
+			}
+			$scope.aResult.push(aRow);
+			console.log("Row processada "+i);
+		}
+		if($scope.bDebug)
+		{
+			var aList = {};
+			for(var i=0;i<$scope.aResult.length;i++)
+			{
+				for(var j=0;j<$scope.aResult[i].length;j++)
+				{
+					if(j!=i && $scope.aResult[i][j]!=0)
+					{
+						var sHits = 'h'+$scope.aResult[i][j].length;
+						if(aList[sHits]===undefined) aList[sHits] = [] ;
+						aList[sHits].push({i:i,j:j});
+					}
+				}
+			}
+			$scope.aList = aList;
+			$scope.aKeys = Object.keys(aList);
+			$scope.aKeys.sort(function(a,b)
+				{
+					if(parseInt(a.replace('h',''))>parseInt(b.replace('h','')))
+						return -1;
+					if(parseInt(a.replace('h',''))<parseInt(b.replace('h','')))
+						return 1;
+					return 0;
+				});
+
+			console.log($scope.aKeys);
+		}
+		//console.log($scope.aResult);
+	}
+	function getTornsMatching(iRow,jCol)
+	{
+
+		// Agafo els indexs de i, j
+		
+		var iIdR = $scope.aRows[iRow].id;
+		var iIndexR = $scope.oCodes['c'+iIdR];
+		var iIdC = $scope.aColumns[jCol].id;
+		var iIndexC = $scope.oCodes['c'+iIdC];
+		var aReturn = [];
+		// per cada torn
+		for(var i=0;i<$scope.aMatrix.length;i++)
+		{
+			var oTorn = $scope.aMatrix[i];
+			if(oTorn[iIndexR]==1 && oTorn[iIndexC]==1)
+			{
+				
+				aReturn.push(i);
+			}
+		}
+		return aReturn;
+	}
+	$scope.loadMatrix = function()
 	{
 		 var request = $http({
 				method: "get",
 				cache:false,
-				url: "project/list/",
+				url: "utils/etl/",
 				params: {
 					//id: iId
 				}
 			});
 		request.success(function(data, status, headers, config) {
-			$scope.projects = data;
-			$scope.loadCodes();
+			console.log("Carregat");
+			$scope.infoMsg = "Codis carregats...";
+			$scope.aMatrix = data.aMatrix;
+			$scope.aCodes = data.aCodes.slice();
+			$scope.oCodes = data.oCodes;
+			$scope.aTurns = data.aTurns;
+			$scope.oTurns = data.oTurns;
+			$scope.bReady = true;
+			iniBossa();
+			
 		});
 	}
-
-	$scope.loadCodes = function()
+	function iniBossa()
 	{
-		$scope.infoMsg = 'Loading codes tree...';
-		 var request = $http({
-				method: "get",
-				cache:false,
-				url: "codes/load/",
-				params: {
-					//id: iId
+		console.log("Antiga matriu de "+$scope.aMatrix.length+"x"+$scope.aMatrix[0].length);
+		// recorrem codis
+		$scope.aFilteredCodes = [];
+		for(var j=0;j<$scope.aMatrix[0].length;j++)
+		{
+			// recorrem torns
+			var bFound = false
+			for(var i=0;i<$scope.aMatrix.length;i++)
+			{
+				if($scope.aMatrix[i][j]==1)
+				{
+					bFound=true;
+					i=$scope.aMatrix.length+1;
 				}
-			});
-		request.success(function(data, status, headers, config) {
-	      // this callback will be called asynchronously
-	      // when the response is available
-	     //
-	     	
-		     $scope.infoMsg = 'Codes tree loaded...';
+			}
+			$scope.aFilteredCodes.push(bFound);
+		}
+		// construeixo la working matrix
+		$scope.workingMatrix = [];
+		for(var i=0;i<$scope.aMatrix.length;i++)			
+		{
+			aTorn = [];
+			for(var j=0;j<$scope.aMatrix[i].length;j++)
+			{
+				if($scope.aFilteredCodes[j])
+				{
+					aTorn.push($scope.aMatrix[i][j]);
+				}
+			}
+			$scope.workingMatrix.push(aTorn);
+		}
+		console.log("Nova matriu de "+$scope.workingMatrix.length+"x"+$scope.workingMatrix[0].length);
+	}
+	$scope.query1 = function()
+	{
+		var aBossaSelected = {};
+		// Get all the turns for each selected Code
+		for(var i=0;i<$scope.query1Data.aSelectedCodes.length;i++)
+		{
+			var iIdCode = $scope.query1Data.aSelectedCodes[i];
+			var iIndexCode = $scope.oCodes['c'+iIdCode];
+			console.log($scope.aMatrix.length);
+			for(var j=0;j<$scope.aMatrix.length;j++)
+			{
+				if($scope.aMatrix[j][iIndexCode]==1)
+				{
+					// aquest torn té aquest coding
+					if(aBossaSelected['c'+iIdCode]===undefined) aBossaSelected['c'+iIdCode] = {aTurns:[]};
+					aBossaSelected['c'+iIdCode].aTurns.push(j);
+				}
+			}
+		}
+		console.log(aBossaSelected);
+		var aKeys = Object.keys(aBossaSelected);
+		for(var i=0;i<aKeys.length;i++)
+		{
+			aBossaSelected[aKeys[i]].aDrill = {};
+			for(var j=0;j<$scope.query1Data.aDrillCodes.length;j++)
+			{
+				var iIdDrillCode = $scope.query1Data.aDrillCodes[j];
+				var iIndexCode = $scope.oCodes['c'+iIdDrillCode];
+				// inicialitzem el sub array
+				aBossaSelected[aKeys[i]].aDrill['c'+iIdDrillCode] = [];
+				for(var k=0;k<aBossaSelected[aKeys[i]].aTurns.length;k++)
+				{
+					var curTurn = aBossaSelected[aKeys[i]].aTurns[k];
+					if($scope.aMatrix[curTurn][iIndexCode]==1)
+					{
+						aBossaSelected[aKeys[i]].aDrill['c'+iIdDrillCode].push(curTurn);
+					}
+				}
+			}
+		}
 
-		     $scope.codisFiltrats = [];
-		     $scope.codes = data;
-		     for(var i=0;i<data.codis.length;i++)
-		     {
-		     	if(data.codis[i]!=null) 
-		     		{
-		     			data.codis[i].nom_complet = $scope.getNomComplet(data.codis,i);
-		     			data.codis[i].nom_complet_pare = data.codis[i].nom_complet.substring(0,data.codis[i].nom_complet.length-$scope.codes.codis[i].name.length);
-		     			
-		     			$scope.codisFiltrats.push(data.codis[i]);
-		     		}
-		     }
-			  console.log($scope.codisFiltrats);
-		     $scope.postinit();
-	 	});
+		$scope.aResult = [];
+		var aHeader = ["Strategy \\ Initiator", "Total"];
+		for(var j=0;j<$scope.query1Data.aDrillCodes.length;j++)
+		{
+			var sNom = $scope.aCodes[$scope.oCodes['c'+$scope.query1Data.aDrillCodes[j]]].nom;
+			aHeader.push(sNom);
+		}
+		$scope.aResult.push(aHeader);
 		
-	};
-	$scope.getNomComplet = function(aCodis, iIndex)
-	{
-		if(aCodis[iIndex].id_pare!=0) return $scope.getNomComplet(aCodis, aCodis[iIndex].id_pare) + '/' + aCodis[iIndex].name;
-		else return aCodis[iIndex].name;
-	}
-	$scope.postinit = function()
-	{
-
-	}
-
-	$scope.nouCodiFiltre = function()
-	{
-		//console.log($scope.codiSeleccionat);
-		for(var i=0;i<$scope.aFilterCodes.length;i++)
+		//for(var i=0;i<2;i++)
+		for(var i=0;i<aKeys.length;i++)
 		{
-			if($scope.aFilterCodes[i].id==$scope.codiSeleccionat.id) return;
-		}
-		$scope.aFilterCodes.push($scope.codiSeleccionat);
-	}
-	$scope.deleteFilterCode = function(code)
-	{
-		var iId = code.codi.id;
-		var iPos;
-		for(var i=0;i<$scope.aFilterCodes.length;i++)
-		{
-			if($scope.aFilterCodes[i].id==iId) iPos = i;
-		}
-		$scope.aFilterCodes.splice(iPos,1);
-		console.log(iId);
-	}
-
-	$scope.getStats = function()
-	{
-		$scope.stats.total_turns_analyzed = 0;
-		$scope.stats.total_turns_matching = 0;
-		$scope.aMatchingTurns = [];
-		for(var i=0;i<$scope.projects.length;i++)
-		{
-			$scope.getProjectStats(i);
-		}
-	}
-
-	$scope.getProjectStats = function(iPrj)
-	{
-		var aTrans = $scope.projects[iPrj].projecte.aTrans.audio;
-		for(var i=0;i<aTrans.length;i++)
-		{
-			$scope.stats.total_turns_analyzed++;
-			if(aTrans[i].codings!=undefined)
+			var sNom = $scope.aCodes[$scope.oCodes[aKeys[i]]].nom;
+			var aRow = [sNom, aBossaSelected[aKeys[i]].aTurns.length];
+			for(var j=0;j<$scope.query1Data.aDrillCodes.length;j++)
 			{
-				// Per cada coding d'un block, mirem condicions
-				for(var j=0;j<aTrans[i].codings.length;j++)
-				{
-					var oCodi = aTrans[i].codings[j];
-					//console.log(oCodi);
-					//console.log(oCodi.id_code);
-					for(var k=0;k<$scope.aFilterCodes.length;k++)
-					{
-						if($scope.aFilterCodes[k].id==oCodi.id_code) 
-						{
-							$scope.stats.total_turns_matching++;
-							$scope.aMatchingTurns.push({i:i, j:j, k:k, original:aTrans[i]});
-						}
-					}
-
-				}
+				var iIdDrillCode = $scope.query1Data.aDrillCodes[j];
+				aRow.push(aBossaSelected[aKeys[i]].aDrill['c'+iIdDrillCode].length);	
 			}
+			
+			$scope.aResult.push(aRow);
 		}
-		var aTrans = $scope.projects[iPrj].projecte.aTrans.video;
-		for(var i=0;i<aTrans.length;i++)
-		{
-			$scope.stats.total_turns_analyzed++;
-			if(aTrans[i].codings!=undefined)
-			{
-				// Per cada coding d'un block, mirem condicions
-				for(var j=0;j<aTrans[i].codings.length;j++)
-				{
-					var oCodi = aTrans[i].codings[j];
-					//console.log(oCodi);
-					//console.log(oCodi.id_code);
-					for(var k=0;k<$scope.aFilterCodes.length;k++)
-					{
-						if($scope.aFilterCodes[k].id==oCodi.id_code) 
-						{
-							$scope.stats.total_turns_matching++;
-							$scope.aMatchingTurns.push({i:i, j:j, k:k, original:aTrans[i]});
-						}
-					}
-
-				}
-			}
-		}
-		var aTrans = $scope.projects[iPrj].projecte.aTrans.text;
-		for(var i=0;i<aTrans.length;i++)
-		{
-			$scope.stats.total_turns_analyzed++;
-			if(aTrans[i].codings!=undefined)
-			{
-				// Per cada coding d'un block, mirem condicions
-				for(var j=0;j<aTrans[i].codings.length;j++)
-				{
-					var oCodi = aTrans[i].codings[j];
-					//console.log(oCodi);
-					//console.log(oCodi.id_code);
-					for(var k=0;k<$scope.aFilterCodes.length;k++)
-					{
-						if($scope.aFilterCodes[k].id==oCodi.id_code) 
-						{
-							$scope.stats.total_turns_matching++;
-							$scope.aMatchingTurns.push({i:i, j:j, k:k, original:aTrans[i]});
-						}
-					}
-
-				}
-			}
-		}
+		console.log($scope.aResult);
+		$scope.bQuery1 = true;
 	}
-	$scope.tecla = function($event)
-	{
-		//console.log($event.keyCode);
-		//$event.preventDefault();
-		//				return false;
-		if($event.ctrlKey)
-		{
-			switch($event.keyCode)
-			{
-				case 71:$scope.editCurrentGroup();
-						$event.preventDefault();
-						return false;
-				break;
-				case 84:$scope.nouBlock();
-						$event.preventDefault();
-						return false;
-				break;
-			}
-		}
-		
-	}
+
 });

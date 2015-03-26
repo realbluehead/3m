@@ -68,16 +68,26 @@ router.get('/list', function(req, res, next) {
 	
 	MongoClient.connect('mongodb://127.0.0.1:27017/m3', function(err, db) {
 	    if(err) throw err;
-
+console.log('fua');
 	    var collection = db.collection('m3');
-	    collection.find({},{'sort':'nom'}).toArray(function(err, results) {
-	       	data = results;
-	        // Tanquem la db
-	        db.close(function()
-	        	{
-	        		 res.send(data);
-	        	});
-	       
+	    var cursor = collection.find({}).sort({'nom':1}).batchSize(5);
+	    var data = [];
+	    cursor.each(function(err, item) {
+	 		console.log("item");
+	 		if(!err) 
+	 		{
+		       	if(item==null)
+		       	{
+			        // Tanquem la db
+			        console.log("acabem");
+			        db.close(function()
+			        	{
+			        		 res.send(data);
+			        	});
+		       }
+	      	 data.push(item);
+	      	}
+	      	else console.log(err);
 	      });
 	  })
 	

@@ -3,6 +3,192 @@ var router = express.Router();
 var mongo = require('mongodb');
 
 /* import code tree */
+var aTurns = [];
+var oCodes = {};
+var iProcessats = 0;
+var iRepes = 0;
+router.get('/etl', function(req, res) {
+	console.log("ETL");
+	var iNumTurns,iNumCodes;
+	aTurns = [];oCodes = {};iProcessats = 0;iRepes = 0;
+	// get all codes
+	getCodesAndTurns(function(aCodes, aTurns)
+	{
+		iNumCodes = aCodes.length;
+		console.log(aCodes);
+		for(var j=0;j<aCodes.length;j++)
+		{
+			oCodes['c'+aCodes[j].id] = j;
+		}
+		// get all turns
+		iNumTurns = aTurns.length;
+		// create matrix
+		aMap = createMatrix(iNumTurns,iNumCodes);
+		// fill matrix
+		aMap = fillMatrix(aMap);
+		console.log(iProcessats);
+		console.log(iRepes);
+		res.send({aMatrix:aMap, oCodes:oCodes, aCodes:aCodes, aTurns:aTurns, oTurns:oTurns});
+	});
+	
+});
+
+function fillMatrix(aMap)
+{
+	// recorro tots els torns
+	//for(var i=0;i<2;i++)
+	for(var i=0;i<aTurns.length;i++)
+	{
+		// recorro totes codificacions
+		var oTorn = oTurns[aTurns[i]];
+		if(oTorn.codings!=undefined) 
+		{
+			for(var j=0;j<oTorn.codings.length;j++)
+			{
+				var oCoding = oTorn.codings[j];
+				var iIndex = oCodes['c'+oCoding.id_code];
+				if(aMap[i][iIndex]==1 )
+				{
+					iRepes++;console.log("repetit "+iIndex+" coding "+oCoding.id_code);
+					console.log(oCoding);
+				} 
+				aMap[i][iIndex]=1;
+				iProcessats++;
+			}
+		}
+		//console.log(oTorn);
+	}
+	return aMap;
+}
+
+var oTurns = {};
+function getCodesAndTurns(callback)
+{
+	
+	
+	//console.log(aCodes);
+	loadCodes(function(aCodes)
+	{
+		getProjectNames(function(aProjects)
+		{
+			//console.log(aProjects);
+			loadTurns(aProjects, function()
+			{
+				callback(aCodes, aTurns);
+			})
+		})
+
+	})
+
+}
+
+function loadTurns(aProjects, callback)
+{
+	loadProjectTurns(aProjects,0, function()
+	{
+		callback();
+	})
+}
+
+function loadProjectTurns(aProjects, iNumProject, callback)
+{
+	var MongoClient = mongo.MongoClient;
+	var ObjectId = mongo.ObjectID;
+	var oProject = aProjects[iNumProject];
+	MongoClient.connect('mongodb://127.0.0.1:27017/m3', function(err, db) {
+	    if(err) throw err;
+
+	    var collection = db.collection('m3');
+	   
+	    collection.find({nom:oProject.nom}).toArray(function(err, docs) {
+	      if (err) console.log(err);
+	      	// tenim l'arbre pero estaria be tenir un array indexat per id_codi
+	      	console.log(docs[0].projecte.aTrans.audio.length);
+	      	// posem els torns en un array indexats per projecte,mode,id
+	      	processaTorn(docs[0].projecte.aTrans.audio, iNumProject);
+	      	processaTorn(docs[0].projecte.aTrans.video, iNumProject);
+	      	processaTorn(docs[0].projecte.aTrans.text, iNumProject);
+	      	var aResult = docs;
+	      	db.close(
+				function() {
+					if(iNumProject<aProjects.length-1) loadProjectTurns(aProjects, iNumProject+1, callback);
+						else callback(aResult);
+			});
+	    });
+	  })
+}
+
+function processaTorn(aMode, iNumProject)
+{
+	var sKey ='';
+	for(var i=0;i<aMode.length;i++)
+	{
+		sKey = 'p'+iNumProject+'a'+aMode[i].id;
+		oTurns[sKey] = aMode[i];
+		aTurns.push(sKey);
+		//console.log(sKey);
+	}
+}
+function getProjectNames(callback)
+{
+	var MongoClient = mongo.MongoClient;
+	var ObjectId = mongo.ObjectID;
+
+	MongoClient.connect('mongodb://127.0.0.1:27017/m3', function(err, db) {
+	    if(err) throw err;
+
+	    var collection = db.collection('m3');
+	   
+	    collection.find({},{nom:1}).toArray(function(err, docs) {
+	      if (err) console.log(err);
+	      	// tenim l'arbre pero estaria be tenir un array indexat per id_codi
+	      	
+	      	var aResult = docs;
+	      	db.close(
+				function() {
+					callback(aResult);
+			});
+	    });
+	  })
+}
+
+function loadCodes(callback)
+{
+	var MongoClient = mongo.MongoClient;
+	var ObjectId = mongo.ObjectID;
+
+	MongoClient.connect('mongodb://127.0.0.1:27017/m3', function(err, db) {
+	    if(err) throw err;
+
+	    var collection = db.collection('m3_codes_llista');
+	    // CARREGUEM L'ARBRE DE CODIS
+	    collection.find().toArray(function(err, docs) {
+	      if (err) console.log(err);
+	      	// tenim l'arbre pero estaria be tenir un array indexat per id_codi
+	      	
+	      	var aResult = docs[0].codis;
+	      	db.close(
+				function() {
+					callback(aResult);
+			});
+	    });
+	  })
+}
+function createMatrix(iNumTurns,iNumCodes)
+{
+	var aMap = [];
+	console.log("Creant matriu de ["+iNumTurns+"]["+iNumCodes+"]");
+	for(var i=0;i<iNumTurns;i++)
+	{
+		var aRow = [];
+		for(var j=0;j<iNumCodes;j++)
+		{
+			aRow.push(0);
+		}
+		aMap.push(aRow);
+	}
+	return aMap;
+}
 router.get('/import_codes', function(req, res) {
    //
 	var pg = require('pg');
