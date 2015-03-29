@@ -105,9 +105,9 @@ function loadProjectTurns(aProjects, iNumProject, callback)
 	      	// tenim l'arbre pero estaria be tenir un array indexat per id_codi
 	      	console.log(docs[0].projecte.aTrans.audio.length);
 	      	// posem els torns en un array indexats per projecte,mode,id
-	      	processaTorn(docs[0].projecte.aTrans.audio, iNumProject);
-	      	processaTorn(docs[0].projecte.aTrans.video, iNumProject);
-	      	processaTorn(docs[0].projecte.aTrans.text, iNumProject);
+	      	processaTorn(docs[0].projecte.aTrans.audio, iNumProject,'a');
+	      	processaTorn(docs[0].projecte.aTrans.video, iNumProject,'v');
+	      	processaTorn(docs[0].projecte.aTrans.text, iNumProject,'t');
 	      	var aResult = docs;
 	      	db.close(
 				function() {
@@ -118,12 +118,12 @@ function loadProjectTurns(aProjects, iNumProject, callback)
 	  })
 }
 
-function processaTorn(aMode, iNumProject)
+function processaTorn(aMode, iNumProject,sMode)
 {
 	var sKey ='';
 	for(var i=0;i<aMode.length;i++)
 	{
-		sKey = 'p'+iNumProject+'a'+aMode[i].id;
+		sKey = 'p'+iNumProject+sMode+aMode[i].id;
 		oTurns[sKey] = aMode[i];
 		aTurns.push(sKey);
 		//console.log(sKey);

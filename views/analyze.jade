@@ -8,7 +8,7 @@ block content
   .container-fluid
     .row
       .col-sm-12
-        table.table.table-striped
+        table.table.table-striped.table-hover
           tr
             td #Torns
             td Codis 
@@ -43,7 +43,7 @@ block content
                   button.btn.btn-xs.btn-primary(style='margin-top:5px',ng-click='addRow()') Add
       div(ng-class='turnsClass')
         .panel.panel-primary
-          .panel-heading Turns
+          .panel-heading(ng-click='showTurns()') Turns
           .panel-body
             table.table-bordered.table-striped.table-responsive
               tr
@@ -55,7 +55,18 @@ block content
               tr(ng-repeat='oTorn in aCurrentTurns')
                 td {{getTornText(oTorn)}}
                   span(ng-if='bShowCodings')
-                    button.btn.btn-xs.btn-success(style='margin:2px 2px',ng-repeat='oCode in getTorn(oTorn).codings') {{oCode.id_code}}
+                    button.btn.btn-xs.btn-success(style='margin:2px 2px',ng-repeat='oCode in getTorn(oTorn).codings') {{aCodes[oCodes['c'+oCode.id_code]].nom}}
+                  span(ng-if='bShowGroups')
+                    button.btn.btn-xs.btn-primary(ng-click='showGroupTurns(oTorn, oGroup)',style='margin:2px 2px',ng-repeat='oGroup in getTorn(oTorn).groups') {{oGroup}}
+      div(ng-class='contextClass')
+        .panel.panel-primary
+          .panel-heading Group
+          .panel-body
+            table.table-bordered.table-responsive
+              tr(ng-repeat='oTorn in aCurrentGroupTurns')
+                td(ng-class='getTornClass(oTorn)') {{getTornText(oTorn)}}
+                  span(ng-if='bShowCodings')
+                    button.btn.btn-xs.btn-success(style='margin:2px 2px',ng-repeat='oCode in getTorn(oTorn).codings') {{aCodes[oCodes['c'+oCode.id_code]].nom}}
                   span(ng-if='bShowGroups')
                     button.btn.btn-xs.btn-primary(style='margin:2px 2px',ng-repeat='oGroup in getTorn(oTorn).groups') {{oGroup}}
           

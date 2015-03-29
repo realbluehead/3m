@@ -21,10 +21,12 @@ App3m.controller('mainController',function($scope, $http){
 	$scope.newColSelected;
 	$scope.newRowSelected;
 	$scope.aCurrentTurns;
+	$scope.aCurrentGroupTurns;
 	$scope.bShowCodings=false;
 	$scope.bShowGroups=false;
 	$scope.queryClass='col-sm-10';
-	$scope.turnsClass='col-sm-2';
+	$scope.turnsClass='col-sm-1';
+	$scope.contextClass='col-sm-1';
 	$scope.aKeys = [];
 	$scope.aList = {};
 	
@@ -60,13 +62,46 @@ App3m.controller('mainController',function($scope, $http){
 	$scope.showQuery = function()
 	{
 		$scope.queryClass='col-sm-10';
+		$scope.turnsClass='col-sm-1';
+		$scope.contextClass='col-sm-1';
+	}
+	$scope.showGroupTurns = function(oTorn, oGroup)
+	{
+		$scope.aCurrentGroupTurns = getGroupTurns($scope.aTurns[oTorn], oGroup);
+		$scope.queryClass='col-sm-2';
 		$scope.turnsClass='col-sm-2';
+		$scope.contextClass='col-sm-8';
+		console.log($scope.aTurns[oTorn]+':'+oGroup);
+	}
+	function getGroupTurns(sIdTorn, oGroup)
+	{
+		//for(var i=0;i<3;i++)
+		var aTmp = sIdTorn.replace('a','t').replace('v','t').split('t');
+		var sProject = aTmp[0].replace('p','');
+		console.log('projecte:'+sProject);
+		var aTurns = [];
+		for(var i=0;i<$scope.aTurns.length;i++)
+		{
+			var aTmp = $scope.aTurns[i].replace('a','t').replace('v','t').split('t');
+			var sProjectTmp = aTmp[0].replace('p','');
+
+			if($scope.oTurns[$scope.aTurns[i]].groups!==undefined && sProjectTmp==sProject)
+			{
+				if($scope.oTurns[$scope.aTurns[i]].groups.indexOf(oGroup)!=-1) 
+					{
+						aTurns.push(i);
+						//console.log($scope.oTurns[$scope.aTurns[i]].groups);
+					}
+			}
+		}
+		return aTurns;
 	}
 	$scope.showTurns = function(iRow,iCol)
 	{
 		$scope.aCurrentTurns = $scope.aResult[iRow][iCol];
-		$scope.queryClass='col-sm-3';
+		$scope.queryClass='col-sm-2';
 		$scope.turnsClass='col-sm-9';
+		$scope.contextClass='col-sm-1';
 		//console.log($scope.aResult[iRow][iCol]);
 	}
 	$scope.getTornText = function(iIndexTorn)
@@ -74,7 +109,17 @@ App3m.controller('mainController',function($scope, $http){
 		var sKeyTorn = $scope.aTurns[iIndexTorn];
 		var oTorn = $scope.oTurns[sKeyTorn];
 		//console.log(oTorn);
-		return oTorn.contingut_filtrat;
+		return sKeyTorn+':'+oTorn.contingut_filtrat;
+	}
+	$scope.getTornClass = function(iIndexTorn)
+	{
+		var sKeyTorn = $scope.aTurns[iIndexTorn];
+		var sClass = 'active';		
+		if(sKeyTorn.indexOf('a')!==-1) sClass = 'active';	
+		else if(sKeyTorn.indexOf('v')!==-1) sClass = 'success';	
+		else if(sKeyTorn.indexOf('t')!==-1) sClass = 'warning';	
+		console.log(sClass);
+		return sClass;
 	}
 	$scope.getTorn = function(iIndexTorn)
 	{
@@ -193,6 +238,7 @@ App3m.controller('mainController',function($scope, $http){
 			$scope.aTurns = data.aTurns;
 			$scope.oTurns = data.oTurns;
 			$scope.bReady = true;
+			console.log($scope.oCodes);
 			iniBossa();
 			
 		});
