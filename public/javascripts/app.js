@@ -1745,6 +1745,17 @@ bTrobat=false;
 		return "Holaa";
 	}
 
+	$scope.setStopTime= function(block)
+	{
+		var iTime = Math.floor($scope.player.currentTime()*1000);
+		console.log("End "+iTime);
+		block.block.end = iTime;
+	}
+	$scope.hasStopTime = function(block)
+	{
+		//console.log(block.block.end);
+		if(block.block.end===null || block.block.end===undefined) return false; else return true;
+	}
 	$scope.seekPlayer = function(block)
 	{
 		//console.log("Seek to:"+block.block.start);

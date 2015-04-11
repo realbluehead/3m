@@ -192,6 +192,7 @@ block content
                 div#panel_trans_audio(ng-style='scrollAudio', class='panel-body transcripcio')
                     div(class='panel panel-default',  ng-repeat='block in transcriptions.audio' )
                       div(id='block_{{block.id}}', class='panel-heading', ng-class="{'block_seleccionat': block.checked}")
+                        button(ng-class="{'btn-success':hasStopTime(this)}", class='btn btn-xs', ng-click='setStopTime(this)') End
                         button(class='btn btn-xs btn-warning', ng-click='fix(this,"A")') F
                         button(class='btn btn-xs btn-warning', title='Select', ng-click='toggleCheck(this,"A")') S
                         button(class='btn btn-xs btn-warning', title='Play', ng-click='seekPlayer(this)') P
@@ -217,6 +218,7 @@ block content
                 div(class='panel-body transcripcio')
                     div(class='panel panel-default' , ng-repeat='block in transcriptions.text')
                       div(class='panel-heading')
+                        button(ng-class="{'btn-success':hasStopTime(this)}", class='btn btn-xs', ng-click='setStopTime(this)') End
                         button(class='btn btn-xs btn-warning', ng-click='fix(this,"T")') F
                         button(class='btn btn-xs btn-warning', ng-click='toggleCheck(this,"T")') S
                         button(class='btn btn-xs btn-warning', ng-click='seekPlayer(this)') P
@@ -242,6 +244,7 @@ block content
                 div(class='panel-body transcripcio')
                     div(class='panel panel-default' , ng-repeat='block in transcriptions.video')
                       div(class='panel-heading')
+                        button(ng-class="{'btn-success':hasStopTime(this)}", class='btn btn-xs', ng-click='setStopTime(this)') End
                         button(class='btn btn-xs btn-warning', ng-click='fix(this,"I")') F
                         button(class='btn btn-xs btn-warning', ng-click='toggleCheck(this,"I")') S
                         button(class='btn btn-xs btn-warning', ng-click='seekPlayer(this)') P
