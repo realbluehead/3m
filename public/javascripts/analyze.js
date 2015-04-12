@@ -14,6 +14,7 @@ App3m.controller('mainController',function($scope, $http){
 	$scope.bQuery1 = false;
 	$scope.aResult = [];
 	$scope.newColSelected;
+	$scope.newColSelectedSib = [];
 	$scope.aTurnsBossa = [];
 	$scope.aFilteredCodes = [];
 	$scope.aColumns = [];
@@ -29,6 +30,7 @@ App3m.controller('mainController',function($scope, $http){
 	$scope.contextClass='col-sm-1';
 	$scope.aKeys = [];
 	$scope.aList = {};
+	$scope.aStats = {total_time:0, total_words:0};
 	
 
 	$scope.init = function()
@@ -36,9 +38,10 @@ App3m.controller('mainController',function($scope, $http){
 		$scope.loadMatrix();
 
 	}
-	$scope.delColumn = function(index)
+	$scope.delColumn = function(indexpare, index)
 	{
-		$scope.aColumns.splice(index,1);
+		$scope.aColumns[indexpare].splice(index,1);
+		if($scope.aColumns[indexpare].length==0) $scope.aColumns.splice(indexpare,1);
 		reQuery();
 	}
 	$scope.delRow = function(index)
@@ -46,9 +49,15 @@ App3m.controller('mainController',function($scope, $http){
 		$scope.aRows.splice(index,1);
 		reQuery();
 	}
+	$scope.addColumnSibling= function(index)
+	{
+		console.log(index);
+		$scope.aColumns[index].push($scope.newColSelectedSib[index]);
+		reQuery();
+	}
 	$scope.addColumn = function()
 	{
-		$scope.aColumns.push($scope.newColSelected);
+		$scope.aColumns.push([$scope.newColSelected]);
 		//for(var i=0;i<$scope.aCodes.length;i++) $scope.aColumns.push($scope.aCodes[i]);
 		
 		reQuery();
@@ -79,6 +88,8 @@ App3m.controller('mainController',function($scope, $http){
 		var aTmp = sIdTorn.replace('a','t').replace('v','t').split('t');
 		var sProject = aTmp[0].replace('p','');
 		console.log('projecte:'+sProject);
+		var iTotalTime = 0;
+		var iTotalWords = 0;
 		var aTurns = [];
 		for(var i=0;i<$scope.aTurns.length;i++)
 		{
@@ -90,7 +101,8 @@ App3m.controller('mainController',function($scope, $http){
 				if($scope.oTurns[$scope.aTurns[i]].groups.indexOf(oGroup)!=-1) 
 					{
 						aTurns.push(i);
-						//console.log($scope.oTurns[$scope.aTurns[i]].groups);
+
+						console.log($scope.oTurns[$scope.aTurns[i]].groups);
 					}
 			}
 		}
@@ -99,10 +111,46 @@ App3m.controller('mainController',function($scope, $http){
 	$scope.showTurns = function(iRow,iCol)
 	{
 		$scope.aCurrentTurns = $scope.aResult[iRow][iCol];
+		$scope.recalculateStats();
 		$scope.queryClass='col-sm-2';
 		$scope.turnsClass='col-sm-9';
 		$scope.contextClass='col-sm-1';
-		//console.log($scope.aResult[iRow][iCol]);
+		console.log($scope.aResult[iRow][iCol]);
+	}
+	$scope.countOf = function(text) {
+	    var s = text ? text.split(/\s+/) : 0; // it splits the text on space/tab/enter
+	    return s ? s.length : '';
+	};
+	$scope.recalculateStats = function()
+	{
+		var iTotalTime = 0;
+		var iTotalWords = 0;
+		for(var i=0;i<$scope.aCurrentTurns.length;i++)
+		{
+			var sKeyTorn = $scope.aTurns[$scope.aCurrentTurns[i]];
+			var oTorn = $scope.oTurns[sKeyTorn];
+			if(oTorn.contingut_filtrat.indexOf("LC")!==-1)
+			{
+				var sText = oTorn.contingut_filtrat.slice(oTorn.contingut_filtrat.indexOf("LC")+4);
+				//console.log(sText+'=>'+$scope.countOf(sText));
+				iTotalWords += $scope.countOf(sText)-1;
+			}
+			else
+			if(oTorn.contingut_filtrat.indexOf("IM")!==-1)
+			{
+				var sText = oTorn.contingut_filtrat.slice(oTorn.contingut_filtrat.indexOf("LC")+4);
+				//console.log(sText+'=>'+$scope.countOf(sText));
+				iTotalWords += $scope.countOf(sText)-1;
+			}
+			else
+			{
+				if(oTorn.end>oTorn.start) iTotalTime += (oTorn.end - oTorn.start);
+			}
+			
+			
+		}
+		$scope.aStats.total_time = iTotalTime;
+		$scope.aStats.total_words = iTotalWords;
 	}
 	$scope.getTornText = function(iIndexTorn)
 	{
@@ -201,19 +249,31 @@ App3m.controller('mainController',function($scope, $http){
 	{
 
 		// Agafo els indexs de i, j
-		
+		// convertir en array
+		var aConds = [];
+
 		var iIdR = $scope.aRows[iRow].id;
 		var iIndexR = $scope.oCodes['c'+iIdR];
-		var iIdC = $scope.aColumns[jCol].id;
-		var iIndexC = $scope.oCodes['c'+iIdC];
+		aConds.push(iIndexR);
+		for(var i=0;i<$scope.aColumns[jCol].length;i++)
+		{
+			var iIdC = $scope.aColumns[jCol][i].id;
+			var iIndexC = $scope.oCodes['c'+iIdC];
+			aConds.push(iIndexC);
+		}
+		
 		var aReturn = [];
 		// per cada torn
 		for(var i=0;i<$scope.aMatrix.length;i++)
 		{
 			var oTorn = $scope.aMatrix[i];
-			if(oTorn[iIndexR]==1 && oTorn[iIndexC]==1)
+			var iSuma = 0;
+			for(var j=0;j<aConds.length;j++)
 			{
-				
+				iSuma+=oTorn[aConds[j]];
+			}
+			if(iSuma==aConds.length)
+			{
 				aReturn.push(i);
 			}
 		}

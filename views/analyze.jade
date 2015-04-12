@@ -22,9 +22,13 @@ block content
             table.table-bordered.table-striped.table-responsive
               tr
                 th Filter
-                th(ng-repeat='sCol in aColumns track by $index') 
+                th(ng-repeat='aCols in aColumns track by $index') 
                   div
-                    button.btn.btn-xs.btn-danger(ng-click='delColumn($index)',title='Remove') {{sCol.nom}}
+                    div(ng-repeat='sCol in aCols track by $index')
+                      button.btn.btn-xs.btn-danger(ng-click='delColumn($parent.$index,$index)',title='Remove') {{sCol.nom}}
+                      br
+                    select.input-xs(style='width:100px',ng-options='oCodi.nom for oCodi in aCodes ', ng-model='newColSelectedSib[$index]')
+                    button.btn.btn-xs.btn-primary(style='margin-left:5px',ng-click='addColumnSibling($index)') Add
                 th
                   select.input-sm(style='width:100px',ng-options='oCodi.nom for oCodi in aCodes ', ng-model='newColSelected')
                 th
@@ -46,6 +50,9 @@ block content
           .panel-heading(ng-click='showTurns()') Turns
           .panel-body
             table.table-bordered.table-striped.table-responsive
+              tr
+                td
+                  Total time: {{aStats.total_time}}, Total words: {{aStats.total_words}}
               tr
                 td
                   input.input-sm(type='checkbox', ng-model='bShowGroups', value='')
