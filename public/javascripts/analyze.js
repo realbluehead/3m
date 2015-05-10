@@ -4,6 +4,20 @@ App3m.controller('mainController',function($scope, $http){
 	$scope.infoMsg = "Ready...";
 	$scope.aMatrix = [];
 	$scope.workingMatrix = [];
+	$scope.aSessions = [
+						{title:'Session 1', checked:true},
+						{title:'Session 2', checked:true},
+						{title:'[Session 3]', checked:true},
+						{title:'Session 4', checked:true},
+						{title:'Session 5', checked:true},
+						{title:'Session 6', checked:true},
+						{title:'Session 7', checked:true},
+						{title:'Session 8', checked:true},
+						{title:'Session 9', checked:true},
+						{title:'Session 10', checked:true},
+						{title:'Session 11', checked:true},
+						{title:'Session 12', checked:true}
+						];
 	$scope.aCodes = [];
 	$scope.oCodes = {};
 	$scope.aTurns = [];
@@ -32,7 +46,10 @@ App3m.controller('mainController',function($scope, $http){
 	$scope.aList = {};
 	$scope.aStats = {total_time:0, total_words:0};
 	
-
+	$scope.reload = function()
+	{
+		$scope.loadMatrix();
+	}
 	$scope.init = function()
 	{
 		$scope.loadMatrix();
@@ -74,6 +91,10 @@ App3m.controller('mainController',function($scope, $http){
 		$scope.turnsClass='col-sm-1';
 		$scope.contextClass='col-sm-1';
 	}
+	$scope.showGTurns = function(iRow,iCol)
+	{
+
+	}
 	$scope.showGroupTurns = function(oTorn, oGroup)
 	{
 		$scope.aCurrentGroupTurns = getGroupTurns($scope.aTurns[oTorn], oGroup);
@@ -110,7 +131,7 @@ App3m.controller('mainController',function($scope, $http){
 	}
 	$scope.showTurns = function(iRow,iCol)
 	{
-		$scope.aCurrentTurns = $scope.aResult[iRow][iCol];
+		$scope.aCurrentTurns = $scope.aResult[iRow][iCol].torns;
 		$scope.recalculateStats();
 		$scope.queryClass='col-sm-2';
 		$scope.turnsClass='col-sm-9';
@@ -209,7 +230,7 @@ App3m.controller('mainController',function($scope, $http){
 			var aRow = [];
 			for(var j=0;j<$scope.aColumns.length;j++)
 			{
-				aTornsMacthing = getTornsMatching(i,j);
+				aTornsMacthing = {torns:getTornsMatching(i,j), grups:getGrupsMatching(i,j)};
 				aRow.push(aTornsMacthing);
 			}
 			$scope.aResult.push(aRow);
@@ -279,20 +300,56 @@ App3m.controller('mainController',function($scope, $http){
 		}
 		return aReturn;
 	}
+	function getGrupsMatching(iRow,jCol)
+	{
+
+		// Agafo els indexs de i, j
+		// convertir en array
+		var aConds = [];
+
+		var iIdR = $scope.aRows[iRow].id;
+		var iIndexR = $scope.oCodes['c'+iIdR];
+		aConds.push(iIndexR);
+		for(var i=0;i<$scope.aColumns[jCol].length;i++)
+		{
+			var iIdC = $scope.aColumns[jCol][i].id;
+			var iIndexC = $scope.oCodes['c'+iIdC];
+			aConds.push(iIndexC);
+		}
+		
+		var aReturn = [];
+		// per cada torn
+		for(var i=0;i<$scope.aGMatrix.length;i++)
+		{
+			var oGrup = $scope.aGMatrix[i];
+			var iSuma = 0;
+			for(var j=0;j<aConds.length;j++)
+			{
+				if(oGrup[aConds[j]]>=1) iSuma++;
+			}
+			if(iSuma==aConds.length)
+			{
+				aReturn.push(i);
+			}
+		}
+		return aReturn;
+	}
 	$scope.loadMatrix = function()
 	{
 		 var request = $http({
-				method: "get",
+				method: "post",
 				cache:false,
 				url: "utils/etl/",
-				params: {
+				data: {
 					//id: iId
+					sessions:$scope.aSessions
 				}
 			});
 		request.success(function(data, status, headers, config) {
 			console.log("Carregat");
 			$scope.infoMsg = "Codis carregats...";
 			$scope.aMatrix = data.aMatrix;
+			$scope.aGMatrix = data.aGMatrix;
 			$scope.aCodes = data.aCodes.slice();
 			$scope.oCodes = data.oCodes;
 			$scope.aTurns = data.aTurns;
@@ -300,6 +357,7 @@ App3m.controller('mainController',function($scope, $http){
 			$scope.bReady = true;
 			console.log($scope.oCodes);
 			iniBossa();
+
 			
 		});
 	}
@@ -337,6 +395,7 @@ App3m.controller('mainController',function($scope, $http){
 			$scope.workingMatrix.push(aTorn);
 		}
 		console.log("Nova matriu de "+$scope.workingMatrix.length+"x"+$scope.workingMatrix[0].length);
+		reQuery();
 	}
 	$scope.query1 = function()
 	{

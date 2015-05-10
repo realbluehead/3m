@@ -7,31 +7,50 @@ var aTurns = [];
 var oCodes = {};
 var iProcessats = 0;
 var iRepes = 0;
-router.get('/etl', function(req, res) {
+var aSessDom = [];
+var aGMap = [];
+var oGrups = {};
+var aGroups = [];
+router.post('/etl', function(req, res) {
 	console.log("ETL");
 	var iNumTurns,iNumCodes;
 	aTurns = [];oCodes = {};iProcessats = 0;iRepes = 0;
+	console.log('aleluia '+req.body.sessions);
+	aSessDom = req.body.sessions;
+	oGrups = {};aGroups=[];
 	// get all codes
 	getCodesAndTurns(function(aCodes, aTurns)
 	{
 		iNumCodes = aCodes.length;
-		console.log(aCodes);
+		//console.log(aCodes);
 		for(var j=0;j<aCodes.length;j++)
 		{
 			oCodes['c'+aCodes[j].id] = j;
 		}
 		// get all turns
 		iNumTurns = aTurns.length;
+		// get all turns
+		var iNumGrups = aGroups.length;
 		// create matrix
 		aMap = createMatrix(iNumTurns,iNumCodes);
+		aGMap = createGMatrix(iNumGrups,iNumCodes);
 		// fill matrix
 		aMap = fillMatrix(aMap);
-		console.log(iProcessats);
-		console.log(iRepes);
-		res.send({aMatrix:aMap, oCodes:oCodes, aCodes:aCodes, aTurns:aTurns, oTurns:oTurns});
+
+		// create matrix
+		console.log("Num grups "+iNumGrups);
+		
+		// fill matrix
+		
+		//console.log(iProcessats);
+		//console.log(iRepes);
+		//console.log(oGrups);
+		res.send({aMatrix:aMap, aGMatrix:aGMap, oCodes:oCodes, aCodes:aCodes, aTurns:aTurns, oTurns:oTurns});
 	});
 	
 });
+
+
 
 function fillMatrix(aMap)
 {
@@ -49,14 +68,38 @@ function fillMatrix(aMap)
 				var iIndex = oCodes['c'+oCoding.id_code];
 				if(aMap[i][iIndex]==1 )
 				{
-					iRepes++;console.log("repetit "+iIndex+" coding "+oCoding.id_code);
-					console.log(oCoding);
+					iRepes++;
+					//console.log("repetit "+iIndex+" coding "+oCoding.id_code);
+					//console.log(oCoding);
 				} 
 				aMap[i][iIndex]=1;
+
 				iProcessats++;
 			}
 		}
 		//console.log(oTorn);
+	}
+	for(var i=0;i<aGroups.length;i++)
+	{
+		console.log("G "+i+" =>"+oGrups[aGroups[i]].length);
+		console.log(oGrups[aGroups[i]]);
+		var sum = 0;
+		for(var j=0;j<oGrups[aGroups[i]].length;j++)
+		{
+			console.log("Buscant "+oGrups[aGroups[i]][j]);
+			var oTorn = oTurns[oGrups[aGroups[i]][j]];
+			if(oTorn.codings!==undefined)
+			{
+				for(var k=0;k<oTorn.codings.length;k++)
+				{
+					var oCoding = oTorn.codings[k];
+					var iIndex = oCodes['c'+oCoding.id_code];
+					
+					aGMap[i][iIndex]=1;
+				}
+			}
+			
+		}
 	}
 	return aMap;
 }
@@ -71,7 +114,7 @@ function getCodesAndTurns(callback)
 	{
 		getProjectNames(function(aProjects)
 		{
-			//console.log(aProjects);
+			console.log(aProjects);
 			loadTurns(aProjects, function()
 			{
 				callback(aCodes, aTurns);
@@ -95,6 +138,7 @@ function loadProjectTurns(aProjects, iNumProject, callback)
 	var MongoClient = mongo.MongoClient;
 	var ObjectId = mongo.ObjectID;
 	var oProject = aProjects[iNumProject];
+	console.log("Processant projecte "+iNumProject+" "+oProject.nom);
 	MongoClient.connect('mongodb://127.0.0.1:27017/m3', function(err, db) {
 	    if(err) throw err;
 
@@ -103,16 +147,25 @@ function loadProjectTurns(aProjects, iNumProject, callback)
 	    collection.find({nom:oProject.nom}).toArray(function(err, docs) {
 	      if (err) console.log(err);
 	      	// tenim l'arbre pero estaria be tenir un array indexat per id_codi
-	      	console.log(docs[0].projecte.aTrans.audio.length);
+	      	//console.log(docs[0].projecte.aTrans.audio.length);
 	      	// posem els torns en un array indexats per projecte,mode,id
-	      	processaTorn(docs[0].projecte.aTrans.audio, iNumProject,'a');
-	      	processaTorn(docs[0].projecte.aTrans.video, iNumProject,'v');
-	      	processaTorn(docs[0].projecte.aTrans.text, iNumProject,'t');
-	      	var aResult = docs;
+	      	console.log("Sha de fer?? "+aSessDom[iNumProject].checked);
+	      	if(aSessDom[iNumProject].checked)
+	      	{
+	      		console.log("Processem "+ iNumProject);
+		      	processaTorn(docs[0].projecte.aTrans.audio, iNumProject,'a');
+		      	processaTorn(docs[0].projecte.aTrans.video, iNumProject,'v');
+		      	processaTorn(docs[0].projecte.aTrans.text, iNumProject,'t');
+		      	var sum = docs[0].projecte.aTrans.audio.length+docs[0].projecte.aTrans.video.length+docs[0].projecte.aTrans.text.length;
+		      	console.log("("+docs[0].projecte.aTrans.audio.length+","+docs[0].projecte.aTrans.video.length+","+docs[0].projecte.aTrans.text.length+") = "+sum);
+		      	var aResult = docs;
+	      	}
 	      	db.close(
 				function() {
+					//if(iNumProject>1) loadProjectTurns(aProjects, iNumProject+1, callback);
 					if(iNumProject<aProjects.length-1) loadProjectTurns(aProjects, iNumProject+1, callback);
-						else callback(aResult);
+						else 
+						callback(aResult);
 			});
 	    });
 	  })
@@ -121,14 +174,78 @@ function loadProjectTurns(aProjects, iNumProject, callback)
 function processaTorn(aMode, iNumProject,sMode)
 {
 	var sKey ='';
+	var iTotalTime = 0;
+	var iTotalWords=0;
+	var iTotalTimeTurns = 0;
+	var iTotalWordTurns = 0;
 	for(var i=0;i<aMode.length;i++)
 	{
 		sKey = 'p'+iNumProject+sMode+aMode[i].id;
 		oTurns[sKey] = aMode[i];
 		aTurns.push(sKey);
+		// per cada torn mirem els grups
+		if(aMode[i].groups!==undefined) 
+		{
+			
+			for(var k=0;k<aMode[i].groups.length;k++)
+			{
+				var sGKey = 'p'+iNumProject+'_'+aMode[i].groups[k];
+				//console.log(sGKey);
+				if(oGrups[sGKey]===undefined) 
+					{
+						oGrups[sGKey] = [];
+						aGroups.push(sGKey);
+					}
+				oGrups[sGKey].push(sKey);
+				
+				//console.log("altre");
+			}
+		}
+		if(sMode=='a')
+		{
+			oTorn = aMode[i];
+			if(oTorn.contingut_filtrat!=undefined)
+			{
+				if(oTorn.contingut_filtrat.indexOf("LC")!==-1)
+				{
+					var sText = oTorn.contingut_filtrat.slice(oTorn.contingut_filtrat.indexOf("LC")+4);
+					//console.log(sText+'=>'+$scope.countOf(sText));
+					iTotalWords += countOf(sText)-1;
+					iTotalWordTurns++;
+				}
+				else
+				if(oTorn.contingut_filtrat.indexOf("IM")!==-1)
+				{
+					var sText = oTorn.contingut_filtrat.slice(oTorn.contingut_filtrat.indexOf("LC")+4);
+					//console.log(sText+'=>'+$scope.countOf(sText));
+					iTotalWords += countOf(sText)-1;
+					iTotalWordTurns++;
+				}
+				else
+				{
+					if(oTorn.end>oTorn.start) 
+							iTotalTime += (oTorn.end - oTorn.start);
+						iTotalTimeTurns++;
+				}
+			}
+			
+		}
 		//console.log(sKey);
 	}
+	if(sMode=='a')
+	{
+		console.log("TW "+ iTotalWords);
+		console.log("TD "+ iTotalTime);
+		console.log("TW turns "+iTotalWordTurns);
+		console.log("TT turns "+iTotalTimeTurns);
+	}
+	
 }
+
+function countOf (text) {
+	    var s = text ? text.split(/\s+/) : 0; // it splits the text on space/tab/enter
+	    return s ? s.length : '';
+	}
 function getProjectNames(callback)
 {
 	var MongoClient = mongo.MongoClient;
@@ -179,6 +296,21 @@ function createMatrix(iNumTurns,iNumCodes)
 	var aMap = [];
 	console.log("Creant matriu de ["+iNumTurns+"]["+iNumCodes+"]");
 	for(var i=0;i<iNumTurns;i++)
+	{
+		var aRow = [];
+		for(var j=0;j<iNumCodes;j++)
+		{
+			aRow.push(0);
+		}
+		aMap.push(aRow);
+	}
+	return aMap;
+}
+function createGMatrix(iNumGrups,iNumCodes)
+{
+	var aMap = [];
+	console.log("Creant gmatriu de ["+iNumGrups+"]["+iNumCodes+"]");
+	for(var i=0;i<iNumGrups;i++)
 	{
 		var aRow = [];
 		for(var j=0;j<iNumCodes;j++)

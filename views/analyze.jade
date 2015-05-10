@@ -8,13 +8,12 @@ block content
   .container-fluid
     .row
       .col-sm-12
-        table.table.table-striped.table-hover
+        table.table.table-responsive.table-striped.table-hover
           tr
-            td #Torns
-            td Codis 
-          tr(ng-repeat='sMatches in aKeys')
-            td {{sMatches.replace('h','')}}
-            td {{getListMatches(sMatches)}}
+            td(ng-repeat='oSessio in aSessions track by $index')
+              label(for='sess_{{oSessio.title}}') 
+                input(id='sess_{{oSessio.title}}', type='checkbox', ng-model='oSessio.checked' ng-change='reload()') 
+                | {{oSessio.title}}
       div(ng-class='queryClass')#dades
         .panel.panel-primary
           .panel-heading(ng-click='showQuery()') Query  
@@ -37,8 +36,8 @@ block content
                 td
                   button.btn.btn-xs.btn-danger(ng-click='delRow($index)',title='Remove') {{sRow.nom}}
                 td(ng-repeat='aCell in aResult[$index]') 
-                  button.btn.btn-xs(ng-if='aCell.length>0',ng-click='showTurns($parent.$parent.$index, $index)') {{aCell.length}}
-
+                  button.btn.btn-xs(ng-if='aCell.torns.length>0',ng-click='showTurns($parent.$parent.$index, $index)') {{aCell.torns.length}} 
+                  button.btn.btn-xs(ng-if='aCell.grups.length>0',ng-click='showGTurns($parent.$parent.$index, $index)') {{aCell.grups.length}} 
               tr
                 td
                   select.input-sm(style='width:100px',ng-options='oCodi.nom for oCodi in aCodes ', ng-model='newRowSelected')
