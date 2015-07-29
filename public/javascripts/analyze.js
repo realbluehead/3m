@@ -165,7 +165,9 @@ App3m.controller('mainController',function($scope, $http){
 			}
 			else
 			{
+				var sText = oTorn.contingut_filtrat;
 				if(oTorn.end>oTorn.start) iTotalTime += (oTorn.end - oTorn.start);
+				iTotalWords += $scope.countOf(sText)-1;
 			}
 			
 			
