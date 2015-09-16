@@ -1,0 +1,1 @@
+{ "indexes" : [ { "v" : 1, "key" : { "_id" : 1 }, "ns" : "test.acl_roles", "name" : "_id_" }, { "v" : 1, "key" : { "_bucketname" : 1, "key" : 1 }, "ns" : "test.acl_roles", "name" : "_bucketname_1_key_1" } ] }
